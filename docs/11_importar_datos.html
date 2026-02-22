@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>3&nbsp; Importar datos – Econometría con R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./14_visualizacion_estatica.html" rel="next">
+<link href="./02_intro_a_r.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-27c261d06b905028a18691de25d09dde.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./11_importar_datos.html">Importar, manipular y visualizar datos</a></li><li class="breadcrumb-item"><a href="./11_importar_datos.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Importar datos</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Econometría con R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">¡Libro en proceso!</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Introducción</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro_al_libro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introducción</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_intro_a_r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Conceptos básicos de R</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Importar, manipular y visualizar datos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_importar_datos.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Importar datos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_visualizacion_estatica.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizaciones estáticas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15_visualizacion_interactiva.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Visualizaciones interactivas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16_datos_geoespaciales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Datos geoespaciales</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Análisis econométrico</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./21_intro_econometria.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">21_intro_econometria.html</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./22_regresion_lineal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">22_regresion_lineal.html</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./23_analisis_causal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">23_analisis_causal.html</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Ciencia de datos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./31_knn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">31_knn.html</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./32_random_forest.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">32_random_forest.html</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#importar-datos" id="toc-importar-datos" class="nav-link active" data-scroll-target="#importar-datos"><span class="header-section-number">4</span> 1. Importar datos</a>
+  <ul class="collapse">
+  <li><a href="#1.1.Ficheros" id="toc-1.1.Ficheros" class="nav-link" data-scroll-target="#1.1.Ficheros"><span class="header-section-number">4.1</span> 1.1. Ficheros planos</a></li>
+  <li><a href="#1.2.ficheros-excel" id="toc-1.2.ficheros-excel" class="nav-link" data-scroll-target="#1.2.ficheros-excel"><span class="header-section-number">4.2</span> 1.2. Ficheros Excel</a></li>
+  <li><a href="#1.3.bases-datos" id="toc-1.3.bases-datos" class="nav-link" data-scroll-target="#1.3.bases-datos"><span class="header-section-number">4.3</span> 1.3. Bases de datos</a></li>
+  <li><a href="#1.4.datos-web" id="toc-1.4.datos-web" class="nav-link" data-scroll-target="#1.4.datos-web"><span class="header-section-number">4.4</span> 1.4. Datos de la web</a></li>
+  <li><a href="#1.5.software-estadistico" id="toc-1.5.software-estadistico" class="nav-link" data-scroll-target="#1.5.software-estadistico"><span class="header-section-number">4.5</span> 1.5. Otros softwares estadísticos</a></li>
+  <li><a href="#1.6-otros-formatos" id="toc-1.6-otros-formatos" class="nav-link" data-scroll-target="#1.6-otros-formatos"><span class="header-section-number">4.6</span> 1.6. Otros formatos</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./11_importar_datos.html">Importar, manipular y visualizar datos</a></li><li class="breadcrumb-item"><a href="./11_importar_datos.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Importar datos</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Importar datos</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="importar-datos" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> 1. Importar datos</h1>
+<p>Lo más común es que cuando trabajamos en R importemos archivos de los siguientes tipos:</p>
+<ul>
+<li>Ficheros planos (.csv, .txt, .tsv)</li>
+<li>Excel (.xls, .xlsx)</li>
+<li>Bases de datos (SQL)</li>
+<li>Datos de la Web (URL o a través de web API)</li>
+<li>Datos geoespaciales (crear subsección!!)</li>
+<li>Otros softwares estadísticos (SAS, SPSS, Stata)</li>
+<li>Otros formatos (.parquet, .RData)</li>
+</ul>
+<p>No siempre tendremos los datos en nuestro working directory (wd, que en R se obtiene con <code>getwd()</code>). Por tanto, es buena práctica definir primero la ruta y luego usarla como argumento en función correspondiente para cargar los datos.</p>
+<p>Para definir la ruta, usamos la función <code>file.path()</code>, que recomiendo que se componga con una de las siguientes alternativas. Los distintos elementos van encadenados con comas dentro de la función, y no hace falta poner “/” después del elemento final de cada argumento.</p>
+<section id="desde-el-home-directory" class="level4" data-number="4.0.0.1">
+<h4 data-number="4.0.0.1" class="anchored" data-anchor-id="desde-el-home-directory"><span class="header-section-number">4.0.0.1</span> Desde el home directory</h4>
+<ul>
+<li>“~” para definir el “home” directory. Alternativamente, podemos cambiar el wd con <code>setwd(dir)</code> al directorio de nuestro proyecto.</li>
+<li>“subcarpeta1/…/carpeta_datos” especificando la ruta donde tienes los datos (idealmente dentro de una carpeta que se llame “datos” o “data”)</li>
+<li>“nombre_fichero.extension”</li>
+</ul>
+</section>
+<section id="desde-un-r-project-recomendada" class="level4" data-number="4.0.0.2">
+<h4 data-number="4.0.0.2" class="anchored" data-anchor-id="desde-un-r-project-recomendada"><span class="header-section-number">4.0.0.2</span> Desde un R project (recomendada)</h4>
+<p>Para ello, deberíamos crear un .Rproj dentro de nuestro wd, de modo que luego sólo tengamos que definir la ruta especificando:</p>
+<ul>
+<li>“carpeta_datos”
+<ul>
+<li>Lo más habitual es que editemos los scripts dentro de la carpeta scripts/. Sin menargo, las rutas relativas se toman desde el wd donde está nuestro .Rproj, por lo que no hay que definir “carpeta_datos” (los ../ es para ir un nivel de carpetas hacia atrás). En el caso de RMarkdown, conviene definir el <em>knit directory</em> al <em>project directory.</em></li>
+</ul></li>
+<li>“nombre_fichero.extension”</li>
+</ul>
+<p>También es posible que la ruta sea una url tipo “<a href="https://---.extension" class="uri">https://---.extension</a>”. La mayoría de las funciones que veremos pueden cargar estos datos directamente, siempre que la descarga no requiera autentificación.</p>
+<p>Este proyecto está organizado con un .Rproj, de modo que las rutas siempre seran relativas.</p>
+<p>Si se tienen muchos ficheros a cargar, para evitar definir muchos objetos <em>ruta_fichero</em>, otra alternativa es definir sólo la <em>ruta</em> a la subcarpeta y crear el <code>file.path()</code> con la <em>ruta + nombre_fichero.extension</em> directamente dentro de la función que carga los datos.</p>
+</section>
+<section id="buenas-prácticas-al-nombrar-data.frames" class="level4" data-number="4.0.0.3">
+<h4 data-number="4.0.0.3" class="anchored" data-anchor-id="buenas-prácticas-al-nombrar-data.frames"><span class="header-section-number">4.0.0.3</span> Buenas prácticas al nombrar data.frames</h4>
+<p>Cuando importamos cualquier fichero de datos en R lo asignamos a un nuevo objeto de R con <code>&lt;-</code>. Está libertad para asignar el nombre que queramos es perfecta en términos de flexibilidad, pero mi recomendación es seguir ciertos criterios para poder trabajar de forma más ordenada y para que al compartir el trabajo con otras personas entiendan el código.</p>
+<p>En otras palabras, no hagais como mi buen amigo Cristobal y llameís <code>data1</code>, <code>data2</code>, y así sucesivamente a los ficheros de datos que importais, porque a la que el número empiece a escalar es difícil recordar qué era cada cosa.</p>
+<p><strong>Mi recomendación</strong> es tratar de encontrar el equilibrio entre:</p>
+<ul>
+<li>Asignar nombres específicos priorizarndo la comprensión a abreviar</li>
+<li>Agregar el sufijo “datos_” o especificando el tipo de objeto:
+<ul>
+<li>“df_” si es un data.frame</li>
+<li>“dt_” si es data.table</li>
+</ul></li>
+<li>Usar el formato “snake case”: usar minúsculas unidas por “_”
+<ul>
+<li>esto_es_formato_snake</li>
+<li>evita.este.formato</li>
+<li>evitaElFormatoCamel</li>
+</ul></li>
+<li>Evitar nombres demasiado largos. Algunas manipulaciones que haremos al dataset pueden ocupar pocas o muchas líneas dependiendo de cómo de largo sea el nombre, por lo que es preferible mantenerlo conciso.</li>
+</ul>
+<p>Véamoslo con un ejemplo al importar los datos de incapacidad temporal.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># buen nombre</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>datos_it <span class="ot">&lt;-</span> <span class="fu">read_parquet</span>(<span class="st">"data/IT_completo.parquet"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># alternativas también buenas</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>datos_incapacidad_temporal <span class="ot">&lt;-</span> <span class="fu">read_parquet</span>(<span class="st">"data/IT_completo.parquet"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>df_it <span class="ot">&lt;-</span> <span class="fu">read_parquet</span>(<span class="st">"data/IT_completo.parquet"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># demasiado conciso</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>it <span class="ot">&lt;-</span> <span class="fu">read_parquet</span>(<span class="st">"data/IT_completo.parquet"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># demasiado largo</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>datos_episodios_incapacidad_temporal <span class="ot">&lt;-</span> <span class="fu">read_parquet</span>(<span class="st">"data/IT_completo.parquet"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># se puede entender, pero mejor que se entienda bien a que sea conciso</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>datos_inca_temp <span class="ot">&lt;-</span> <span class="fu">read_parquet</span>(<span class="st">"data/IT_completo.parquet"</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># no es necesario especificar rango temporal si sólo cargamos uno</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>datos_incapacidad_temporal_2015_2024 <span class="ot">&lt;-</span> <span class="fu">read_parquet</span>(<span class="st">"data/IT_completo.parquet"</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co"># mejor NO usar mayúsculas, aunque realmente sean iniciales</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>datos_IT <span class="ot">&lt;-</span> <span class="fu">read_parquet</span>(<span class="st">"data/IT_completo.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="1.1.Ficheros" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="1.1.Ficheros"><span class="header-section-number">4.1</span> 1.1. Ficheros planos</h2>
+<p>Estos son ficheros de texto cuyos campos o variables están separadas siguiendo un criterio específico. Lo más habitual son coma (,) punto y coma (;) un espacio ( ) o tabulación (\t).</p>
+<p>Las dos funciones más habituales son <code>utils::read.table()</code> y <code>readr::read_delim()</code>, con sus respectivas <em>wrapped functions</em> (.csv, .csv2, .delim, .delim2 y _csv, _csv2 y _tsv, respectivamente). Añado una tercera opción especialmente útil para ficheros más grandes: <code>data.table::fread()</code>.</p>
+<p>Normalmente elegimos la wrapped function que contiene la combinación de argumentos que se ajusta al dataset que queremos importar (la extensión más común es .csv), y únicamente definimos la <em>ruta.</em></p>
+<ul>
+<li><p><code>utils::read.table()</code> devuelve un objeto data.frame</p>
+<ul>
+<li><p>Lo más habitual es usar <code>read.csv()</code> que da por defecto <em>header</em> = TRUE, <em>sep</em> = “,” y <em>dec</em> = “.”. Para alternativas, tenemos las siguientes funciones:</p>
+<ul>
+<li><code>utils::read.csv2()</code> da por defecto <em>sep</em> = “;” y <em>dec</em> = “,”.</li>
+<li><code>utils::read.delim()</code> da por defecto <em>sep</em> = “\t” y <em>dec</em> = “.”</li>
+<li><code>utils::read.delim2()</code> da por defecto <em>sep</em> = “\t” y <em>dec</em> = “,”</li>
+</ul></li>
+</ul></li>
+<li><p><code>readr::read_delim()</code> versión más moderna del tidyverse que devuelve un objeto tibble (tbl_df, tbl y data.frame)</p>
+<ul>
+<li><p>Lo más habitual es usar <code>read_csv()</code> que da por defecto <em>delim</em> = “,” y <em>dec</em> = “.”. Para alternativas, tenemos las siguientes funciones:</p>
+<ul>
+<li><code>readr::read_csv2()</code> da por defecto <em>sep</em> = “;” y <em>dec</em> = “,”.</li>
+<li><code>readr::read_tsv()</code> da por defecto <em>sep</em> = “\t” y <em>dec</em> = “.”</li>
+</ul></li>
+</ul></li>
+<li><p><code>data.table::fread()</code> versión mejorada de <code>read.table()</code> que devuelve un objeto data.table y data.frame. Es especialmente eficaz para ficheros grandes. Muchas de las opciones se atribuyen de forma automática, aunque también se pueden definir los argumentos explícitamente.</p></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read.table</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  file,              <span class="co">#* único argumento necesario especificando la ruta</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">header =</span> <span class="cn">TRUE</span>,     <span class="co"># si la primera fila son los nombres de las columnas</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sep =</span> <span class="st">""</span>,          <span class="co"># qué determina la separación de los valores: "," ";" "\t" o " "</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">quote =</span> <span class="st">"</span><span class="sc">\"</span><span class="st">"</span>,      <span class="co"># qué determina los str con comas: \" escapa las " </span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">dec =</span> <span class="st">"."</span>,         <span class="co"># indicador del decimal (USA: . mientras que la UE: ,)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">fill =</span> <span class="cn">TRUE</span>,       <span class="co"># rellena con NA si hay filas más cortas que otras</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  col.names,         <span class="co"># por si queremos especificar colnames, con c("colname1", "...")</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  colClasses,        <span class="co"># por si queremos especificar clase, con c("character", "...")</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  ...)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">read_delim</span>(</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  file,              <span class="co">#* argumento que especifica la ruta</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">delim =</span> <span class="cn">NULL</span>,      <span class="co">#* qué determina la separación de los valores: "," ";" "\t" o " "</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">quote =</span> <span class="st">"</span><span class="sc">\"</span><span class="st">"</span>,      <span class="co"># qué determina los str con comas: \" escapa las " </span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="cn">TRUE</span>,  <span class="co"># si la primera fila son colnames; si no, especificar con c("c1", ...)</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> <span class="cn">NULL</span>,  <span class="co"># por si queremos especificar clase, con "cd" o c("character", ...)</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_select =</span> <span class="cn">NULL</span>, <span class="co"># para cargar sólo alguna de las columnas (por colname)</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip =</span> <span class="dv">0</span>,          <span class="co"># número de filas que queremos no leer al inicio</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  ...)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">fread</span>(</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  input,              <span class="co">#* ya detecta si es un file, un text o un cmd de &gt;_</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">sep =</span> <span class="st">"auto"</span>,       <span class="co"># detecta automáticamente qué determina la separación de los valores</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">dec =</span> <span class="st">"."</span>,          <span class="co"># indicador del decimal (USA: . mientras que la UE: ,)      </span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">quote =</span> <span class="st">"</span><span class="sc">\"</span><span class="st">"</span>,       <span class="co"># qué determina los str con comas: \" escapa las " </span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">header =</span> <span class="st">"auto"</span>,    <span class="co"># si la primera fila son los nombres de las columnas</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  colClasses,         <span class="co"># para especificar clase, con c("...", "...") o list(col1 = "...") </span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">fill =</span> <span class="cn">FALSE</span>,       <span class="co"># definir como TRUE si queremos rellenar con NA filas más "cortas"</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  na.strings,         <span class="co"># para especificar qué strings deben ser interpretadas como NA</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip =</span> <span class="st">"__auto__"</span>,  <span class="co"># número de filas que no queremos leer al inicio</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">select =</span> <span class="cn">NULL</span>,      <span class="co"># un chr vector o una regex con patters("...")</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">drop =</span> <span class="cn">NULL</span>,        <span class="co"># un chr vector o una regex con patters("...")</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  ...)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Para una descripción más detallada de alguno de los argumentos, así como ejemplos de carga de datos de IT_Sample, véase el <a href="A1.1.ficheros-planos">Anexo 1.1.</a></p>
+</section>
+<section id="1.2.ficheros-excel" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="1.2.ficheros-excel"><span class="header-section-number">4.2</span> 1.2. Ficheros Excel</h2>
+<p>Los ficheros de Excel tienen la extensión .xls o .xlsx. A diferencia de los ficheros planos, un elemento común de los ficheros de excel es que un solo fichero contiene diversas hojas con datos tabulares.</p>
+<p>La librería preferida en este caso es <strong>readxl</strong>, creada por Hadley Wickham, el mismo autor que <strong>readr</strong>, de modo que los argumentos son muy parecidos.</p>
+<ul>
+<li><p><strong>readxl</strong> tiene dos funciones principales muy simples:</p>
+<ul>
+<li><p><code>excel_sheets()</code>: para enumerar las distintas hojas que tiene un fichero excel. Retorna un chr vector con todas las hojas que tiene el fichero excel. Sólo requiere un argumento: especificar la ruta.</p></li>
+<li><p><code>read_excel()</code>: para cargar datos de un fichero excel. Por defecto trata de adivinar qué extensión tiene, pero si la sabemos, mejor usar directamente <code>read_xls()</code> o <code>read_xlsx()</code>. Devuelve un objeto tibble (tbl_df, tbl y data.frame).</p></li>
+</ul></li>
+</ul>
+<p>Para una descripción más detallada de alguno de los argumentos, así como ejemplos cargando IT_Samples.xlsx, véase <a href="A1.2.ficheros-excel">el Anexo 1.2.</a>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">excel_sheets</span>(path)    <span class="co">#* único argumento necesario especificando la ruta</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">read_excel</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  path,               <span class="co">#* argumento que especifica la ruta</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">sheet =</span> <span class="cn">NULL</span>,       <span class="co"># qué hojas se cargan; especificar con nombre o # de la hoja</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">range =</span> <span class="cn">NULL</span>,       <span class="co"># qué hoja x filas x columnas importar (e.g. "Budget!B2:G14")</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="cn">TRUE</span>,   <span class="co"># si la fila 1 son colnames; si no, especificar con c("c1", ...)</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> <span class="cn">NULL</span>,   <span class="co"># por si queremos especificar clase, con c("class1", ...)</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">na =</span> <span class="st">""</span>,            <span class="co"># qué interpretar como NA (por defecto ""; las celdas en blanco)</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip =</span> <span class="st">"__auto__"</span>,  <span class="co"># número de filas que queremos no leer al inicio</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_max =</span> <span class="cn">Inf</span>,        <span class="co"># número de filas que queremos leer en total</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  ...)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># para cargar varias hojas, combinamos ambas funciones con lapply()</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>ruta <span class="ot">&lt;-</span> <span class="st">"data/nombre_fichero.xlsx"</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>lista_hojas <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">excel_sheets</span>(ruta), <span class="co"># para cada hoja del Excel (arg.: sheet)</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>                      read_excel,         <span class="co"># aplica la función read_excel(file, sheet)</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>                      <span class="at">path =</span> ruta         <span class="co"># al Excel que está en esta ruta (arg.: file)</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>                      )</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># nombrar la lista permite aplicar funciones a todas a la vez (e.g. filtros)</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(lista_hojas) <span class="ot">&lt;-</span> <span class="fu">excel_sheets</span>(ruta)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co"># para unir todos los df (si tienen las mismas columnas) agregando id de hoja </span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>tb_completo <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(lista_hojas, <span class="at">.id =</span> <span class="st">"hoja"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Otras librerías útiles son XLConnect y openxlsx2, que está especialmente diseñada para trabajar “back and forth” con Excel (de hecho, crea un objeto de clase “Workbook”). Es decir, para equipos/empresas que tengan todos sus datos y analisis en Excel, pero que quieran automatizar algun proceso con R. De momento no incluyo sus funciones principales aquí.</p>
+</section>
+<section id="1.3.bases-datos" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="1.3.bases-datos"><span class="header-section-number">4.3</span> 1.3. Bases de datos</h2>
+<p>Esta categoría se refiere a las bases de datos compuestas por numerosas tablas relacionadas entre sí. SQL es el lenguaje más común para programar y mantener estas bases de datos, pero hay diferencias versiones:</p>
+<ul>
+<li>MySQL: librería RMySQL</li>
+<li>PostgreQL: librería PostgreSQL</li>
+<li>Oracle: librería ROracle</li>
+</ul>
+<p>Pero para interactuar con la base de datos necesitamops la librería DBI; esta es la interfaz, mientras que RMySQL (o la librería correspondiente) sería la que hace la implementación.</p>
+<p>El funcionamiento consiste en los siguientes pasos:</p>
+<ol type="1">
+<li>Definir un DBIConnection object con <code>dbConnect(MySQL(), ...)</code> donde … incluye argumentos de autentificación que normalmente son necesarios para acceder a la base de datos. Esto crea un [My]SQLConnection object.</li>
+<li>Listamos las tablas que hay en el objeto definido con <code>dbListTables()</code>. Devuelve un chr vector.</li>
+<li>Leemos (alguna de) las tablas con:
+<ol type="1">
+<li><code>dbReadTable()</code> para importar la tabla entera. Devuelve un data.frame.</li>
+<li><code>dbGetQuery()</code> para importar un subset de la tabla. Devuelve un data.frame. Se emplean SQL Queries para obtener el subset de la tabla que queremos.</li>
+</ol></li>
+<li>Una vez hemos importado la tabla que queremos, deconnectamos la conexión con <code>dbDisconnect()</code></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dbConnect</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  RMySQL<span class="sc">::</span><span class="fu">MySQL</span>(   <span class="co"># DBIdriver; connexión SQL &lt;-&gt; R a través de la librería correspondiente</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    dbname,        <span class="co">#* nombre de la base de datos</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    host,          <span class="co">#* máquina donde "vive" la base de datos</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    port,          <span class="co">#* puerto del servidor (MySQL suele ser 3306; PostgreSQL 5432)</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    user,          <span class="co">#* credenciales de identificación (usuario)</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    password)      <span class="co">#* credenciales de identificación (contraseña)</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">dbListTables</span>(conn) <span class="co">#* objeto de la clase DBIConnection </span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">dbReadTable</span>(</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  conn,            <span class="co">#* objeto de la clase DBIConnection</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  name             <span class="co"># nombre de la tabla que queremos importar</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="fu">dbGetQuery</span>(</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  conn,            <span class="co">#* objeto de la clase DBIConnection</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  statement        <span class="co">#* un chr string con una SQL Query  </span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="fu">dbDisconnect</span>(conn) <span class="co">#* objeto de la clase DBIConnection </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>En el <a href="A1.3.bases-datos">Anexo 1.3.</a> desarrollo funcionamiento de <code>dbGetQuery()</code>, incluyendo los elementos básicos de las SQL queries. No incluyo ningún ejemplo propio de importar tablas desde bases de datos puesto que no tengo nada guardado en un servidor SQL ni conozco en detalle el lenguaje.</p>
+</section>
+<section id="1.4.datos-web" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="1.4.datos-web"><span class="header-section-number">4.4</span> 1.4. Datos de la web</h2>
+<p>Cuando bajamos datos desde internet, por debajo de las funciones de R se producen intercambios en el lenguaje HTTP (HyperText Transfer Protocol) o, preferiblemente, HTTPS (HTTP Secure). Las opciones de formato van mucho más allá de los datos tabulares, incluyendo imagenes, ficheros ejecutables, etc. Del mismo modo, hay muchas funcionalidades que podemos programar a través de una API (Application Programming Interface), pero aquí nos centramos en la importación de datos.</p>
+<p>Al bajarnos datos de internet podemos encontrarnos con dos alternativas:</p>
+<ol type="1">
+<li><p>El fichero existe en una URL con una extensión. En este caso, podemos</p>
+<ul>
+<li>descargar primero el archivo con <code>utils::download.file()</code> y luego leerlo desde la ruta (más común en ficheros excel). El beneficio de esta alternativa es la reproducibilidad.</li>
+<li>usar directamente las funciones correspondientes a la extensión, como <code>read_csv()</code>, etc.</li>
+</ul></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">"https://.../nombre_fichero.excel"</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>directorio_destino <span class="ot">&lt;-</span> <span class="st">"datos"</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>ruta_destino <span class="ot">&lt;-</span> <span class="fu">file.path</span>(directorio_destino, nombre_fichero.excel)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(url, ruta_destino)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>fichero <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(ruta_destino)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="2" type="1">
+<li><p>Hay que interactuar con una web API para obtener los datos. Es decir, una interfaz para importar o añadir datos a un servidor mediante verbos de HTTP. Existen varias librerías que sirven este propósito:</p>
+<ul>
+<li><strong>httr</strong> para obtener <em>responses</em> y descargar datos</li>
+<li><strong>jsonlite</strong> para interpretarlos (si tienen el formato JSON) y convertirlos en objetos R manejables (listas, data.frames, etc.).</li>
+</ul></li>
+</ol>
+<p>Al interactuar con una API, los pasos más comunes son los siguientes:</p>
+<ol type="1">
+<li>definimos un <code>httr::GET()</code> request, que devuelve un <em>response object</em>, que contiene la siguiente información:
+<ul>
+<li><em>status code</em>: indica si la llamada es exitosa (200) o no (40x)…</li>
+<li><em>content-type</em>: qué formato tiene el fichero</li>
+<li><em>size</em>: cómo de pesado es el archivo</li>
+</ul></li>
+<li>Si la llamada es exitosa, podemos acceder al contenido con la función <code>httr:content()</code>. Por defecto, ya interpreta con qué formato importar los datos (csv, texto, JSON, etc.), pero se pueden importar sin formato definiendo <code>as = "raw"</code>. Dependiendo del contenido, devuelve un chr vector, named list, etc.</li>
+<li>Usamos <code>jsonlite::fromJSON()</code> para convertir el contenido a un formato conveniente para su manejo en R. De hecho, esta función puede usarse directamente para obtener URLs.</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">"http://www.ejemplo.com"</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> httr<span class="sc">::</span><span class="fu">GET</span>(url)           <span class="co"># devuelve un response object</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>resp                             <span class="co"># imprimimos para verificar status, type y size.</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>content <span class="ot">&lt;-</span> <span class="fu">content</span>(resp)         <span class="co"># para acceder al contenido del response object</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>list <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(content)        <span class="co"># para convertir el JSON en un data.frame</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Las APIs acostumbran a almacenar datos en formato XML o JSON (más moderno). En el <a href="A1.4.datos-web">Anexo 1.4.</a> desarrollo la estructura básica de JSON y algunas de las funciones de <strong>jsonlite</strong>.</p>
+</section>
+<section id="1.5.software-estadistico" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="1.5.software-estadistico"><span class="header-section-number">4.5</span> 1.5. Otros softwares estadísticos</h2>
+<p>A pesar de que cada vez se usan menos en pro de R, python o julia, aún hay quien prefiere usar los softwares estadísticos más antiguos para sus análisis, que tienen su propia extensión para guardar ficheros de datos.</p>
+<p>Hay dos librerías princpales para importar este tipo de datos:</p>
+<ul>
+<li><p><strong>haven</strong> más moderna y rápido, pero suporta menos tipos de ficheros (aunque incluye los de SAS, STATA y SPSS). Devuelve un objeto tibble (tbl_df, tbl y data.frame). Los argumentos son muy similares a los de la librería <strong>readr.</strong></p></li>
+<li><p><strong>foreign</strong> del R Core Team, más antigua pero soporta más clases de ficheros. Por ejemplo, no puede cargar .sas7bdat directamente, sólo “librerías SAS” (.xport), y no puede cargar ficheros .dta de versiones posteriores a Stata 12. Sin embargo, da más control sobre la importación, único frente en el que puede ser más útil que haven.</p></li>
+</ul>
+<p>Los softwares más comunes y funciones de cada una de estas librerías para importarlos son las siguientes:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Software</th>
+<th>Nombre</th>
+<th>Ámbitos de uso</th>
+<th>Extensión</th>
+<th>haven</th>
+<th>foreign</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SAS</td>
+<td>Statistical Analysis Software</td>
+<td>business analytics, bioestadística, ciencias médicas</td>
+<td>.sas7bdat .sas7bcat</td>
+<td><code>read_sas()</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>STATA</td>
+<td>STAtistics and daTA</td>
+<td>economía</td>
+<td>.dta</td>
+<td><code>read_stata()</code> <code>read_dta()</code></td>
+<td><code>read.dta()</code></td>
+</tr>
+<tr class="odd">
+<td>SPSS</td>
+<td>Statistical Package for Social Sciences</td>
+<td>ciencias sociales</td>
+<td>.sav .por</td>
+<td><code>read_spss()</code> <code>read_sav()</code> <code>read_por()</code></td>
+<td><code>read.spss()</code></td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_sas</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  data_file,                      <span class="co">#* ruta al fichero de datos ".sas7bdat"</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">catalog_file =</span> <span class="cn">NULL</span>,            <span class="co"># ruta al fichero de etiquetas ".sas7bcat" (opcional)</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">encoding =</span> <span class="cn">NULL</span>,                <span class="co"># para corregir el encoding si es necesario</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">catalog_encoding =</span> encoding,    <span class="co"># para corregir el encoding de etiquetas si es necesario</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_select =</span> <span class="cn">NULL</span>,              <span class="co"># estilo dplyr::select()</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip =</span> <span class="dv">0</span>,                       <span class="co"># número de filas que queremos no leer al inicio</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_max =</span> <span class="cn">Inf</span>                     <span class="co"># número de filas que queremos leer en total</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># read_dta() es absolutamente equivalente</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">read_stata</span>(                       </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  file,                           <span class="co">#* ruta al fichero .dta</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">encoding =</span> <span class="cn">NULL</span>,                <span class="co"># para corregir el encoding si es necesario</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_select =</span> <span class="cn">NULL</span>,              <span class="co"># estilo dplyr::select()</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip =</span> <span class="dv">0</span>,                       <span class="co"># número de filas que queremos no leer al inicio</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_max =</span> <span class="cn">Inf</span>                     <span class="co"># número de filas que queremos leer en total</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co"># si conocemos la extensión, mejor usar read_sav() o read_por()</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="fu">read_spss</span>(                       </span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  file,                           <span class="co">#* ruta al fichero .sav o .por</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">encoding =</span> <span class="cn">NULL</span>,                <span class="co"># para corregir el encoding si es necesario</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">user_na =</span> <span class="cn">FALSE</span>,                <span class="co"># missings convertidos a NA, TRUE hace clase labelled_spss</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_select =</span> <span class="cn">NULL</span>,              <span class="co"># estilo dplyr::select()</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip =</span> <span class="dv">0</span>,                       <span class="co"># número de filas que queremos no leer al inicio</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_max =</span> <span class="cn">Inf</span>                     <span class="co"># número de filas que queremos leer en total</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read.dta</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  file,                           <span class="co">#* ruta al fichero .dta (sólo hasta STATA 12)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">convert.dates =</span> <span class="cn">TRUE</span>,           <span class="co"># para convertir fechas a Date y datetime a POSIXct</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">convert.factors =</span> <span class="cn">TRUE</span>,         <span class="co"># para convertir los Stata value labels a factores</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">missing.type =</span> <span class="cn">FALSE</span>,           <span class="co"># para guardar información de las diferentes clases de NA</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">convert.underscore =</span> <span class="cn">TRUE</span>       <span class="co"># para convertir los "_" de los colnames a "." </span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># si conocemos la extensión, mejor usar read_sav() o read_por()</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">read.spss</span>(                       </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  file,                           <span class="co">#* ruta al fichero .sav o .por</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">use.value.labels =</span> <span class="cn">TRUE</span>,        <span class="co"># para convertir labelled values de SPSS a factores</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">to.data.frame =</span> <span class="cn">FALSE</span>,          <span class="co"># por si queremos una lista o un data.frame (TRUE)</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">max.value.labels =</span> <span class="cn">Inf</span>          <span class="co"># número de filas que queremos leer en total</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>A menudo las variables de estos softwares incorporan un “label” para cada variable (normalmente aportando una pequeña descripción). La podemos ver con <code>View()</code>. Sin embargo, otras variables están “etiquetadas” (labelled), lo que puede traer problemas. Véase el <a href="A1.5.software-estadistico">Anexo 1.5.</a> para saber cómo solucionarlo, con el ejemplo de IT_Sample.dta.</p>
+</section>
+<section id="1.6-otros-formatos" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="1.6-otros-formatos"><span class="header-section-number">4.6</span> 1.6. Otros formatos</h2>
+<p>Por último, pero no menos importante, de entre el resto de formatos de ficheros de datos que existen, considero esencial incluir en esta guía los ficheros .parquet y los ficheros .RData. Ambos son formatos binarios, por lo que son muy útiles para datasets grandes. Sin embargo, R está sólo pensado para guardar objetos de R, mientras que parquet es interoperable, aunque sólo</p>
+<ul>
+<li><p>Los ficheros .parquet forman parte del ecosistema Apache y son la opción favorita cuando trabajemos con datasets muy grandes. No sólo permiten guardarlos de forma muy compacta, sino que además se pueden cargar directamente sólo un subset de columnas. La librería para ello es <strong>arrow</strong></p>
+<ul>
+<li><p>En algunas funciones como read_delim() también hay argumentos similares, pero realmente R carga el dataset y luego se queda sólo con las seleccionadas (<code>read_parquet()</code> hace lo mismo si definimos <code>mmap = FALSE</code>).</p></li>
+<li><p>Podemos usar tanto un vector de colnames como una expresión de selección “tidy”.</p></li>
+</ul></li>
+<li><p>Los ficheros .RData o .rds realmente no son muy comunes porque sólo viven en el ecosistema de R. Concretamente,</p>
+<ul>
+<li><p>Los ficheros .RData pero pueden ser muy útiles puesto que guardan todos los objetos de una sesión de R (no sólo los datasets, sino cualquier objeto de R). Esto es útil cuando dejamos una sesión de trabajo a medias y queremos continuar donde nos habíamos quedado sin necesidad de correr todo el código de nuevo. Al cargarlos, mantienen los nombres que tenían en la otra sesión.</p></li>
+<li><p>Los ficheros .rds sirven para guardar un sólo objeto de R. Al cargarlos, podemos redefinir el nombre asignandolo a una variable nueva.</p></li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_parquet</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  file,                    <span class="co">#* ruta al fichero .parquet     </span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_select =</span> <span class="cn">NULL</span>,       <span class="co"># para cargar sólo un subset de columnas</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">as_data_frame =</span> <span class="cn">TRUE</span>,    <span class="co"># por defecto carga un tibble, if FALSE carga un Arrow Table</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">mmap =</span> <span class="cn">TRUE</span>,             <span class="co"># para leer en RAM sólo las columnas especificadas.</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(file)                 <span class="co">#* ruta al fichero .RData</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">readRDS</span>(file)              <span class="co">#* ruta al fichero .rds</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>En el <a href="A1.6.otros-formatos">Anexo 1.6.</a> muestro ejemplos cargando los datos de IT_sample.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./02_intro_a_r.html" class="pagination-link" aria-label="Conceptos básicos de R">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Conceptos básicos de R</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./14_visualizacion_estatica.html" class="pagination-link" aria-label="Visualizaciones estáticas">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizaciones estáticas</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

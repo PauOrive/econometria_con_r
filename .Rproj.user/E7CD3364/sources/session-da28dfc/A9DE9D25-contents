@@ -1,0 +1,1183 @@
+# 1. Exploración inicial
+
+Lo primero que recomiendo hacer al cargar un fichero de datos es tratar de entender su estructura:
+
+-   **Dimensiones**: número de filas (observaciones) y número de columnas (variables)
+-   **Variables**: qué columnas hay, de qué clase, etc. En caso de que queramos hacer análisis de regresión o similares, también es útil distinguir entre las columnas que:
+    -   "definen" al sujeto que corresponde con la observación (e.g. id, edad, sexo, etc.); los "X".
+    -   son resultados o outcomes (e.g. salario, un indicador de desempleo, etc.); los "y".
+-   **Complitud**: número de missings por columna, si está balanceado en caso de ser datos panel, etc.
+
+Si tenemos suerte, nuestro fichero vendrá ya ordenado siguiendo los principios del "tidy data":
+
+-   Las columnas son variables
+-   Las filas son observaciones
+-   Cada celda es un único valor
+
+Si nuestros datos no siguen la estructura del tidy data, lo primero que haremos es pasar los datos a este formato, puesto que nos facilitará mucho el análisis posterior. No sólo es clave para que el código sea reproducible y escalable, sino que muchas funciones de manipulación del dataset asumen que los datos están en esta estructura, por lo que pueden fallar si no lo están.
+
+Es fácil detectar cuando un dataset tiene o no esta estructura, porque como dice el director del **tidyverse**
+
+> *Happy families are all alike, but every unhappy family is unhappy in its own way.*
+>
+> **Leo Tolstoi**
+>
+> *Tidy datasets are all alike, but every messy dataset is messy in its own way.*
+>
+> **Hadley Wickham**
+
+Esta sección presenta las herramientas para hacer una exploración inicial que permita entender el formato en el que se estructuran los datos y detectar posibles problemas o erratas que tendremos que corregir antes de realizar ningún análisis.
+
+Los problemas más frecuentes de los *messy* datasets y cómo limpiarlos para dejarlos en formato *tidy* se encuentran en la tercera sección, puesto que las soluciones suelen involucrar una serie de herramientas que se presentan en la segunda sección.
+
+## 1.1. Estructura general {#1.1.estructura-general}
+
+Las principales funciones para entender la estructura general de nuestro dataset son:
+
+-   `base::dim()` para conocer las dimensiones del dataset. Devuelve un vector con dos números: el número de filas y el número de columnas.
+
+    -   `base::nrow()` devuelve únicamente el número de filas
+    -   `base::ncol()` devuelve únicamente el número de columnas
+
+-   `base::rownames()`: devuelve un character vector con los nombres de las filas. Puesto que los datasets normalmente no tienen asignados rownames, devolverá un vector del estilo "1", "2", etc. Podemos asignar otro chr vector de las dimensiones de nrow para sobreescribirlos, o definirlo como `NULL`.
+
+-   `base::colnames()`: devuelve un character vector con los nombres de las columnas. Podemos asignar otro chr vector de las dimensiones de ncol para sobreescribirlos, o definirlo como `NULL`.
+
+    -   También podemos usar `base::names()`, que funciona para todo tipo de objetos de R (vectores, data.frames y similares, listas).
+
+-   `utils::str()` da una descripción detallada de la estructura interna (atributos) de cualquier objeto de R. Es especialmente útil para *lists* o *data.frames*, donde muestra la siguiente información:
+
+    -   En la primera línea indica la clase del objeto, así como sus dimensiones *nrow* x *ncol*.
+    -   A continuación, muestra cada variable: nombre, clase, longitud del vector y los primeros valores de cada uno.
+    -   Por defecto, luego muestra (de nuevo) las clases de cada columna, puesto que este es un "atributo" de los *data.frames*. Lo podemos silenciar con el argumento `give.attr = FALSE`.
+
+-   `dplyr::glimpse()` aporta una descripción más concisa, pensada especialmente para *tibbles*. Muestra el número de filas, el número de columnas y luego cada columna indicando su clase y los primeros valores.
+
+    -   Internamente convierte a tibble (solo para imprimir, no copia los datos), de modo que puede ser lenta para datasets muy grandes.
+    -   Imprime tantos valores para cada variable como le quepan en la consola (lo que, en mi opinión, acostumbra a ser demasiado). Podemos editarlo mediante `options(pillar.width = 80)`.
+
+-   `utils::head()`: devuelve los `n` primeros valores del objeto en cuestión (normalmente un data.frame o una columna/vector). Por defecto `n = 6`. Otra alternativa es `data.table::first()`, que por defecto tiene `n = 1`.
+
+-   `utils::tail()`: devuelve los *n* últimos valores del objeto en cuestión (normalmente un data.frame o una columna/vector). Otra alternativa es `data.table::last()`, que por defecto tiene `n = 1`.
+
+Mi **recomendación** es usar directamente `str()` o `glimpse()`, porque ya incorporan de forma muy compacta la información clave del dataset: (1) sus dimensiones, (2) tanto su clase, como la de las variables; y (3) algunos ejemplos de los primeros valores de cada variable.
+
+Veamos el output de estas funciones con el dataset `economics`.
+
+```{r ejemplo funciones básicas de estructura}
+# dimensiones del dataset
+dim(economics)
+nrow(economics)
+ncol(economics)
+
+# primeros 6 valores de rownames y colnames completo
+head(rownames(economics))
+colnames(economics)
+
+# estructura de las dimensiones y del dataset
+str(economics, give.attr = FALSE) 
+
+glimpse(economics)
+
+# primeros 6 valores de cada variable en economics
+head(economics)
+
+# últimos 10 valores de la variable pop en economics
+tail(economics$pop, n = 10)
+```
+
+## 1.2. Clases de las variables {#1.2.clases-variables}
+
+En general, en las ciencias sociales se acostumbra a distinguir entre:
+
+| Variables numéricas o cuantitativas | Variables categóricas o cualitativas |
+|----|----|
+| **Discretas** (valores enteros) | **Nominales** (sin orden ni jerarquía) |
+| **Continuas** (cualquier valor en un intervalo) | **Ordinales** (existe un orden entre las clases) |
+
+**!!---(INICIO)--- QUIZÁS PASAR AL CAPÍTULO INTRODUCTORIO DE R**
+
+Sin embargo, R distingue las siguientes clases de variables:
+
+-   **numeric/double**: números con decimales.
+-   **integer**: números enteros (se indica con L, por ejemplo 1L).
+-   **complex**: números complejos (casi nunca lo usaremos).
+-   **character**: cadenas de texto.
+-   **factor**: variables categóricas con niveles.
+-   **logical**: TRUE / FALSE.
+-   **Date**: fechas.
+-   **POSIXct** o **POSIXlt**: fechas y horas con tiempo.
+-   **raw**: bytes, en hexagesimal (casi nunca lo usaremos).
+
+Adicionalmente, las principales estructuras son:
+
+-   **vector**: todos los elementos son de la misma clase (por tanto, toman la clase de la variable)
+-   **list**: puede contener elementos de distintas clases.
+-   **data.frame/tibble/data.table**: combinación de vectores de distintas clases.
+-   **matrix/array**: elementos de la misma clase. Las *matrix* son de 2 dimensiones, los *arrays* de más de 2.
+
+Para conocer la clase de una variable (o cualquier objeto de R) usamos la función `base::class()`. Otra alternativa para comprobar directamente si una variable es una determinada clase es la familia de funciones `is.*()`, que devuelve un valor lógico.
+
+También podemos usar la función `class()` para asignar una clase a una variable u objeto de R mediante `<- "..."`, aunque es más frequente modificar directamente la variable usando las funciones `as.*()` indicando despues del "as." la clase correspondiente.
+
+**!!---(FIN)--- PASAR AL CAPÍTULO INTRODUCTORIO DE R**
+
+Para las variables cuantitativas hay prácticamente una relación 1:1 (*integer* y discretas, *numeric* y continuas). Sin embargo, las fechas o expresiones de tiempo tienen dos clases propias, mientras que los componentes de las mismas (meses, años) seguramente los definiríamos como *integer* o factor ordenado.
+
+Para las variables cualitativas, la correspondencia es más complicada. Por defecto, todas podrían ser de clase *character*, aunque para las ordinales nos conviene definirlas como factor ordenado.
+
+Las variables binarias (o *dummy*) las podemos definir tanto como factor o lógicas, aunque para análisis posteriores (e.g. regresión) suele ser útil que sean de clase *integer*.
+
+Es posible que al revisar la estructura del dataset nos hayamos dado cuenta que alguna de las columnas no son de la clase que deberían ser. Una clase incorrecta impide llevar a cabo ciertas funciones, de modo que antes de realizar cualquier análisis debemos asegurarnos que cada columna tiene asignada la clase correcta.
+
+La mayoría de funciones para importar datos como `readr::read_csv()` tienen un *parser* que adivina el tipo de columna, aunque en el dataset original estuviera equivocado. Sin embargo, a veces se equivocan, o simplemente nos interesa definir una variable *chr* como factor.
+
+Para mostrar el ejemplo senzillo, vamos a forzar una clase incorrecta en `economics`. `unemploy` contiene el número de parados en los Estados Unidos para un mes en particular (en miles de personas), de modo que si la variable no está definida como *numeric* o *integer*, funciones como `median()` no funcionan (devuelve NA).
+
+```{r ejemplo corrección de la clase de unemploy}
+# pasamos dos errores a la lectura de datos
+tb_economics_error <- economics %>% 
+  mutate(unemploy = as.character(unemploy))
+
+# comprobamos la clase y tratamos de calcular la mediana
+class(tb_economics_error$unemploy)
+median(tb_economics_error$unemploy, na.rm = TRUE)
+is.numeric(tb_economics_error$unemploy)
+
+# maneras análogas de cambiar la clase de dur_estimada
+class(tb_economics_error$unemploy) <- "integer"
+tb_economics_error$unemploy <- as.integer(tb_economics_error$unemploy)
+
+# lo más limpio sería corregir ambas e asignar el objeto a un nuevo df
+tb_economics <- tb_economics_error %>% 
+  mutate(unemploy = as.integer(unemploy))
+
+# volvemos a comprobar la clase y tratamos de calcular la mediana
+class(tb_economics$unemploy)
+median(tb_economics$unemploy, na.rm = TRUE)
+```
+
+Al corregir la clase de la columna `unemploy` vemos que la media de personas en paro en Estados Unidos entre julio del 1967 y abril del 2015 (aproximadamente 7.5 millones personas).
+
+A continuación, explico más en detalle características interesantes de las diversas clases, así como funciones especificas para trabajar con las clases *character*, *factor* y *datetime*.
+
+### 1.2.1. Numeric vs integer {#1.2.1.variables-numericas}
+
+Que existan dos clases para definir variables numericas no es casualidad, sino por una cuestión de memoria. Los acrónimos que da *tibble* son *\<int\>* y *\<dbl\>*. Las variables de clase *integer* ocupan menos memoria que las de clase *numeric* o *double*, de modo que cuando no haya decimales, mejor definir las columnas numericas como *integer*. Evidentemente, la diferencia en espacio de memoria escala proporcionalmente al tamaño del dataset.
+
+De hecho, en el dataset `economics` la variable `unemploy` es de clase *numeric* pero realmente sólo contiene números enteros, por lo que en el ejemplo de arriba donde partimos de `tb_economics_error`, hemos corregido la clase de *character* a *integer*.
+
+Cuando asignamos directamente un valor o creamos un dataset desde cero, indicamos que se trata de un entero añadiendo una L al lado de los números, como `6L`. Aunque parece que vayamos a comprar 6 litros de leche, estamos diciéndole a R que es un número entero (por defecto lo trata como *numeric*).
+
+Además, una variable *integer* también es de clase *numeric*, lo que resulta útil para que R la considere cuando queramos, por ejemplo, calcular la media de todas las variables numéricas del dataset. Veámoslo con las variables `poptotal` y `popdensity` del dataset `midwest`.
+
+```{r ejemplo clase variables integer y numeric}
+class(midwest$poptotal)
+class(midwest$popdensity)
+
+is.numeric(midwest$poptotal)
+is.numeric(midwest$popdensity)
+
+is.integer(midwest$poptotal)
+is.integer(midwest$popdensity)
+```
+
+Con las variables numéricas podemos realizar todo tipo de operaciones matemáticas. Algunas las hacemos con operadores aritméticos y otras con funciones.
+
+#### Operadores aritméticos
+
+Los principales operadores aritméticos son los siguientes:
+
+-   `+` para sumar dos elementos.
+-   `-` para restar dos elementos.
+-   `*` para multiplicar dos elementos.
+-   `^` para aplicar una potencia.
+-   `/` para dividir dos elementos.
+-   `%%` para obtener el resto de una división entre dos elementos. Podemos usar `a %% b == 0` para comprobar si un número es divisible por otro.
+-   `%/%` para obtener la parte entera de una división entre dos elementos.
+
+Las reglas de prioridad en las operaciones son las mismas que se aplican en la convención matemática.
+
+```{r ejemplos de operadores aritméticos básicos}
+2 + 4 + 6 + 8
+-1 - 4.5 * 2
+3^2 * (3 + 5) / 4
+11 %% 4
+11 %/% 4
+```
+
+En R hay muchos más operadores definidos mediante `%...%`, e incluso podríamos definir nosotros mismos una siguiendo esta sintaxis. Entre los más interesantes están los siguientes:
+
+-   `%*%` para realizar la multiplicación de una matriz por un vector o de dos matrices ($A \times B$)
+
+-   `%*%` (?revisar?) para realizar el producto de Kronecker ($A \otimes B$)
+
+-   diag(n) crea la matriz identidad de dimensiones n
+
+-   intuición muy clara para entender (más en DS que econometrics) el sentido de las regresiones: generalmente tratamos de estimar X\beta = y donde X es una matriz con las observaciones sobre unos atributos, b un vector de coeficientes e y la variable dependiente. En términos económicos, lo que queremos hacer es ver cómo "afecta" cada variable independiente a la variable dependiente, para encontrar cuáles son las variables que determinan y, o para predecir cómo será y. En términos de álgebra lineal, lo que estamos haciendo es buscar qué vector inicial (beta), tras aplicarle la transformación del espacio X, se convierte en el vector y.
+
+-   La manera de solucionarlo es multiplicando ambos lados por la matriz inversa de X, X\^-1: X\^-1 %*% X beta = X\^-1* y, de modo que beta = X\^-1 \* y, lo que en términos de álgebra lineal implica seguir el camino inverso: puesto que conocemos y, aplicamos la transformación inversa a X para saber "de dónde venía originalmente el vector beta".
+
+-   si det(A) es zero, significa que alguna de las variables es linearmente dependiente, de modo que no existe la inversa de A. Si no, todas son linearmente independientes.
+
+\*esperar al curso de [algebra lineal](https://app.datacamp.com/learn/courses/linear-algebra-for-data-science-in-r)
+
+\*magrittr tiene funciones como multiply_by(), raise_to_power(), etc. pero creo que no merece mucho la pena
+
+..
+
+#### Funciones matemáticas comunes
+
+Los principales operadores aritméticos son los siguientes; algunos son equivalentes a operadores aritméticos, pero tienen la ventaja que funcionan de forma vectorizada.
+
+-   `sum()` devuelve la suma de un vector ($\Sigma$).
+-   `prod()` devuelve el producto de un vector ($\Pi$).
+-   `abs()` toma el valor absoluto de un vector.
+-   `sqrt()` toma la raíz cuadrada de un vector.
+-   `log()` crea el logaritmo natural de un vector.
+    -   Podemos especificar una `base`distinta a `exp(1)`, aunque ya existen las funciones `log2()` y `log10()` para las alternativas más comunes.
+-   `exp()` aplica la función exponencial a un vector.
+
+Además de las trigonométricas como `sin()`, `cos()`, `tan()`, así como sus complementos "arc-" como `asin()`, `acos()`, `atan()` y `atan2()`, aunque raramente las usaremos en análisis económico.
+
+#### Funciones de redondeo y truncamiento
+
+-   `round()` redondea una variable al número de `digits` especificados.
+-   `signif()` redondea una variable al número de cifras significativas especificados (en la función, este argumento también se llama `digits`).
+-   `ceiling()` redondea a la unidad "hacia arriba" (e.g. 3.1 se convierte en 4 y -3.1 en -3).
+-   `floor()` redondea a la unidad "hacia abajo" (e.g. 3.7 se convierte en 3 y -3.7 en -4).
+-   `trunc()` trunca a la unidad en dirección a 0 (e.g. tanto 3.1 como 3.7 se convierten en 3, pero tanto -3.1 como -3.7 se convierten en -3).
+
+```{r ejemplos funciones de redondeo y truncamiento}
+sample_numbers <- c(301.2, 12.855, 1000, -23.33333)
+
+round(sample_numbers, digits = 2)
+signif(sample_numbers, digits = 2)
+
+ceiling(sample_numbers)
+floor(sample_numbers)
+trunc(sample_numbers)
+```
+
+### 1.2.2. Variables lógicas
+
+Las variables lógicas son especialmente útiles para controles de flujo (es decir, los que se crean con `if`/`else`, o los bucles `for` y `while`) y para filtrar subconjuntos de datos. Mediante los operadores lógicos, podemos escribir condiciones lógicas que se evalúan y determinan el camino de acción en función del resultado.
+
+La sintaxis que usamos en las condiciones lógicas son:
+
+-   `a > b` para comprobar si `a` es mayor que `b`. También podemos definir `>=`, `<` o `<=`
+-   `a == b` para comprobar si `a` es igual a `b`
+-   `a != b` para comprobar si `a` es diferente a `b`
+-   `a %in% b` para comprobar si `a` petenece al vector `b`
+
+Las condiciones lógicas podemos encadenarlas con `&`, que significa "AND" o con `|` que significa "OR". Para indicar el contrario o complemento de una expresión, usamos `!`. En la [sección 2.1.1.](#2.1.1.filtrar-filas) pongo ejemplos de condiciones complejas para filtrar filas.
+
+R trata los valores `TRUE` / `FALSE` también como 1 / 0, lo que es muy útil para calcular estadísticos, como por ejemplo la media de valores TRUE en una determinada variable. Lo retomamos en el Capítulo 1.3.
+
+A modo de ejemplo, usar `sum(midwest$inmetro)` para saber cuántos condados están en un area metropolitana, o `mean(midwest$inmetro)` para saber qué proporción de los condados se encuentra en un área metropolitana. El código funciona igual tanto si `midwest$inmetro` es una variable numérica o lógica. Esta *dummy* variable ya está definida como *integer*, pero a modo de ejemplo la pasamos a lógica.
+
+```{r ejemplo operaciones con variables lógicas}
+head(midwest$inmetro)
+midwest$inmetro <- as.logical(midwest$inmetro) 
+head(midwest$inmetro)
+
+sum(midwest$inmetro)
+mean(midwest$inmetro)
+```
+
+150 condados de los 437 (un 34.3%) que hay en la región de Midwest en Estados Unidos se considera que están en áreas metropolitanas.
+
+### 1.2.3. Cadenas de texto (strings)
+
+Para denotar un valor como *character* en R lo ponemos entre comillas. Por ejemplo `"¡Hola!"`. Esto implica que cuando R lee unas comillas, interpreta todo lo que esté hasta las siguientes comillas como una cadena de texto (*string*, en inglés). `""` se usa de forma común para denotar una cadena de texto vacía.
+
+Para "escapar" este comportamiento, podemos usar `\`. Por ejemplo,
+
+-   `"He dicho "¡Hola!""` es incorrecto puesto que R lee "He dicho " y luego encuentra una variable Hola! que no está definida.
+-   Deberíamos poner `"He dicho \"¡Hola!\""` de modo que R entienda que las comillas que envuelven el Hola! son texto en vez de el inicio o fin de una cadena de texto.
+-   Si no hay ninguna comilla simple `'` en la cadena de texto, alternativamente podemos envolverlo todo en comillas simples, como `'He dicho \"¡Hola!\"'`, aunque yo recomiendo usar sólo las comillas dobles y la barra invertida para escaparla cuando sea necesario.
+
+Una característica interesante de las variables de tipo *character* es que podemos utilizar el lenguge de las ***regular expressions*** ("regex"), para identificar patrones en las cadenas de texto. Por ejemplo "empieza por 'pop'" se indica mediante "\^pop". Hay múltiples combinaciones posibles, y en algunos casos pueden ser expresiones muy complejas. En estos casos, lo más común es recurrir a la IA, pero es útil aprender los patrones básicos.
+
+El uso de `\` para escapar carácteres especiales es común en R. sin embargo, es importante entender cuántos debemos usar. Cuando estamos definiendo una cadena de texto, debemos usar una sola barra invertida. Sin embargo, las *regex* son en sí mismas cadenas de texto, y conforman un lenguage que se usa para encontrar patrones en strings, de modo que está "dos niveles por encima" del texto en sí. Por tanto, para indicar a R que queremos buscar un patrón que contiene un punto literal, debemos escapar el significado del punto en *regex* y luego indicar que buscamos las ocurrencias de `\.`, por lo que debemos indicarlo mediante `\\.`
+
+Los símbolos más útiles en el lenguage *regex* son los siguientes:
+
+-   `.` significa "cualquier carácter"
+-   `^` significa "inicio de la cadena de texto"
+-   `$` significa "final de la cadena de texto"
+
+Para indicar el número de veces que aparece un carácter, lo combinamos con:
+
+-   `*` significa "zero veces o más"
+-   `+` significa "una vez o más"
+-   `{n}` significa "exactamente `n` veces".
+-   `{n, }` significa "`n` o más veces".
+-   `{n, m}` significa "entre `n` y `m` veces".
+-   `?` significa "es opcional que aparezca"
+
+Algunas combinaciones más complejas usan `[]` o `()`:
+
+-   `[aeiouAEIOU]` sirve para indicar una *character class*, es decir, buscar en la cadena de texto una, y sólo una coincidencia de entre los siguientes carácteres (en este caso, cualquier vocal).
+    -   `[^aeiouAEIOU]` sirve para indicar el contrario, en este caso, una ocurrencia de cualquier carácter que no sea una vocal.
+    -   Dentro de `[]` los caacteres especiales se escapan sin necesidad de especificar `\`. Por ejemplo, para especificar "cualquiera de , . ; - \_" usamos `[,.;-_]`.
+    -   Podemos especificar rangos mediante `-`. Por ejemplo, para indicar letras entre la c y la h, escribimos `[c-h]`.
+    -   Para especificar clases de carácteres usamos la nomenclatura de POSIX dentro de `[]`:
+        -   `[:alpha:]` para letras
+        -   `[:digit:]` para dígitos (hace lo mismo que `\\d`)
+        -   `[IVX]`para números romanos.
+        -   `[:alnum:]` para letras y números (hace lo mismo que `\\w`)
+        -   `[:lower:]` para letras en minúscula
+        -   `[:upper:]` para letras en mayúscula
+        -   `[:space:]` para espacios (hace lo mismo que `\\s`)
+        -   `[:punct:]` para signos de puntuación
+-   En caso de que queramos especificar "esto o lo otro" siendo cada opción más de un carácter, debemos recurrir a `(op1|op2)`. Por ejemplo, para indicar "dos letras o tres números", usamos `([[:alpha:]]{2}|[[:digit:]]{3})`.
+    -   Esta por defecto "captura" lo que hay dentro del paréntesis (este concepto se desarrolla con la función `str_match()`). Para evitarlo, simplemente tenemos que añadir al principio `(?:op1|op2)`.
+
+Por ejemplo, `"^([0-9]{4})\.S(1|2)$"` significa "cadenas de texto que empiecen con 4 dígitos, seguidos de un punto y que acaben en S1 o S2". Además, los paréntesis indican que se podrían capturar las dos cifras (por ejemplo, referentes al año y al semestre).
+
+La librería **rebus** contiene *helpers* para hacer *regex* más leíbles. Por ejemplo, la expresión del párrafo anterior la indicaríamos mediante `START %R% capture(digit %R% exactly(4)) %R% DOT %R% "S" %R% capture(or("1", "2")) %R% END`. A pesar de que es una forma más clara, también es más larga y requiere de un paquete externo, por lo que no la desarrollo en estos apuntes.
+
+Todos los carácteres y símbolos tienen asociado un código hexadecimal Unicode. Para referenciarlos, usamos `\uxxxx` para los que tengan 4 o menos carácteres y `\uxxxxxxxx` para los que tengan más de 4. La tabla completa puede encontrarse en esta página de [Unicode.org](https://www.unicode.org/charts/). A continuación, muestro los códigos de la letra "a" minúscula, la letra griega \mu, el emoji de la carita sonriente, y un texto en japonés que dice "Este libro es genial!".
+
+```{r ejemplos de unicode}
+"\u61"
+"\u3BC"
+"\U1F600"
+"\u3053\u306E\u672C\u306F\u3059\u3054\u3044\u3067\u3059\uFF01"
+```
+
+La librería para del **tidyverse** para manipular cadenas de texto es **stringr**, que mejora las funciones más comunes del paquete **stringi)**. Todas las funciones empiezan por `str_*()` y tienen como primer argumento un *chr vector*. Muchas también requieren espeficiar un patrón, ya sea usando *regex* o lenguaje literal; en el segundo caso envolveremos el `pattern` dentro de `stringr::fixed()`. Algunas funciones tienen su versión "simple" y su versión `_all`, en la que la primera sólo afecta a la primera ocurrencia del `pattern` para cada elemento del vector, mientras que la segunda afecta a todas las ocurrencias, tal y como indica su nombre.
+
+El motivo por el que se "duplican" estas funciones es porque cada una es útil por un motivo distinto. La función simple siempre devuelve un vector de la misma longitud que el que pasamos como argumento, mientras que la segunda versión devuelve una lista o matriz, dado que los distintos elementos pueden tener un distinto número de coincidencias con el `pattern`. Sin embargo, la mayoría de las veces preferiremos capturar todas las ocurrencias, por lo que las funciones `_all` son de gran ayuda.
+
+Las funciones principales pueden agruparse en tres categorías: funciones generales que no modifican las cadenas de texto, funciones que extraen partes de las cadenas de texto y funciones que modifican las cadenas de texto. Algunas funciones requieren especificar un patrón, ya sea usando *regex* o lenguaje literal; en este último caso, envolveremos el patrón dentro de `stringr::fixed()`.
+
+#### Funciones generales para detectar coincidencias
+
+-   `str_view()` abre una pestaña HTML resaltando la primera ocurrencia en cada elemento del vector que coincide con el `pattern` especificado.
+    -   Por defecto `match = TRUE`, por lo que muestra sólo los elementos que coinciden. Podemos especificar `match = FALSE` para mostrar los elementos en los que NO haya coincidencia o `match = NA` para ver todos los elementos.
+-   `str_view_all()` funciona como `str_view()` pero resalta todas las ocurrencias del `pattern.` especificado.
+-   `str_detect()` toma un vector y un `pattern`, y devuelve un vector lógico para cada elemento, indicando si contiene el patrón.
+    -   `str_starts()` busca el `pattern` directamente al incio de las cadenas de texto.
+    -   `str_ends()` busca el `pattern` directamente al final de las cadenas de texto.
+-   `str_which()` devuelve los índices del vector en los que los elementos contienen el `pattern`.
+-   `str_subset()` toma un vector y un `pattern`, y devuelve los elementos que coinciden con el patrón (es decir, en los que `str_detect()` devolvería `TRUE`).
+-   `str_length()` devuelve el número de carácteres en cada elemento del vector.
+-   `str_count()` toma un vector y un `pattern`, y devuelve el número de veces que el patrón aparece en cada elemento (es decir, devuelve un vector de la misma longitud que el input, no una sóla cifra).
+    -   Para obtener el número total de ocurrencias podemos emplear `sum(str_count())` y para obtener el número de elementos que coinciden por lo menos una sola vez usamos `sum(str_detect())` o `length(str_subset)`.
+
+#### Funciones para extraer fragmentos
+
+-   `str_sub()` extrae los carácteres entre las posiciones `start` y `end` de cada elemento del vector. Si pasamos números negativos, cuenta desde el final de cada cadena de texto. Así, `str_sub(x, 1, 4)` extrae los 4 primeros carácteres de cada valor en `x`, mientras que `str_sub(x, -4, -1)` extrae los 4 últimos. Si sólo queremos extraer un carácter, por ejemplo, el tercero, indicamos `str_sub(x, 3, 3)`.
+-   `str_extract()` toma un vector y devuelve la primera ocurrencia de la parte especificada en el `pattern` en cada elemento.
+-   `str_extract_all()` funciona como `str_extract()` pero extrae todas las ocurrencias del `pattern`. Devuelve una lista en vez de un vector, puesto los elementos pueden tener distinto número de ocurrencias.
+-   `str_match()` sirve para capturar diferentes elementos del string. Devuelve una matriz con el *regex* completo en la primera columna, seguido de aquello que hayamos especificado entre paréntesis en el *regex*. Incluir fragmentos para capturar no cambia el comportamiento de la función `str_view()`.
+-   `str_split()` toma un vector y un `pattern` y devuelve una lista con tantos elementos como longitud del vector inicial, separando las cadenas de texto cada vez que encuentra el patrón.
+    -   Podemos especificar el número máximo de separaciones con `n`.
+    -   Podemos especificar `simplify = TRUE` para que devuelva una matriz.
+
+Veamos un ejemplo simple en el que tratamos de capturar los distintos elementos de direcciones de correo electrónico (usuario y dominio). Puesto que el dominio puede estar conformado por varios subdominios (como en la segunda dirección de correo), es mejor combinar `str_match()` con `str_split()` para extraer toda la información de forma limpia.
+
+En realidad este tipo de *regex* son mucho más complejos; como explica Hadley Wickham en su libro R4DS, los *regex* para validar direcciones de email pueden llegar a ser 2 páginas de largo, puesto que pueden incorporar múltiples combinaciones de carácteres como puntos antes y después del "\@".
+
+```{r ejemplo str_match con emails}
+direcciones <- c(
+  "pauorivevidal@gmail.com",
+  "pau.orive01@estudiant.upf.edu",
+  "pau.orive@bse.eu",
+  "porive@airef.es"
+)
+
+emails <- "^(.*)@(.+)$"
+
+matches <- str_match(direcciones, emails)
+matches
+
+usuario <- matches[,2]
+dominio_completo <- matches[,3]
+
+subdominios <- str_split(dominio_completo, "\\.", simplify = TRUE)
+subdominios
+```
+
+Para referenciar las partes **capturadas** en una cadena de texto, podemos usar `\1`, `\2`, y así sucesivamente hasta `\9` (por orden de aparición en el `pattern`). Esto se llama *backreferencing* y es útil para buscar patrones repetidos. Por ejemplo, para encontrar números de 4 dígitos que sean capicúa, podemos usar la siguiente sintaxis. Es importante añadir un `\` adicional en el `pattern` para que el *regex* sea correcto (es decir, debemos indicar `\\d` en vez de `\d`).
+
+```{r ejemplo detectar números capicua, error=TRUE}
+numeros_4_digitos <- 1000:9999
+
+head(str_view(numeros_4_digitos, pattern = "(\d)(\d)\2\1"))
+head(str_view(numeros_4_digitos, pattern = "(\\d)(\\d)\\2\\1"))
+
+head(str_view(numeros_4_digitos, 
+              pattern = capture(DGT) %R% capture(DGT) %R% REF2 %R% REF1))
+
+length(str_detect(numeros_4_digitos, pattern = "(\\d)(\\d)\\2\\1"))
+```
+
+#### Funciones para modificar strings
+
+-   `str_to_lower()` toma un vector y pasa todos los elementos a minúscula.
+-   `str_to_upper()` toma un vector y pasa todos los elementos a mayúscula.
+-   `str_to_title()` toma un vector y Convierte El Primer Carácter De Cada Palabra A Mayúscula.
+-   `str_to_sentence()` toma un vector y Convierte el primer carácter a mayúscula.
+-   `str_remove()` toma un vector y elimina la primera coincidencia del `pattern` especificado.
+-   `str_remove_all()` funciona como `str_remove()` pero elimina todas las coincidencias del `pattern`.
+-   `str_replace()` toma un vector y sustituye en cada elemento la primera ocurrencia del `pattern` por aquello que especifiquemos como `replacement`. Devuelve un vector de la misma longitud.
+-   `str_replace_all()` funciona como `str_replace()` pero sustituye todas las ocurrencias del `pattern` por el `replacement`.
+    -   En ambas funciones de reemplazo podemos especificar *named vectors* de modo que el nombre especifica el patrón y el valor el reemplazo.
+-   `str_replace_na()` sirve para sustituir los *missings* de un *chr* *vector* por el `replacement`. Por defecto sustituye los `NA` por cadenas de texto `"NA"`.
+
+Veámos un ejemplo con datos de contacto (ficticios) de mis compañeros del blog sobre economía ambiental [Carbon Sense](https://www.carbonsense.net/).
+
+```{r ejemplo de funciones para modificar los strings}
+# guardar este dataset y mostrarlo directamente aquí
+carbon_sense_contacts <- tibble(
+  name = c(
+    "andrew wells", "Charles Nicholson", "Euan GILCHRIST",
+    "Juan Daniel Acuña-Román", "LUCIEN VARGAS", "vAIbhav jAIn"
+  ),
+  phone = c(
+    "+64 21 345 678", "+44-20-7946-0958", "+44 77/0090/0123",      
+    "+506 7012 3456", "+34 612 345 678", "+91 98765 43210"       
+  ),
+  country = c(
+    "New Zealand", "Great Britain", NA, 
+    "Costa Rica", "Spain", "India"       
+  )
+)
+
+carbon_sense_contacts %>% 
+  mutate(name = str_to_sentence(name),
+         phone = str_replace_all(phone, pattern = c("-" = " ", "/" = " ")),
+         country_code = str_extract(phone, pattern = "^\\+\\d+"),
+         country = str_replace_na(country, replacement = "Great Britain"))
+```
+
+Por otro lado, para convertir una variable numérica a tipo *character* podemos usar `base::format()` o `base::formatC()`; yo me quedo con la segunda, ya que es más intuitiva. Sus argumentos principales son:
+
+-   `format` para indicar:
+    -   `"f"` si queremos notación normal
+    -   `"e"` si queremos notación científica
+    -   `"g"` si queremos notación científica sólo si es más compacta que la normal
+-   `digits` para especificar el número decimales (si el formato es normal) o el número de cifras significativas (si el formato es científico).
+-   `flag` para indicar:
+    -   `"+"` si queremos explicitar los valores positivos precediéndolos de un signo positivo
+    -   `"-"` si queremos alinear los números ala izquierda
+    -   `"0"` si queremos notación científica sólo si es más compacta que la normal
+-   `big.mark` para indicar el separador de miles ("," o ".")
+-   `decimal.mark` para indicar el separador decimal ("." o ",")
+
+Todos los valores se formatean de modo que estos argumentas se aplican al número más pequeño. Por ejemplo, si el número más pequeño es 0.0012, y `digits = 1`, entonces son necesarios 3 dígitos despues del decimal para tener una cifra significativa. Por tanto, todos los otros números se formatearían con tres dígitos después del decimal.
+
+Veamos unos ejemplos del curso de **DataCamp** sobre **stringr** (seguimos la convención americana que los decimales se separan con puntos y los miles con comas).
+
+```{r ejemplo pasar numeros a formato }
+percent_change  <- c(4, -1.91, 3.00, -5.002)
+income <-  c(72.19, 1030.18, 10291.93, 1189192.18)
+p_values <- c(0.12, 0.98, 0.0000191, 0.00000000002)
+
+formatC(percent_change, format = "f", digits = 2, flag = "+")
+formatC(income, format = "f", digits = 0, big.mark = ",")
+formatC(p_values, format = "e", digits = 3)
+```
+
+Para incluir más carácteres, como las unidades (\$, %, etc.), podemos recurrir a las funciones `base::paste()`, `base::paste0()` o `str_c()`. Sin embargo, mientras estemos en la fase de análisis mejor dejar las variables limpias.
+
+#### **Distancia entre strings**
+
+**AÚN POR TERMINAR**
+
+Esto es contenido relativamente complejo, pero puede ser interesante. Dejo sólo notas de uno de los cursos de Data Camp que hice, de modo que pueda buscar estos conceptos directamente en el buscador.
+
+stringdist(x, y, method = "dl")
+
+**minimum edit distance** (Damerau-Levenshtein) in strings defined as number of steps to get from one to another. steps include: insertion, deletion, substitution and transposition (faster combination of those)
+
+Quizás para el apendice...
+
+Levenshtein no cuenta transposition (transposition = insertion+deletion)
+
+Longest Common Subsequence (only insertion and deletion)
+
+\*other methods.
+
+### 1.2.4. Factores
+
+cuando una variable categórica puede tomar un número finito de valores, es conveniente definirla como factor. Los factores se usan para definir un conjunto finito de valores (los *levels*) que puede tomar una variable. Esto es útil por diversas razones; para mi las más interesantes son:
+
+-   Al aplicar ciertas funciones como `summary()` obtenemos información más interesante que si fueran *character* (lo veremos en el Capítulo 1.3)
+-   Nos permiten especificar el orden de los elementos en gráficos, mejorando consierablemente la comprensión de la visualización (lo veremos en el Capítulo 1.4)
+
+Normalmente se definen para variables categoricas (de clase *character*), pero en algunos casos puede estar justificado definirlos en variables numericas, como el año de nacimiento. Sin embargo, es recomendable no tener *levels* con muy pocas observaciones. La librería **forcats** tiene algunas funciones para agrupar categorías con pocas observaciones dentro de la categoría "otros", como veremos a continuación.
+
+Con la función `base::levels()` podemos ver los *levels* de un factor (y su orden), mientras que `base::nlevels()` devuelve el número de *levels* que tiene. Para definirlos, usamos el argumento `levels = c(...)` en `base::factor()`. Una variable definida como factor no puede contener valores fuera del conjunto definido por los *levels*.
+
+Por ejemplo, podemos pasar todas las variables del dataset `starwars` de clase character a factores... sin embargo, ‚tiene sentido definirlas todas como factor?
+
+```{r ejemplo definir variables character como factores}
+tb_starwars_1 <- starwars %>% select(!where(is.list))
+glimpse(tb_starwars_1)
+
+tb_starwars_2 <- tb_starwars_1 %>% mutate(across(where(is.character), as.factor))
+glimpse(tb_starwars_2)
+
+levels(tb_starwars_2$sex)
+head(levels(tb_starwars_2$name))
+```
+
+Mientras que variables como `sex`, `hair_color` o similares son claramente factores, la variable `name` es mejor dejarla como *character*. El caso
+
+Internamente, R asigna un número entero a cada categoría (1, 2, 3, ...). Los niveles se ordenan alfabéticamentepor defecto, salvo que los definamos explícitamente. Por tanto, usar `as.numeric()` en una variable categorica donde se usan códigos con números (e.g. códigos postales o años de nacimiento) no devuelve los valores en sí, si no el número de factor asignado por R a cada valor. En caso que quisieramos pasar un factor a numerico, deberíamos primero usar `as.character()` y luego `as.numeric()`, aunque es algo que raramente queremos hacer. Veamoslo con el ejemplo de la variable `birth_year` del dataset `starwars`.
+
+```{r ejemplo definir alguna numerica como factor}
+tb_starwars_3 <- tb_starwars_2 %>% mutate(birth_year = as.factor(birth_year)) 
+head(levels(tb_starwars_3$birth_year))
+
+tb_starwars_4 <- tb_starwars_3 %>% mutate(birth_year_int = as.numeric(birth_year))
+head(sort(tb_starwars_4$birth_year_int))
+
+tb_starwars_5 <- tb_starwars_3 %>% 
+  mutate(birth_year_chr = as.numeric(as.character(birth_year)))
+head(sort(tb_starwars_5$birth_year_chr))
+```
+
+El paquete del **tidyverse** para la manipulación de factores es **forcats**. La mayoría de funciones que usaremos empiezan por `fct_*()`. Es importante tener en cuenta que si hay observaciones con `NA`, estas no se consideran un *level*, por lo que no se van ni a reordenar ni a recodificar (alguna función incluye argumentos para especificar cómo tratar los *missings*). Normalmente las usaremos como auxiliares dentro de un `mutate` o equivalente, es decir, modificaremos columnas de nuestro dataset.
+
+#### Funciones para **reordenar** los *levels*:
+
+-   `fct_reorder()` reordena un factor `var1` tomando como criterio otra variable `var2`. Por defecto, se ordena de modo descendente, pero podemos modificar el argumento `.desc` para revertirlo.
+    -   Por defecto, los `NA` computan como los valores más altos, y no es fácil cambiar este comportamiento sin imputar previamente `var2`.
+-   `fct_relevel()` modifica el orden de los *levels* de forma explícita, lo que es especialmente útil para variables ordinales, como una escala de frecuencia (e.g. "nunca", "a veces", "a menudo", "siempre") o por intervalos (e.g. 0-3 días, 4-10 días, 10-31 días, etc.), puesto que los ordenes por defecto (ya sea alfabéticamente, o por el número de fila) raramente coincide con el orden deseado.
+    -   Podemos especificar el orden entero mediante la sintaxis `fct_relevel(var1, "lvl1", ..., "lvlN")`.
+    -   También podemos escribir el subconjunto que queremos reordenar, indicando después de qué *level* los queremos poner mediante el argumento `after` (indicamos el índice con un *integer*, no haciendo referencia al *level* en sí).
+    -   Por defecto, aquellos *levels* que mencionamos se ubican al principio, y aquellos que no mantienen su orden original, pero se ubican detrás de los especificados.
+    -   Si indicamos `after = Inf`, los *levels* especificados se ubican al final.
+-   `fct_infreq()` reordena un factor `var1` por el número de observaciones de cada level. Ordena de mayor a menor frecuencia.
+-   `fct_rev()` reordena un factor `var1` revirtiendo el orden que tiene. Por ejemplo, si usamos `fct_rev(fct_infreq(var1))` es equivalente a ordenar de menor a mayor frecuencia.
+
+```{r ejemplo funciones para modificar los levels existentes}
+tb_starwars_6 <- tb_starwars_2 %>% 
+  mutate(name = fct_reorder(name, mass, .desc = TRUE))
+
+head(levels(tb_starwars_6$name))
+tb_starwars_6[tb_starwars_6$name %in% head(levels(tb_starwars_6$name)), c("name", "mass")]
+
+tb_starwars_7 <- tb_starwars_2 %>% 
+  mutate(name = fct_relevel(name, "Anakin Skywalker", "Obi-Wan Kenobi", "Yoda", "Mace Windu", "Padmé Amidala"))
+
+head(levels(tb_starwars_7$name))
+
+tb_starwars_8 <- tb_starwars_2 %>% 
+  mutate(homeworld = fct_infreq(homeworld))
+
+head(levels(tb_starwars_8$homeworld))
+```
+
+#### Funciones para **modificar** los *levels* existentes:
+
+-   `fct_recode()` modifica los *levels* de forma explícita. La sintaxis básica es `fct_recode(fct1, "new_level1" = "old_level1")` especificando tantos cambios como queramos.
+-   `fct_collapse()` permite crear nuevos *levels* agrupando varios *levels* existentes. La sintaxis básica es `fct_collapse(fct1, new_level1 = c("old_level1A", "old_level1B"))` especificando tantos cambios como queramos.
+-   `fct_other()` permite agrupar *levels* existentes bajo la categoría "otros" de forma explícita. La sintaxis básica es `fct_other(fct1, keep = c(), drop = c(), other_level = "Other")`, de modo que podemos especificar el vector que queremos mantener en `keep` o que queremos enviar a "otros" en `drop`. Por defecto el nuevo level se llamará "Other", por lo que tendremos que especificar el nombre en `other_level`.
+-   `fct_lump_*()` agrupa bajo la categoría "otros" aquellos *levels* que cumplan un criterio determinado. Todas esta funciones tienen también el argumento `other_level` para especificar el nombre de la categoría "otros". También incluyen un argumento `w` para ponderar las observaciones.
+    -   `fct_lump_min()` agrupa en "otros" los *levels* que aparecen menos que `min` veces.
+    -   `fct_lump_prop()` agrupa en "otros" los *levels* que tienen una frecuencia relativa inferior a `prop`.
+    -   `fct_lump_n()` agrupa en "otros" todos los *levels* excepto los `n` *levels* con mayor frecuencia.
+    -   `fct_lump_lowfreq()` agrupa en "otros" todos los *levels* de menor frecuencia hasta que "otros" sea la categoría con menos frecuencia de todas.
+
+A modo de ejemplo, puesto que hay muchas especies entre los personajes de `starwars`, vamos a reclasificar dentro de la categoría "otras" todas las especies que tengan una sola observación.
+
+```{r ejemplo funciones para modificar los levels existentes}
+tb_starwars_9 <- tb_starwars_2 %>% 
+  mutate(species = fct_lump_min(species, min = 2, other_level = "otras"))
+
+levels(tb_starwars_9$species)
+```
+
+### 1.2.5. Fechas y horas
+
+Existen muchas maneras de escribir las fechas. Cuando yo iba al colegio, a primera hora siempre le tocaba a alguien levantarse y escribir en la pizarra algo como "Dimecres, 18 de febrer del 2009". Sin embargo, lo más habitual en España sería escribir esta fecha como 18/2/2009, mientras que en otros países como Estados Unidos la escribirían como 2/18/2009.
+
+Según el código ISO-8601, las fechas tendrían que estar escritas de mayor a menor unidad de tiempo, es decir, siguiendo el formato **yyyy-mm-dd** (el formato correcto del ejemplo anterior sería 2009/02/18).
+
+-   Cada componente tiene un número fijo de dígitos (4 para años, 2 para meses y 2 para días del mes), de modo que para indicar Mayo, debemos poner "05".
+-   El guión "-" se considera preferible a otras notaciones para separar los distintos componentes.
+
+Sin embargo, R no detecta una cadena de texto como fecha a menos que lo indiquemos explícitamente mediante `as.Date()`. Una excepción es cuando leemos ficheros de datos con alguna variable en format fecha con funciones como `readr::read_*()` o `data.table::fread()`. De hecho, estas funciones pueden detectar fechas escritas con otros formatos además del ISO-8601.
+
+Internamente, R guarda las fechas como el número de días desde el 1 de enero de 1970 (las fechas más antiguas se representan con números negativos), por lo que podemos realizar operaciones matemáticas y hacer gráficos de series temporales.
+
+```{r ejemplo cargar fechas y hacer cálculos}
+class("2009-02-18")
+class(as.Date("2009-02-18"))
+
+Sys.Date() - as.Date("2009-02-18")
+```
+
+También podemos trabajar con unidades de tiempo más pequeñas: horas, minutos, segundos. Es lo que se conoce como "datetimes". Siguiendo el código ISO-8601, debemos escribirlos siguiendo el formato **hh:mm:ss**.
+
+-   Cada componente tiene un número fijo de dígitos (2), y un rango fijo:
+    -   00-24 para las horas
+    -   00-59 para los minutos
+    -   00-60 para los segundos (el 60 se usa sólo en casos de ajustes horarios de acuerdo con la rotación irregular de la Tierra)
+-   Los dos puntos ":" se consideran preferibles a otras notaciones para separar los distintos componentes.
+
+En R, estos objetos tienen asociadas dos clases:
+
+-   POSIXlt: guarda los "datetimes" en formato lista con el nombre y valor de cada componente.
+-   POSIXct: guarda los "datetimes" como el número segundos desde el 1970-01-01 00:00:00. Este es el que normalmente usaremos, puesto que es más manejable a nivel de dataset. Para indicar que un objeto es de clase POSIXct usamos la función `as.POSIXct()`.
+
+Uno de los principales problemas con las horas es que existen muchos husos horarios en el mundo y además algunos países aplican políticas de cambio de hora, como España, que la cambia dos veces al año. Por defecto, POSIXct asigna el huso horario del servidor local del ordenador, mientras que las funciones del tidyverse asignan "UTC" o "Z" (es decir, la hora de Gran Bretaña). También se puede especificar un huso especifico mediante +hh:00 o -hh:00 (respecto UTC). Por ejemplo, las horas en España están en +01:00 en invierno y +02:00 en verano.
+
+La librería del **tidyverse** para manipular fechas y *datetimes* es **lubridate**. Este paquete contiene una infinidad de funciones útiles paraparsear fechas, crear fechas a partir de diversas variables, extraer los componentes de una fecha, redondear fechas, etc. y es mucho más flexible en cuanto a los formato de las fechas.
+
+#### Funciones para parsear strings a fechas
+
+Por ejemplo, la función `ymd()` parsea como `date` cadenas de vectores que sigan este orden en los componentes, aunque los reparadores o la manera de escribirlos sean diferentes (nombres de días de la semana y meses restingido a ciertos idiomas). Además. disponemos de todas las combinaciones posibles para parsear fechas según el orden de los componentes: `dmy()`, `mdy()` e incluso `ydm()`, `myd()` y `dym()`. Todas ellas convierten las fechas al formato ISO-8601.
+
+```{r ejemplo funciones de parseo de fechas}
+ymd("2009-02-18", "2009.2.18", "2009 Feb 18th")
+dmy("18 Febrero 2009")
+```
+
+Para parsear *datetimes*, existen la misma clase de funciones, pero añadiendo con un guión bajo los componentes de las horas. Por ejemplo, `ymd_hm()` espera una fecha como "2009-02-18 09:00am". Por defecto, se asigna "UTC" (diferente a `as.POSIXct()` que asigna el huso local). En este caso no podemos especificar cualquier orden, sinó que debemos emplear `_h`, `_hm` o `_hms`. Para "times" (sin fecha), se usa la librería **hms**, que incluye la clase hms para dichos objetos. Este tipo de objetos son útiles, por ejemplo, para ver los patrones horarios, aunque podemos recurrir a otras opciones (no profundizo más aquí).
+
+Si aún necesitamos más flexibilidad en el parseo de fechas, como por ejemplo para especificar un orden distinto de horas, minutos y segundos, podemos usar `parse_date_time()`, especificando la estructura con `orders`, que también acepta un vector. Los componentes que podemos especificar son:
+
+-   `Y` es el año en 4 dígitos (e.g. "2009")
+-   `y` es el año en 2 dígitos (e.g. "09"), aunque a menudo también captura el de 4 dígitos
+-   `m` es el número de mes (e.g. "02")
+-   `b` es el nombre del mes abrebiado (e.g. "Feb")
+-   `B` es el nombre del mes completo (e.g. "february")
+-   `d` es el día del mes (e.g. "18")
+-   `a` es el día de la semana abrebiado (e.g. "Wed")
+-   `A` es el día de la semana completo (e.g. "Wednesday")
+-   `q` es el trimestre (podemos especificar el mes también)
+-   `I` son las horas en formato 12 horas (e.g. "03")
+-   `p` indica si es AM o PM
+-   `H` son las horas en formato 24 horas (e.g. "15")
+-   `H` son los minutos (e.g. "30")
+-   `S` son los segundos (e.g. "00")
+-   `z` es el huso horario, con respecto a UTC
+
+Veamos un ejemplo con distintas especificaciones de fecha. A pesar de que haya espacios, comas u otros separadores, no es necesario especificarlos en el argumentos `orders`. Sin embargo, por defecto el argumento `train = TRUE`, de modo que, de los órdenes especificados, la función trata de adivinar cuál se aplica mejor a cada fecha, tarea que no siempre realiza correctamente. En estos casos, podemos probar con `train = FALSE`. Cuando falta algún componente, R lo rellena con un 1.
+
+En el caso de que todas las fechas estén en el mismo formato, podemos recurrir a funciones más rápidas, como `fast_strptime()`, donde tenemos que definir el `format` de forma mucho más explícita: incluyendo "%" antes de cada componente e indicando los espacios o carácteres que separan los componentes explícitamente (es decir, siguiendo la nomenclatura de las funciones de base R).
+
+```{r ejemplo parseo datetimes}
+ymd_hm("2009-02-18 03:30pm")
+parse_date_time("2009-1", "yq")
+fast_strptime("2009-02-18 03:30pm", format = "%Y-%m-%d %I:%M%p")
+
+parse_date_time(c("2009-02-18 03pm","18 Feb 2009"),
+                orders = c("ymd_Ip","d b Y"))
+
+parse_date_time(c("2009-02-18 03pm", "Wednesday, 18 February 2009", "18 Feb 2009"),
+                orders = c("ymd_Ip", "A d B Y", "d b Y"), 
+                train = FALSE)
+```
+
+También podemos unir distintos componentes para crear una fecha con `make_date(year, month, day)` o `make_datetime()`, que también contien los argumentos `hour`, `min` y `sec`. Por ejemplo, podemos crear una nueva columna "date" (directamente con formato *Date* o *POSIXct*) en el dataset `storms`. De este modo, por ejemplo, podemos hacer un gráfico de serie temporal.
+
+#### Funciones para extraer componentes de las fechas
+
+Podemos extraer algunos componentes de las fechas mediante las funciones de **lubridate**:
+
+-   `year()` para el año (4 dígitos)
+-   `month()` para el número del mes.
+-   `day()` para el día del mes
+-   `wday()` para el número de la semana (1-7, donde Domingo es 1)
+-   `yday()` para el día del año (1-366)
+-   `hour()`, `min()` y `second()` para la hora, minuto o segundo
+-   `tz()` para el huso horario
+-   `quarter()` extrae el trimestre (1-4) y `semester()` el semestre (1-2)
+
+En las funciones `month()` y `day()` podemos especificar `label = TRUE` para devolver el nombre del mes. Por defecto, sale en formato abreviado, pero podemos especificar `abbr = FALSE` para que sea en formato completo.
+
+Además, hay funciones que devuelven `TRUE` o `FALSE`:
+
+-   `am()` y `pm()` comprueban si la hora es por la mañana o la tarde
+-   `dst()` comprueba si está aplicado un cambio de hora ("daylight savings")
+-   `leap_year()` comprueba si se trata de un año de traspaso (con 366 días)
+
+Estas funciones pueden usarse también para establecer componentes mediante asignación, aunque es poco común. del mismo modo que en base R obtenemos la fecha y datetime actual con `Sys.Date()` y `Sys.time()`, en **lubridate** podemos usar `today()` y `now()`.
+
+```{r ejemplo crear una variable de tipo fecha y extraer componentes de la fecha}
+wday(today(), label = TRUE, abbr = FALSE)
+
+tb_storms1 <- storms %>% 
+  mutate(date = make_datetime(year = year, month = month, day = day, hour = hour), 
+         .before = year)
+
+tb_storms1 %>% select(1:6) %>% head()
+
+ggplot(tb_storms1, aes(x = date, y = pressure)) + 
+  geom_line() +
+  theme_minimal()
+```
+
+#### Funciones para realizar operaciones con fechas
+
+Para redondear fechas podemos usar tres funciones diferentes:
+
+-   `round_date()` para redondear fechas a la unidad definida en `unit`
+-   `floor_date()` para redondear fechas hacia abajo a la unidad definida en `unit`
+-   `ceiling_date()` para redondear fechas hacia arriba a la unidad definida en `unit`
+
+En el argumento `unit` podemos especificar "second", "minute", "hour", "day", "week", "month", "quarter" o "year", así como mútiples como "17 hours", aunque no devuelve resultados del todo intuitivos. Lo que hace la función es calcular `ceiling(yday(fecha)/unit) * unit` y sumar estos días al primer día del año en cuestión (a pesar de que haya más de 17 días entre la fecha y el resultado). En el caso de especificar algo como "5 years", entonces empieza a contar en el 1 de enero del 1970.
+
+Otra aplicación útil és calcular la diferencia entre una fecha y esta misma redondeada.
+
+```{r ejemplos redondeando fechas}
+round_date(ymd_hm("2009-02-18 03:30pm"), unit = "month")
+floor_date(ymd_hm("2009-02-18 03:30pm"), unit = "month")
+ceiling_date(ymd_hm("2009-02-18 03:30pm"), unit = "17 days")
+
+now() - floor_date(now(), unit = "day")
+```
+
+Como podemos ver, siempre que restamos dos fechas (Date) R devuelve el intervalo de tiempo en días, y si son objetos datetime, devuelve la diferencia en días o horas, dependiendo de si el intervalo es menor a un día. Internamente, se emplea la función `base::difftime()`, que toma como argumentos principales dos fechas. Si la llamamos explícitamente, podemos definir el parámetro `units` como "secs", "mins", "hours", "days" o "weeks".
+
+También podemos trabajar con intervalos de tiempo en las operaciones, por ejemplo, para sumar 10 días a una fecha. Sin embargo, es importante distinguir entre dos conceptos:
+
+-   **periodo**: es el concepto humano. Por ejemplo, si le sumamos 1 año a la fecha actual, debería darnos el mismo día y mismo mes del año siguiente.
+-   **duración**: es un periodo fijo de tiempo expresado en segundos. Por ejemplo un año son 365.25 días.
+
+Las funciones para definir **periodos** de tiempo son las mismas que para extraer componentes, pero añadiendo el plural, y van desde `picoseconds()` a `years()`. Para definir duraciones añadimos una "d" delante de las funciones (desde `dpicoseconds()` a `dyears()`). Como argumento podemos definir el número de unidades (`ddays(7)` es equivalente a `7*ddays()`).
+
+También podemos combinar las operaciones con secuencias. Lo que no podemos es combinar operaciones con periodos y duraciones. Por otro lado, no todos los meses tienen el mismo número de días, por lo que añadir **periodos** de un mes es en algún caso incompatible (R devuelve `NA`). Podemos usar los operadores `%m+%` o `%m-%` en vez de `+` o `-` para obtener el último día existente.Veamos algunos ejemplos.
+
+```{r ejemplos operaciones con fechas e intervalos de tiempo}
+years(3)
+dyears()
+ddays()
+ymd("2018-01-31") + months(1)
+ymd("2018-01-31") %m+% months(1)
+31557600 / 86400 
+dyears() + ddays(7) + 10 * dminutes() + 23 # unidades sin especificar se leen como segundos
+today() - 1:5 * years()
+```
+
+También podemos definir intervalos de tiempo entre dos fechas o datetimes mediante `%--%` o `interval()`. Existen numerosas funciones para extraer información sobre los intervalos:
+
+-   `int_start()` extrae el inicio del intervalo.
+-   `int_end()` extrae el final del intervalo.
+-   `int_length()` devuelve la longitud del intervalo en segundos.
+-   `as.period()` lo convierte en un periodo
+-   `as.duration()` lo convierte en un duración
+-   `%within%` para comprobar si una fecha está dentro de un intervalo
+-   `int_overlaps()` para comprobar si dos periodos de tiempo se solapan
+
+#### Determinar los husos horarios
+
+A la práctica, el elemento más complejo al trabajar con fechas son las diferencias de huso horario ("timezones" o "tz"). Podemos comprobar el huso horario de nuestro ordenador con `Sys.timezone()`, que devuelve algo como "continente/Ciudad" (dado que algunas zonas aplican políticas de cambio de hora). Podemos consultar todas las opciones posibles con `OlsonNames()`. En las funciones tipo `ymd_hms()` podemos definir el argumento `tz` con un string de los disponibles.
+
+Para manipular el huso horario, pero no modificar la hora, podemos pasar un vector de datetimes a `force_tz()` especificando el `tzone`. Para ver qué hora era en otro huso horario, usamos `with_tz()` especificando el `tzone`.
+
+```{r ejemplos con timezones}
+Sys.timezone()
+(ultimo_renderizado <- now())
+force_tz(ultimo_renderizado, tzone = "Asia/Tokyo")
+with_tz(ultimo_renderizado, tzone = "Asia/Tokyo")
+```
+
+Es importante tener en cuenta que cuando exportemos datos que contienen alguna columna tipo datetime no van a conservar la información sobre el huso horario, sino que simplemente se ve el vector de carácteres. Una opción es incluir el tz en el formato de forma explícita (de modo que, por ejemplo, el huso horario se vea como "2009-02-18 03:30:00+02:00", pero lo mejor es dejar documentado qué huso horario estamos usando y verificarlo o definirlo de nuevo cuando carguemos los datos.
+
+## 1.3. Missings {#1.4.missings}
+
+Un caso especial son los *missings*, es decir, cuando una observación no tiene asignado ningún valor para una variable. En R se representan como `NA` o `NaN` ("**N**ot **A**vailable" y "**N**ot **a** **N**umber", respectivamente); `NaN` es lo que devuelven operaciones como la raiz cuadrada de un número negativo o dividir 0/0.
+
+Si comprobamos la `class()` de ambos objetos obtenemos resultados algo sorprendentes (no existe la clase "missing"). No obstante, lo importante es que tanto `NA` como `NaN` se identifican como `NA` (aunque no viceversa), de modo que si nos focalizamos en los `NA` capturaremos también los `NaN` (que, por otro lado, son mucho menos frecuentes).
+
+Cuando realizamos cálculos sobre vectores que contienen *missings*, el resultado es también `NA`, a menos que las funciones que usamos incorporen un argumento para omitirlos. Este normalmente se llama `na.rm`, que por defecto es `FALSE`.
+
+```{r ejemplos complejidad de los NA y NaN}
+class(NA)
+class(NaN)
+is.nan(NA)
+is.na(NaN)
+NA == NA
+NA == NaN
+mean(tb_starwars$mass) 
+mean(tb_starwars$mass, na.rm = TRUE)
+```
+
+#### Identificar todos los missings
+
+Antes de nada, debemos tener en cuenta que en otros programas o contextos los *missings* se representan con otros valores, como espacios en blanco en Excel, "99" "98", etc. en encuestas, o códigos similares como "na", "N/A", ".", "-", etc. en informes. Por tanto, nuestra primera prioridad es convertir todo aquello que representa *missings* a `NA`. (A veces, cuando imprimimos un tibble, los missings de las variables *chr* aparecen como `<NA>`, pero esto corresponde correctamente a `NA`).
+
+Una librería muy compatible con el tidyverse es **naniar**, que mejora las funciones de base R y ofrece herramientas para visualizar su distribución (aunque no forma parte de este como tal). **naniar** cuenta con una función específica para convertir distintos valores a `NA`, que también nos sirve para adjudicar a *missing* aquellas observaciones incorrectas (e.g. edades negativas, códigos o categorizaciones fuera de su rango, etc.)
+
+-   `replace_with_na()` toma un *data.frame* y convierte a `NA` aquellos valores que especificamos en `replace` para algunas variables en particular.
+    -   La sintaxis es `replace_with_na(df, replace = list(var1 = c("N/A", "99", ".")))`, es decir, sólo podemos especificar el reemplazo mediante una *named list* especificando pares de `variable = c()` o un sólo valor. Es decir, no podemos aplicar fórmulas.
+-   Cuando queremos aplicar normas más complejas, basadas en fórmulas, hay funciones más eficientes:
+    -   `replace_with_na_all()` para aplicar el reemplazo a todas las variables.
+    -   `replace_with_na_at()` para aplicar el reemplazo al subconjunto de columnas `.vars` (expresado mediante un *chr vector*).
+    -   `replace_with_na_if()` para aplicar el reemplazo al subconjunto de columnas que cumple la condición `.predicate` (normalmente funciones de la familia `is.*()`).
+    -   En estas funciones, especificamos una sólo `condition` para el subconjunto de variables que hemos especificado, en vez de una condición por variable. La sintaxis es algo diferente puesto que la condición se expresa mediante una fórmula. Por ejemplo:
+        -   `condition = ~.x ==` si substituimos sólo un valor.
+
+        -   `condition = ~.x %in%` si substituimos un vector de valores.
+
+        -   `condition = ~` si substituimos los valores que cumplan una condición, en la cual podemos emplear funciones como `sqrt(.x) > 5` o `.x < 0`.
+
+En el siguiente ejemplo convertimos a `NA` unos datos ficticios con el formato de un barómetro electoral. La segunda opción es más escalable, puesto que en vez de sustituir sólo las observaciones que tengan edad = -55 años o que pertenezcan a la província 54, convierte todas las edades negativas y las provincias fuera del rango correcto.
+
+```{r ejemplo replace_with_na}
+datos_encuesta <- tibble(
+  edad = c(26, 31, 44, 62, -55),
+  provincia = c(28, 8, 12, 54, 15),
+  orientacion_politica = c(99, 7, 3, 5, 2),
+  partido_afin = c("NS/NC", "PP", "PSOE", " ", "ERC") 
+  )
+
+replace_with_na(datos_encuesta,
+                replace = list(edad = -55,
+                               provincia = 54,
+                               orientacion_politica = 99,
+                               partido_afin = c("NS/NC", " ")))
+
+datos_encuesta %>% 
+  replace_with_na_at(.vars = "edad",
+                     condition = ~ .x < 0) %>%
+  replace_with_na_at(.vars = "provincia",
+                     condition = ~ !between(.x, 0, 52)) %>%
+  replace_with_na(replace = list(orientacion_politica = c(99, 98, 97),
+                                 partido_afin = c("NS/NC", " ")))
+```
+
+Además de los *missings* explícitos, también podemos hablar de los *missings* implícitos, es decir, observaciones que directamente no aparecen en el dataset. Por ejemplo, el dataset `population` hay una observación con la población de cada país un determinado año entre 1995 y 2013. Sin embargo, hay combinaciones que directamente no existen, pero cuyo valor sería *missing*. Podemos hacerlos explícitos pivotando o completando los datos, manipulaciones que aprendemos en la [sección 2](#2.manipulacion-dataset).
+
+#### Tablas resumen para explorar los missings
+
+La función `base::anyNA()` devuelve `TRUE` si hay por lo menos 1 *missing*, y `FALSE` en caso contrario, mientras que `base::is.na()` devuelve un vector lógico para cada elemento. En un dataset, podemos usar `sum(is.na())` para conocer el número total de *missings* o `colSums(is.na())` para conocer el número de *missings* en cada columna.
+
+Muchas funciones de **naniar** son atajos que combinan tan solo un par de operaciones con funciones de base R. Por ejemplo, `naniar::prop_miss()` es simplemente `mean(is.na())`. Sin embargo, contiene otras funciones más complejas que considero que merece la pena aprender; la mayoría de ellas empiezan por `miss_*()`.
+
+-   `miss_var_summary()` toma un *data.frame* y devuelve un *tibble* indicando el número de *missings* (`n_miss`) y el porcentaje de *missings* (`pct_miss`) en cada variable, ordenadas de más a menos *missings*.
+
+-   `miss_case_summary()` toma un *data.frame* y devuelve un *tibble* indicando el número de *missings* (`n_miss`) y el porcentaje de *missings* (`pct_miss`) en cada fila, ordenando los índices de las filas (lo que la función llama `case`) de más a menos *missings*.
+
+-   `miss_var_table()` toma un *data.frame* y devuelve un *tibble* indicando las ocurrencias (`n_vars`) y el porcentaje (`pct_var`) de variables que tienen un determinado número de missings.
+
+-   `miss_case_table()` toma un *data.frame* y devuelve un *tibble* indicando las ocurrencias (`n_cases`) y el porcentaje (`pct_cases`) de filas que tienen un determinado número de missings.
+
+-   `miss_var_span()` toma un *data.frame,* una variable `var` y un intervalo de observaciones `span_every` de modo que devuelve una fila para cada intervalo indicando el número y proporción de *missings*. Por ejemplo, si tenemos una serie temporal con datos diarios recogidos cada semana podemos indicar `span_every = 7` para ver si los *missings* siguen un patrón semanal.
+
+-   `miss_var_run()` toma un *data.frame,* una variable `var` y devuelve un *tibble* indicando el número de observaciones seguidas ("streaks" o "runs") que no son *missings*, luego el número de *missings*, etc. Es útil para encontrar patrones en los *missings*.
+
+-   `miss_scan_count()` toma un *data.frame* y una lista de cadenas de texto que pueden ser `NA`, que pasamos al argumento `search`.
+
+Podemos combinar estas funciones con un `group_by()` para observar cómo se distribuyen los *missings* en base a ciertas variables. En la [sección 2.3.](#2.3.agrupar-datos) se explica cómo agrupar los datos.
+
+```{r ejemplo visualizaciónd e missings en airquality (I)}
+colSums(is.na(airquality))
+miss_var_summary(airquality)
+head(miss_case_summary(airquality))
+miss_var_table(airquality)
+miss_case_table(airquality)
+head(miss_var_run(airquality, Ozone))
+```
+
+#### Visualizaciones para explorar los missings
+
+Esta librería también tiene funciones para visualizar la distribución de los *missings*. Sin embargo, la mejor según mi punto de vista es exportada del paquete **visdat** (la función tiene el mismo nombre en ambas librerías).
+
+-   `vis_miss()` crea un gráfico rectangular coloreando en negro las celdas que son *missings* (en gris las que no lo son). Además, informa sobre el porcentaje de *missings* en cada columna y sobre el porcentaje de *missings* totales.
+    -   Podemos definir `cluster = TRUE` para agrupar observaciones con más de un *missing*.
+    -   Podemos ordenar las columnas de más a menos missings con `sort_miss = TRUE`.
+-   `gg_miss_var()` crea un gráfico mostrando la información de `miss_var_summary()`. Podemos especificar `facet` para obtener el equivalente al *summary* agrupado.
+-   `gg_miss_case()` crea un gráfico mostrando la información de `miss_case_summary()`. Podemos especificar `facet` para obtener el equivalente al *summary* agrupado.
+-   `gg_miss_upset()` crea un gráfico especificar `facet` para obtener el equivalente al *summary* agrupado.
+-   `gg_miss_fct()` muestra un *heatmap* con el porcentaje de *missings* de cada variable agrupada por el argumento `fct`.
+-   `gg_miss_span()` crea un gráfico mostrando la información de `miss_va_span()`, es decir, la proporción de *missings* en cada intervalo de observaciones (`span`). Sin embargo, hay que ser cuidadoso con los intervalos (e.g. no todos los meses tienen el mismo número de días), por lo que no es útil para todos los casos.
+
+```{r ejemplos visualización de missings}
+vis_miss(riskfactors)
+vis_miss(riskfactors, cluster = TRUE, sort_miss = TRUE)
+gg_miss_upset(riskfactors)
+gg_miss_fct(airquality, fct = Month)
+gg_miss_span(airquality, Ozone, span_every = 31)
+```
+
+En la [sección 2.6.](#2.6.tratamiento-missings) se muestran los tipos de `NA` en nuestros datos y se enumeran las posibles soluciones para tratar con ellos antes de realizar cualquier análisis.
+
+## 1.4. Otros carácteres especiales
+
+En las secciones anteriores hemos visto que R tiene una serie de carácteres especiales como `TRUE`, `FALSE` o `NA`. A continuación muestro un listado completo:
+
+-   `TRUE` valor lógico que indica que algo es cierto. Internamente equivale a un `1` y también se puede definir como `T` (aunque en mi opinión es más claro usar `TRUE`).
+-   `FALSE` valor lógico que indica que algo es falso. Internamente equivale a un `0` y también se puede definir como `F` (aunque en mi opinión es más claro usar `FALSE`).
+-   `NA` significa que hay un valor ausente. Podemos definir la clase del valor ausente mediante:
+    -   `NA_character_`
+    -   `NA_integer_`
+    -   `NA_real_`
+    -   `NA_complex_`
+-   `NULL` indica que un objeto no existe (no tiene longitud ni se puede usar en cálculos). Es útil, por ejemplo, al definir los *defaults* de argumentos opcionales en las funciones.
+-   `NaN` resulta de cálculos que no devuelven ningún número real
+-   `Inf` o `-Inf` indican \$ +\infty \$ \$ -\infty \$
+-   `pi` indica el número \pi
+
+```{r ejemplos con carácteres especiales}
+c(1, 2, NA, 4)
+c(1, 2, NULL, 4)
+pi
+pi + Inf
+Inf + -Inf
+```
+
+Estos nombres están reservados los significados enumerados, de modo que no podemos usarlos para como nombres de una variable. Puesto que R distingue entre mayúsculas y minúsculas, `True` no es lo mismo que `TRUE`, de modo que sí que podríamos usar "True" para nombrar una variable... aunque probablemente nunca tenga mucho sentido definir tal variable (véase el capítulo **INTRODUCTORIO!** sobre buenas prácticas al definir variables).
+
+## 1.5. Análisis exploratorio {#1.3.valores-variables}
+
+Una vez hemos revisado las clases de las variables, procedemos a investigar los valores que toman. Esto lo podemos hacer de forma analítica o mediante visualizaciones. Ambas vías son útiles para detectar valores anómalos, erratas o problemas que tenemos que corregir antes de realizar el análisis, así como para comprender cómo se relacionan los datos como paso previo a cualquier análisis estadístico.
+
+### 1.5.1. Análisis exploratorio básico
+
+En esta sección presento las funciones más básicas para detectar errores en los datos (e.g. alguien que tenga edad negativa, puntuaciones fuera del rango, no uniformidad en la manera de escribir una ciudad, códigos de provincia que no existen, etc.).
+
+-   `base::range()`: devuelve un vector con el valor mínimo y máximo de un objeto de R. Normalmente se usan con objetos numéricos, pero también puede usarse sobre carácteres o fechas.
+    -   `base::min()`: devuelve el valor mínimo de un objeto de R.
+    -   `base::min()`: devuelve el valor máximo de un objeto de R.
+    -   Por defecto, estas 3 funciones devuelven `NA` en caso de que haya algún *missing*. Podemos definir `na.rm = TRUE` para que se exluyan antes de realizar la operación.
+-   `base::unique()`: devuelve un vector o *data.frame* igual que el objeto que le hemos pasado, pero eliminando los elementos o filas duplicadas.
+    -   Es especialmente útil para ver los distintos valores que toma una variable. Yo recomiendo combinarla con `base::sort()` para ordenar el output alfabéticamente.
+    -   Podemos especificar un vector de valores que se consideren incomparables (es decir, que no se usen para determinar si una fila es única o no) mediante el argumento `incomparables`.
+-   `dplyr::distinct()`: versión mejorada de `unique.data.frame()` o combinaciones con `base::duplicated()` para ver las filas únicas que tiene un *data.frame* o similar. Esto nos sirve para comprobar las combinaciones únicas de algunas variables, o para eliminar filas duplicadas, si es que se trata de un error.
+    -   Podemos definir un subset de variables, enumerándolas después del primer argumento. Si lo hacemos, podemos mantener el resto de columnas en el output, que mostraran los valores de la primera fila de cada combinación única.
+
+Veamos ejemplos con los datasets de `economics` y `starwars`.
+
+```{r ejemplo análisis exploratorio básico de los valores de las variables}
+range(economics$date)     
+
+# podemos aplicarlo sobre un dataset auqnue tiene más sentido hacerlo sobre una columna 
+min(economics[, -1])
+min(economics$uempmed)  
+
+# podemos combinar unique con otras funciones para obetener resultados interesantes 
+length(unique(starwars$species)) 
+sort(unique(starwars$homeworld))   
+
+starwars %>%    
+  distinct(homeworld, species) %>%    
+  head(10)
+```
+
+### 1.5.2. Variables categoricas
+
+Una vez hemos realizado la exploración básica, es importante entender en mayor profundidad nuestros datos. Las técnicas recomendadas dependen del tipo de varble que estamos visualizando. Empecemos con las variables categóricas.
+
+*\*[comics dataset](https://assets.datacamp.com/production/repositories/537/datasets/8860af2c0ef67fc77a8c704a73bbb93a395debcf/comics.csv) puede ser top para todos los ejemplos!*
+
+#### Funciones para explorar variables categóricas
+
+-   `base::table()` permite crear tablas de contingencia con variables categoricas (factores), para visualizaciones preliminares; para 1 variable (marginal distribution) o para 2
+
+    -   en tidyverse podemos usar `count()`, que quizás es menos intiutivo visualmente, pero el formato long es mejor para pipes o graficar
+
+-   si pasamos un objeto table a `prop.table()`, las en términos generales.
+
+    -   La suma de proporciones da 1 por defecto, a menos que especifiquemos `margins = 1` (suma 1 por fila); 2 (suma 1 por columnas), para obtener proporciones condicionales
+
+```{r}
+# Print the comics data
+comics
+
+# Check levels of align
+levels(comics$align)
+
+# Check the levels of gender
+levels(comics$gender)
+
+# Create a 2-way contingency table
+(table <- table(comics$align, comics$gender))
+
+prop.table(table, 2)
+
+# equivale a este pipe:
+comics %>% 
+  filter(gender == "Female") %>% 
+  group_by(align) %>% 
+  count() %>% 
+  mutate(prop = n / sum(n)) %>% 
+  ungroup()
+```
+
+#### Gráficos para explorar variables categóricas
+
+-   Caution: gráficos pueden cambiar mucho según si expresan recuentos o proporciones (ejemplos del curso)
+
+-   usar gráficos es muy útil para observar relaciones de primeras. Por ejemplo, con variables categóricas podemos usar geom_bar con x = var1 y fil = var2
+
+    -   bar charts mejor que pie charts no
+
+    -   uso del faceting, u otros features para incrementar las dimensiones que vemos a la vez
+
+```{r}
+# Create side-by-side bar chart of alignment by gender
+ggplot(comics, aes(x = gender, fill = align)) + 
+  geom_bar(position = "dodge") +
+  theme(axis.text.x = element_text(angle = 90))
+
+# para ver cómo cambia proporciones vs counts
+# Plot of gender by align
+ggplot(comics, aes(x = align, fill = gender)) +
+  geom_bar()
+  
+# Plot proportion of gender, conditional on align
+ggplot(comics, aes(x = align, fill = gender)) + 
+  geom_bar(position = "fill") +
+  ylab("proportion")
+
+# pie charts vs bar charts
+# Put levels of flavor in descending order
+lev <- c("apple", "key lime", "boston creme", "blueberry", "cherry", "pumpkin", "strawberry")
+pies$flavor <- factor(pies$flavor, levels = lev)
+
+# Create bar chart of flavor
+ggplot(pies, aes(x = flavor)) + 
+  geom_bar() + 
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+### 1.5.3. Variables numéricas
+
+Para explorar las variables númericas, principalmente nos fijaremos en su distribución, que se define a partir de las medidas de centro y de desviación (los "momentos" de una distribución), la forma de la distribución y la presencia o no de valores atípicos (*outliers*). Es especialmente interesante comprobar cómo varian las distribuciones al condicionarlas a otras variables (numéricas o, más comunmente, categóricas), de modo que empezamos a desvelar correlaciones. Eso sí, echándole siempre un ojo al tamaño de la submuestra que representa cada combinación (si son muy pocas observaciones, hay que ir con especial cautela).
+
+#### Funciones para explorar variables numéricas
+
+Además de las funciones `min()`, `max()` y `range()` descritas anteriormente, estas son las funciones para obtener los estadísticos descriptivos principales (todas ellas del paquete **base** o **stats**):
+
+-   `mean()` devuelve el valor medio. Podemos especificar `na.rm = TRUE` para excluir los `NA`. Es la medida de centro preferida cuando la distribución no tiene colas muy largas.
+-   `median()` devuelve el valor mediano. Podemos especificar `na.rm = TRUE` para excluir los `NA`. Es la medida de centro preferida en el caso de que haya colas muy largas.
+-   No existe una función `mode()` para calcular la moda en **base** o **tidyverse**. La mejor opción es `DescTools::Mode()`.
+-   `sd()` devuelve la desviación típica. Al basarse en diferencias respecto a la media, es sensible a outliers.
+-   `var()` devuelve la varianza. Al basarse en diferencias respecto a la media, es sensible a outliers.
+-   `quantile()` sirve para obtener los quantiles de un vector:
+    -   Se puede definir un vector de `probs` para definir los cortes. Por defecto son `seq(0, 1, 0.25)`.
+    -   Se puede definir `na.rm = TRUE` para excluir los `NA`.
+-   `IQR()` devuelve el rango intercuartílico, es decir, la diferencia entre el tercer quartil (75% de los datos) y el primer quartil (25% de los datos). Esta medida es menos sensible a outliers.
+-   Para momentos superiores podemos usar estas funciones de la librería **moments**:
+    -   `skeness()` devuelve la asimetría muestral (el tercer momento de la distribución). Se dice que una distribución tiene asimetría o sesgo hacia la derecha (skewness positiva) o la izquierda (skewness negativa) dependiendo de qué cola es más larga. Por ejemplo, si la cola de la derecha es más larga, `skewness()` devuelve un valor positivo y decimos que está sesgada a la derecha. Si la asimetría es aproximadamente cero, la distribución es simétrica.
+    -   `kurtosis()` devuelve el exceso de curtosis (es decir, el cuarto momento de la distribución menos 3, que es la curtosis de la distribución normal). Si las colas de la distribución tienen mayor peso que en la distribución normal, el exceso de curtosis es positivo y decimos que la distribución es leptocúrtica, mientras que en el caso contrario hablamos de distribuciones platicúrticas.
+
+Veamos ejemplos con la variable `uempmed` (duración mediana de desempleo, en semanas) del dataset `economics`.
+
+*\*Quizás es más útil el dataset del curso de DataCamp sobre [pop e income en US counties](https://assets.datacamp.com/production/repositories/537/datasets/813eb74f670b7dd1c7806375bc9607472fe976db/us_income_raw.csv)*
+
+```{r ejemplo funciones para obtener estadísticos descriptivos}
+mean(economics$uempmed) 
+median(economics$uempmed)
+sd(economics$uempmed) 
+sum((economics$uempmed - mean(economics$uempmed))^2 / (nrow(economics) - 1))
+var(economics$uempmed) 
+summary(economics$uempmed)
+quantile(economics$uempmed)
+quantile(economics$uempmed, probs = seq(0, 1, 0.1))
+IQR(economics$uempmed)
+skewness(economics$uempmed) 
+kurtosis(economics$uempmed)
+```
+
+#### Gráficos para explorar variables numéricas
+
+De nuevo, los gráficos son mucho más útiles para entender la distribución de las variables numéricas. Nos permiten detectar si una distribución tiene más de una moda o si es uniforme, cómo de largas son las colas y si alguna es más larga que la otra, si hay concentraciones especialmente altas en algunos valores determinados, etcétera.
+
+Los gráficos principales para :
+
+-   dotplot
+
+-   histogramas
+
+-   density plots
+
+    -   importante tener en cuenta que muestra concentraciones relativas!!
+
+    -   ejemplo con datacamp sobre west_coast income and non west_coast
+
+    -   alpha = .3
+
+-   boxplots
+
+    -   definimos la variable en y
+
+    -   preferible usar x = 1, y = var si sólo es de una variable
+
+    -   medidas robustas a outliers
+
+    -   masks multimodal dists
+
+<!-- -->
+
+-   distribución de 1 o más variables: dotplots (quite funny), histogramas o density plots si hay muchos casos; boxplot para los quantiles y detectar outliers, aunque fallan en distribuciones multimodales.
+
+    -   interesante ir cosntruyendo pocoa a poco para mostrar cómo podemos añadir elementos
+
+    -   boxplots podemos definir aes(x = 1, y = var) para ver sólo el boxplot por 1 variable.
+
+-   editar binwidth (histogram) o bw (density plot)
+
+    -   Nice one! Plot A is the only histogram that shows the count for cars with exactly 200 and 300 horsepower.
+
+-   Las distribuciones que tienen una asimetría muy alta son difíciles de interpretar, por lo que es común aplicar transformaciones como `log()` para mejorar las visualizaciones, Sin embargo, hay que detenerse a pensar cómo son nuestros datos antes de aplicar la transformación logarítmica.
+
+    -   Si los datos son todos positivos y hay una cola derecha muy larga, `log()` es pertinente. Este es el caso de variables como la población o los salarios o ingresos. La nueva distribución se asemejará mucho más a una normal.
+        -   Si la variable contiene ceros, podemos usar `log1p()`, que calcula `log(x + 1)`, o añadir nosotros una cantidad menor aplicando directamente `log(x + 0.01)`.
+        -   También podemos optar por la raíz cuadrada `sqrt()` si la asimetría es más leve.
+    -   En el caso menos común que la variable contiene valores negativos o la asimetría se concentra en la cola izquierda, podemos bien reflejar la variable (es decir, aplicar `x_ref = max(x) + 1 - x`) y luego aplicar `log()`, o emplear métodos más avanzados.
+        -   Box-Cox ??
+        -   Yeo-Johnson ??
+    -   Otras transformaciones: si hay muchos datos que son 0
+        -   analizar de forma separada los casos con 0 y el resto, como si hay 2 data-generating mechanisms detrás de ellos.
+        -   cambiar a variable categorica any_exclamation_marks
+
+-   para ver más de una variable:
+
+    -   facter_wrap, facet_grid (especificar labeller = label_both) - categórica
+
+    -   but always remember to check the size of each subgroup!!
+
+    -   scatter plot
+
+-   problema de la dimensionalidad (especialmente con variables continuas)
+
+    -   cada vez que partimos los datos se reduce el número de obs en cada uno
+
+```{r}
+# Create hist of horsepwr with binwidth of 3
+cars %>%
+  ggplot(aes(horsepwr)) +
+  geom_histogram(binwidth = 3) +
+  ggtitle("Histogram of horse power with binwidth = 3")
+
+# Create hist of horsepwr with binwidth of 30
+cars %>%
+  ggplot(aes(horsepwr)) +
+  geom_histogram(binwidth = 30) +
+  ggtitle("Histogram of horse power with binwidth = 30")
+
+# Create hist of horsepwr with binwidth of 60
+cars %>%
+  ggplot(aes(horsepwr)) +
+  geom_histogram(binwidth = 60) +
+  ggtitle("Histogram of horse power with binwidth = 60")
+
+```
+
+Puedo tomar el ejemplo de DataCamp, pero traduciendo medidas a las estandard en españa?
+
+```{r}
+# Filter cars with 4, 6, 8 cylinders
+common_cyl <- filter(cars, ncyl %in% c(4, 6, 8))
+
+# Create box plots of city mpg by ncyl
+ggplot(common_cyl, aes(x = as.factor(ncyl), y = city_mpg)) +
+  geom_boxplot()
+
+# Create overlaid density plots for same data
+ggplot(common_cyl, aes(x = city_mpg, fill = as.factor(ncyl))) +
+  geom_density(alpha = .3)
+
+
+```

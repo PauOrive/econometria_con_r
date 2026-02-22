@@ -10,5 +10,38 @@
   },
   "references.qmd": {
     "references.html": "b685270a"
+  },
+  "01_intro_al_libro.qmd": {
+    "01_intro_al_libro.html": "80d70d0a"
+  },
+  "02_intro_a_r.qmd": {
+    "02_intro_a_r.html": "5dfdb6cc"
+  },
+  "11_importar_datos.qmd": {
+    "11_importar_datos.html": "b72dedcf"
+  },
+  "14_visualizacion_estatica.qmd": {
+    "14_visualizacion_estatica.html": "449370be"
+  },
+  "15_visualizacion_interactiva.qmd": {
+    "15_visualizacion_interactiva.html": "2a1101a6"
+  },
+  "16_datos_geoespaciales.qmd": {
+    "16_datos_geoespaciales.html": "beaa16b2"
+  },
+  "21_intro_econometria.qmd": {
+    "21_intro_econometria.html": "839749a5"
+  },
+  "22_regresion_lineal.qmd": {
+    "22_regresion_lineal.html": "0ca9542b"
+  },
+  "23_analisis_causal.qmd": {
+    "23_analisis_causal.html": "fbebfd48"
+  },
+  "31_knn.qmd": {
+    "31_knn.html": "75cfb2ca"
+  },
+  "32_random_forest.qmd": {
+    "32_random_forest.html": "2ee454a1"
   }
 }

@@ -1,0 +1,3 @@
+# Datos geoespaciales
+
+Aquí la idea sería cubrir todo el tratamiento de datos geoespaciales (básicamente, el curso de Bruno y algo más)
