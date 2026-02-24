@@ -1,4 +1,4 @@
-# 1. Exploración inicial
+# Exploración inicial
 
 Lo primero que recomiendo hacer al cargar un fichero de datos es tratar de entender su estructura:
 
@@ -30,7 +30,7 @@ Esta sección presenta las herramientas para hacer una exploración inicial que 
 
 Los problemas más frecuentes de los *messy* datasets y cómo limpiarlos para dejarlos en formato *tidy* se encuentran en la tercera sección, puesto que las soluciones suelen involucrar una serie de herramientas que se presentan en la segunda sección.
 
-## 1.1. Estructura general {#1.1.estructura-general}
+## Estructura general {#1.1.estructura-general}
 
 Las principales funciones para entender la estructura general de nuestro dataset son:
 
@@ -86,12 +86,12 @@ head(economics)
 tail(economics$pop, n = 10)
 ```
 
-## 1.2. Clases de las variables {#1.2.clases-variables}
+## Clases de las variables {#1.2.clases-variables}
 
 En general, en las ciencias sociales se acostumbra a distinguir entre:
 
 | Variables numéricas o cuantitativas | Variables categóricas o cualitativas |
-|----|----|
+|------------------------------------|------------------------------------|
 | **Discretas** (valores enteros) | **Nominales** (sin orden ni jerarquía) |
 | **Continuas** (cualquier valor en un intervalo) | **Ordinales** (existe un orden entre las clases) |
 
@@ -161,7 +161,7 @@ Al corregir la clase de la columna `unemploy` vemos que la media de personas en 
 
 A continuación, explico más en detalle características interesantes de las diversas clases, así como funciones especificas para trabajar con las clases *character*, *factor* y *datetime*.
 
-### 1.2.1. Numeric vs integer {#1.2.1.variables-numericas}
+### Numeric vs integer {#1.2.1.variables-numericas}
 
 Que existan dos clases para definir variables numericas no es casualidad, sino por una cuestión de memoria. Los acrónimos que da *tibble* son *\<int\>* y *\<dbl\>*. Las variables de clase *integer* ocupan menos memoria que las de clase *numeric* o *double*, de modo que cuando no haya decimales, mejor definir las columnas numericas como *integer*. Evidentemente, la diferencia en espacio de memoria escala proporcionalmente al tamaño del dataset.
 
@@ -212,13 +212,13 @@ En R hay muchos más operadores definidos mediante `%...%`, e incluso podríamos
 
 -   `%*%` (?revisar?) para realizar el producto de Kronecker ($A \otimes B$)
 
--   diag(n) crea la matriz identidad de dimensiones n
+-   `diag(n)` crea la matriz identidad de dimensiones n
 
 -   intuición muy clara para entender (más en DS que econometrics) el sentido de las regresiones: generalmente tratamos de estimar X\beta = y donde X es una matriz con las observaciones sobre unos atributos, b un vector de coeficientes e y la variable dependiente. En términos económicos, lo que queremos hacer es ver cómo "afecta" cada variable independiente a la variable dependiente, para encontrar cuáles son las variables que determinan y, o para predecir cómo será y. En términos de álgebra lineal, lo que estamos haciendo es buscar qué vector inicial (beta), tras aplicarle la transformación del espacio X, se convierte en el vector y.
 
 -   La manera de solucionarlo es multiplicando ambos lados por la matriz inversa de X, X\^-1: X\^-1 %*% X beta = X\^-1* y, de modo que beta = X\^-1 \* y, lo que en términos de álgebra lineal implica seguir el camino inverso: puesto que conocemos y, aplicamos la transformación inversa a X para saber "de dónde venía originalmente el vector beta".
 
--   si det(A) es zero, significa que alguna de las variables es linearmente dependiente, de modo que no existe la inversa de A. Si no, todas son linearmente independientes.
+-   si `det(A)` es zero, significa que alguna de las variables es linearmente dependiente, de modo que no existe la inversa de A. Si no, todas son linearmente independientes.
 
 \*esperar al curso de [algebra lineal](https://app.datacamp.com/learn/courses/linear-algebra-for-data-science-in-r)
 
@@ -259,7 +259,7 @@ floor(sample_numbers)
 trunc(sample_numbers)
 ```
 
-### 1.2.2. Variables lógicas
+### Variables lógicas
 
 Las variables lógicas son especialmente útiles para controles de flujo (es decir, los que se crean con `if`/`else`, o los bucles `for` y `while`) y para filtrar subconjuntos de datos. Mediante los operadores lógicos, podemos escribir condiciones lógicas que se evalúan y determinan el camino de acción en función del resultado.
 
@@ -287,13 +287,13 @@ mean(midwest$inmetro)
 
 150 condados de los 437 (un 34.3%) que hay en la región de Midwest en Estados Unidos se considera que están en áreas metropolitanas.
 
-### 1.2.3. Cadenas de texto (strings)
+### Cadenas de texto (strings)
 
 Para denotar un valor como *character* en R lo ponemos entre comillas. Por ejemplo `"¡Hola!"`. Esto implica que cuando R lee unas comillas, interpreta todo lo que esté hasta las siguientes comillas como una cadena de texto (*string*, en inglés). `""` se usa de forma común para denotar una cadena de texto vacía.
 
 Para "escapar" este comportamiento, podemos usar `\`. Por ejemplo,
 
--   `"He dicho "¡Hola!""` es incorrecto puesto que R lee "He dicho " y luego encuentra una variable Hola! que no está definida.
+-   `"He dicho "¡Hola!""` es incorrecto puesto que R lee "He dicho " y luego encuentra una variable ¡Hola! que no está definida.
 -   Deberíamos poner `"He dicho \"¡Hola!\""` de modo que R entienda que las comillas que envuelven el Hola! son texto en vez de el inicio o fin de una cadena de texto.
 -   Si no hay ninguna comilla simple `'` en la cadena de texto, alternativamente podemos envolverlo todo en comillas simples, como `'He dicho \"¡Hola!\"'`, aunque yo recomiendo usar sólo las comillas dobles y la barra invertida para escaparla cuando sea necesario.
 
@@ -316,7 +316,7 @@ Para indicar el número de veces que aparece un carácter, lo combinamos con:
 -   `{n, m}` significa "entre `n` y `m` veces".
 -   `?` significa "es opcional que aparezca"
 
-Algunas combinaciones más complejas usan `[]` o `()`:
+Algunas combinaciones más complejas usan `[ ]` o `( )`:
 
 -   `[aeiouAEIOU]` sirve para indicar una *character class*, es decir, buscar en la cadena de texto una, y sólo una coincidencia de entre los siguientes carácteres (en este caso, cualquier vocal).
     -   `[^aeiouAEIOU]` sirve para indicar el contrario, en este caso, una ocurrencia de cualquier carácter que no sea una vocal.
@@ -417,6 +417,8 @@ length(str_detect(numeros_4_digitos, pattern = "(\\d)(\\d)\\2\\1"))
 
 #### Funciones para modificar strings
 
+-   `str_trim()` elimina espacios en blanco solo al inicio y al final de cada string.
+-   `str_squish()` hace lo mismo y además reduce cualquier secuencia interna de espacios a un único espacio.
 -   `str_to_lower()` toma un vector y pasa todos los elementos a minúscula.
 -   `str_to_upper()` toma un vector y pasa todos los elementos a mayúscula.
 -   `str_to_title()` toma un vector y Convierte El Primer Carácter De Cada Palabra A Mayúscula.
@@ -502,7 +504,7 @@ Longest Common Subsequence (only insertion and deletion)
 
 \*other methods.
 
-### 1.2.4. Factores
+### Factores
 
 cuando una variable categórica puede tomar un número finito de valores, es conveniente definirla como factor. Los factores se usan para definir un conjunto finito de valores (los *levels*) que puede tomar una variable. Esto es útil por diversas razones; para mi las más interesantes son:
 
@@ -594,7 +596,7 @@ tb_starwars_9 <- tb_starwars_2 %>%
 levels(tb_starwars_9$species)
 ```
 
-### 1.2.5. Fechas y horas
+### Fechas y horas
 
 Existen muchas maneras de escribir las fechas. Cuando yo iba al colegio, a primera hora siempre le tocaba a alguien levantarse y escribir en la pizarra algo como "Dimecres, 18 de febrer del 2009". Sin embargo, lo más habitual en España sería escribir esta fecha como 18/2/2009, mientras que en otros países como Estados Unidos la escribirían como 2/18/2009.
 
@@ -783,7 +785,7 @@ with_tz(ultimo_renderizado, tzone = "Asia/Tokyo")
 
 Es importante tener en cuenta que cuando exportemos datos que contienen alguna columna tipo datetime no van a conservar la información sobre el huso horario, sino que simplemente se ve el vector de carácteres. Una opción es incluir el tz en el formato de forma explícita (de modo que, por ejemplo, el huso horario se vea como "2009-02-18 03:30:00+02:00", pero lo mejor es dejar documentado qué huso horario estamos usando y verificarlo o definirlo de nuevo cuando carguemos los datos.
 
-## 1.3. Missings {#1.4.missings}
+## Missings {#1.4.missings}
 
 Un caso especial son los *missings*, es decir, cuando una observación no tiene asignado ningún valor para una variable. En R se representan como `NA` o `NaN` ("**N**ot **A**vailable" y "**N**ot **a** **N**umber", respectivamente); `NaN` es lo que devuelven operaciones como la raiz cuadrada de un número negativo o dividir 0/0.
 
@@ -902,7 +904,7 @@ gg_miss_span(airquality, Ozone, span_every = 31)
 
 En la [sección 2.6.](#2.6.tratamiento-missings) se muestran los tipos de `NA` en nuestros datos y se enumeran las posibles soluciones para tratar con ellos antes de realizar cualquier análisis.
 
-## 1.4. Otros carácteres especiales
+## Otros carácteres especiales
 
 En las secciones anteriores hemos visto que R tiene una serie de carácteres especiales como `TRUE`, `FALSE` o `NA`. A continuación muestro un listado completo:
 
@@ -928,11 +930,11 @@ Inf + -Inf
 
 Estos nombres están reservados los significados enumerados, de modo que no podemos usarlos para como nombres de una variable. Puesto que R distingue entre mayúsculas y minúsculas, `True` no es lo mismo que `TRUE`, de modo que sí que podríamos usar "True" para nombrar una variable... aunque probablemente nunca tenga mucho sentido definir tal variable (véase el capítulo **INTRODUCTORIO!** sobre buenas prácticas al definir variables).
 
-## 1.5. Análisis exploratorio {#1.3.valores-variables}
+## Análisis exploratorio {#1.3.valores-variables}
 
 Una vez hemos revisado las clases de las variables, procedemos a investigar los valores que toman. Esto lo podemos hacer de forma analítica o mediante visualizaciones. Ambas vías son útiles para detectar valores anómalos, erratas o problemas que tenemos que corregir antes de realizar el análisis, así como para comprender cómo se relacionan los datos como paso previo a cualquier análisis estadístico.
 
-### 1.5.1. Análisis exploratorio básico
+### Análisis exploratorio básico
 
 En esta sección presento las funciones más básicas para detectar errores en los datos (e.g. alguien que tenga edad negativa, puntuaciones fuera del rango, no uniformidad en la manera de escribir una ciudad, códigos de provincia que no existen, etc.).
 
@@ -964,7 +966,7 @@ starwars %>%
   head(10)
 ```
 
-### 1.5.2. Variables categoricas
+### Variables categóricas
 
 Una vez hemos realizado la exploración básica, es importante entender en mayor profundidad nuestros datos. Las técnicas recomendadas dependen del tipo de varble que estamos visualizando. Empecemos con las variables categóricas.
 
@@ -1041,7 +1043,7 @@ ggplot(pies, aes(x = flavor)) +
   theme(axis.text.x = element_text(angle = 90))
 ```
 
-### 1.5.3. Variables numéricas
+### Variables numéricas
 
 Para explorar las variables númericas, principalmente nos fijaremos en su distribución, que se define a partir de las medidas de centro y de desviación (los "momentos" de una distribución), la forma de la distribución y la presencia o no de valores atípicos (*outliers*). Es especialmente interesante comprobar cómo varian las distribuciones al condicionarlas a otras variables (numéricas o, más comunmente, categóricas), de modo que empezamos a desvelar correlaciones. Eso sí, echándole siempre un ojo al tamaño de la submuestra que representa cada combinación (si son muy pocas observaciones, hay que ir con especial cautela).
 

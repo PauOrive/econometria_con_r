@@ -1,0 +1,227 @@
+```{r}
+#| label: cargar librerías
+#| include: false
+
+source("_librerias.R")
+```
+
+### Funciones para modificar strings
+
+*Quizás una pequeña intro*.
+
+Estás las usamos normalmente dentro de un `mutate()`.
+
+| Nombre | Qué hace |
+|-----------------------|----------------------------------------------------|
+| [`str_trim()`](#str_trim) | elimina espacios en blanco solo al inicio y al final de cada elemento |
+| [`str_squish()`](#str_squish) | igual que `str_trim()`, pero además reduce cualquier secuencia interna de espacios a un único espacio |
+| [`str_to_lower()`](#str_to_lower "PRUEBA") | convierte todos los carácteres que sean letras a minúscula |
+| [`str_to_upper()`](#str_to_upper) | convierte todos los carácteres que sean letras a MAYÚSCULA |
+| [`str_to_title()`](#str_to_title) | convierte El Primer Carácter De Cada Palabra A Mayúscula |
+| [`str_to_sentence()`](#str_to_sentence) | convierte solo El primer carácter que sea una letra después de un espacio a mayúscula |
+| [`str_remove()`](#str_remove) | elimina la primera coincidencia del `pattern` especificado en cada elemento |
+| [`str_remove_all()`](#str_remove_all) | elimina todas las coincidencias del `pattern` especificado en cada elemento |
+| `str_replace()` | sustituye la primera coincidencia del `pattern` especificado por el `replacement` en cada elemento |
+| [`str_replace_all()`](#str_replace_all) | sustituye todas las coincidencias del `pattern` especificado por el `replacement` en cada elemento |
+| `str_replace_na()` | sustituye los *missings* por el `replacement` especificado |
+
+Entonces la idea es que desde la tabla se pueda clicar a cada función y aparezca una explicación más detallada con ejemplo, de modo que habría que poner un hypervínculo a cada elemento de la tabla
+
+#### Función `str_trim()` {#str_trim}
+
+Esta función sirve para eliminar los espacios en blanco solo al inicio y al final de cada elemento de un vector de clase *character*.
+
+-   **Argumentos (input)**:
+    -   `string` {\*} un vector de clase *character*.
+
+    -   `side`para especificar dónde eliminar los espacios en blanco:
+
+        -   `"both"` es la opción por defecto
+        -   `"left"` sólo al inicio
+        -   `"right"` sólo al final
+-   **Output**: un vector de clase *character* de la misma longitud que el original, pero con las modificaciones realizadas.
+-   **Uso típico**: cuando empezamos a limpiar un dataset, para normalizar los valores de las variables de clase *character*.
+
+```{r}
+#| label: ejemplo str_trim
+
+vec_ejemplo <- c(" Barcelona", "Mérida ", "  Albacete   ", "Santiago  de Compostela ")
+str_trim(vec_ejemplo)
+```
+
+Fíjate que permanecen los dos espacios entre "Santiago" y "de".
+
+#### Función `str_squish()` {#str_squish}
+
+Esta función sirve para eliminar los espacios en blanco solo al inicio y al final de cada elemento de un vector de clase *character*, así como reducir cualquier secuencia interna de espacios a un único espacio. Por tanto, suele ser preferible a `str_trim()` a menos que queramos evitar reducir secuencias internas de espacios.
+
+-   **Argumentos (input)**:
+    -   `string` {\*} un vector de clase *character*.
+-   **Output**: un vector de clase *character* de la misma longitud que el original, pero con las modificaciones realizadas.
+-   **Uso típico**: cuando empezamos a limpiar un dataset, para normalizar los valores de las variables de clase *character*.
+
+```{r}
+#| label: ejemplo str_squish
+
+vec_ejemplo <- c(" Barcelona", "Mérida ", "  Albacete   ", "Santiago  de Compostela ")
+str_squish(vec_ejemplo)
+```
+
+Fíjate que ahora sólo hay un espacio entre "Santiago" y "de".
+
+#### Función `str_to_lower()` {#str_to_lower}
+
+Esta función sirve para convertir todos los carácteres que sean letras a minúscula en cada elemento de un vector de clase *character*.
+
+-   **Argumentos (input)**:
+    -   `string` {\*} un vector de clase *character*.
+    -   `locale` para definir el idioma con el que trabajamos, en caso de que este tenga reglas especiales en la escritura de mayúsculas o minúsculas (por ejemplo, el Turco).
+        -   Por defecto es `"en"` (inglés), pero no es necesario cambiarlo a `"es"` dado que la conversión a mayúsculas o minúsculas es igual en ambos sistemas y letras como "Á", o "Ñ" se convertirán a "á" o "ñ" sin problema.
+-   **Output**: un vector de clase *character* de la misma longitud que el original, pero con las modificaciones realizadas.
+-   **Uso típico**: para normalizar los valores de las variables de clase *character*, lo que es especialmente útil antes de realizar joins donde la variable llave sea de clase *character*.
+
+```{r}
+#| label: ejemplo str_to_lower
+
+vec_ejemplo <- c("DeBÍ TiRAR MáS FOToS", "VOY A LLeVARTE PA PR", "LOs *oTr@5 ∫iGn*s se ^^AnTIE_neN")
+str_to_lower(vec_ejemplo)
+```
+
+#### Función `str_to_upper()` {#str_to_upper}
+
+Esta función sirve para convertir todos los carácteres que sean letras a MAYÚSCULA en cada elemento de un vector de clase *character*.
+
+-   **Argumentos (input)**:
+    -   `string` {\*} un vector de clase *character*.
+    -   `locale` por defecto es `"en"` (inglés), pero no es necesario cambiarlo a `"es"` (ver la explicación detallada [aquí](#str_to_lower)).
+-   **Output**: un vector de clase *character* de la misma longitud que el original, pero con las modificaciones realizadas.
+-   **Uso típico**: para normalizar los valores de las variables de clase *character*, lo que es especialmente útil antes de realizar joins donde la variable llave sea de clase *character*, aunque es más comun normalizar usando `str_to_lower()`.
+
+```{r}
+#| label: ejemplo str_to_upper
+
+vec_ejemplo <- c("DeBÍ TiRAR MáS FOToS", "VOY A LLeVARTE PA PR", "LOs *oTr@5 ∫iGn*s se ^^AnTIE_neN")
+str_to_upper(vec_ejemplo)
+```
+
+#### Función `str_to_title()` {#str_to_title}
+
+Esta función sirve para convertir El Primer Carácter De Cada Palabra A Mayúscula en cada elemento de un vector de clase *character*.
+
+-   **Argumentos (input)**:
+    -   `string` {\*} un vector de clase *character*.
+    -   `locale` por defecto es `"en"` (inglés), pero no es necesario cambiarlo a `"es"` (ver la explicación detallada [aquí](#str_to_lower)).
+-   **Output**: un vector de clase *character* de la misma longitud que el original, pero con las modificaciones realizadas.
+-   **Uso típico**: para normalizar los valores de las variables de clase *character*, como por ejemplo nombres de personas, municipios o similares. Ojo porque puede que acabemos con valores como "Aranda De Duero" cuando realmente prefiramos "Aranda de Duero". Para corregirlo debemos combinar `str_to_title()` con [`str_replace_all()`](#str_replace_all).
+
+```{r}
+#| label: ejemplo str_to_title
+
+vec_ejemplo <- c("DeBÍ TiRAR MáS FOToS", "VOY A LLeVARTE PA PR", "LOs *oTr@5 ∫iGn*s se ^^AnTIE_neN")
+str_to_title(vec_ejemplo)
+```
+
+#### Función `str_to_sentence()` {#str_to_sentence}
+
+Esta función sirve para convertir solo El primer carácter que sea una letra después de un espacio a mayúscula en cada elemento de un vector de clase *character*.
+
+-   **Argumentos (input)**:
+    -   `string` {\*} un vector de clase *character*.
+    -   `locale` por defecto es `"en"` (inglés), pero no es necesario cambiarlo a `"es"` (ver la explicación detallada [aquí](#str_to_lower)).
+-   **Output**: un vector de clase *character* de la misma longitud que el original, pero con las modificaciones realizadas.
+-   **Uso típico**: para normalizar los valores de las variables de clase *character*, como por ejemplo respuestas abiertas a un cuestionario.
+
+```{r}
+#| label: ejemplo str_to_sentence
+
+vec_ejemplo <- c("DeBÍ TiRAR MáS FOToS", "VOY A LLeVARTE PA PR", "LOs *oTr@5 ∫iGn*s se ^^AnTIE_neN")
+str_to_sentence(vec_ejemplo)
+```
+
+#### Función `str_remove()` {#str_remove}
+
+Esta función sirve para eliminar la primera coincidencia del `pattern` especificado en cada elemento de un vector de clase *character*.
+
+-   **Argumentos (input)**:
+    -   `string` {\*} un vector de clase *character*.
+    -   `pattern` {\*} el patrón que queremos eliminar.
+        -   Por defecto, se interpreta como una *regular expression* (🔴incluir referencia🛠️)
+        -   Para especificar patrones en "lenguaje humano", envolvemos el patrón con `fixed()`, aunque tiene menor flexibilidad que definir una *regular expression* (por ejemplo, si alguno de los elementos del patrón es opcional).
+        -   ⚠️ Podemos definir más de un patrón, pero `str_remove()` solo elimina la primera instancia que encuentra, no la primera de cada uno de los patrones que hemos especificado (véase el segundo ejemplo en el código).
+-   **Output**: un vector de clase *character* de la misma longitud que el original, pero con las modificaciones realizadas.
+-   **Uso típico**: cuando empezamos a limpiar un dataset, para eliminar partes de los valores en columnas de clase *character* que no nos interesan. Normalmente queremos eliminar todas las ocurrencias de esos patrones, de modo que suele ser más útil usar `str_remove_all()`.
+
+```{r}
+#| label: ejemplo str_remove 
+
+vec_ejemplo_1 <- c("+34 611-349-459", "+34 722 88 99 00", "+34 600123123", "+34-655-111-222")
+str_remove(vec_ejemplo_1, "^\\+34[ -]?") 
+str_remove(vec_ejemplo_1, fixed("+34")) 
+
+vec_ejemplo_2 <- c("€1.245.398", "788.112", "€1.913.225")
+str_remove(vec_ejemplo, "€|\\.")
+```
+
+#### Función `str_remove_all()` {#str_remove_all}
+
+Esta función sirve para eliminar todas las coincidencias del `pattern` especificado en cada elemento de un vector de clase *character*.
+
+***aun por terminar !!\*\****
+
+-   **Avanzado**: para especificar varios patrones en la misma llamada a `str_remove()`, debemos encadenarlos mediante el operador lógico "\|". Esto se puede hacer manualmente pero si el vector de patrones que queremos eliminar es muy largo o dinámico (es decir, que no lo conocemos de antemano, sino que cambia según la fuente de datos), es preferible definirlo de antemano y combinarlo con `paste()`. Lo podemos definir todo dentro de `str_remove()`, aunque es más limpio seguir los siguientes pasos:
+    -   Definimos un vector de clase *character* con los patrones que queremos eliminar: `patrones_a_eliminar`
+    -   Aplicamos `paste(patrones_a_eliminar, collapse = "|")` y lo guardamos como `patrones_encadenados`. Alternativamente, podemos definir una función y llamarla dentro de `str_remove()`.
+        -   En caso de que el vector sea un vector dinámico, conviene envolverlo en `str_escape()`, que funciona aproximadamente como `fixed()`, pero permite combinar varios patrones.
+    -   Llamamos a `str_remove(string, patrones_encadenados)`
+
+```{r}
+#| label: ejemplo str_remove_all 
+
+# vec_ejemplo_1 <- c("+34 611-349-459", "+34 722 88 99 00", "+34 600123123", "+34-655-111-222")
+# str_remove_all(vec_ejemplo_1, "^\\+34[ ]?|-") 
+# 
+# str_remove(vec_ejemplo_1, fixed(c("+34", "-"))) 
+# 
+# vec_ejemplo_2 <- c("€1.245.398", "788.112", "€1.913.225")
+# str_remove(vec_ejemplo, "€|\\.")
+# 
+# patrones_a_eliminar <- c("€", ".")
+# patrones_encadenados <- paste(str_escape(patrones_a_eliminar), collapse="|")
+# str_remove(vec_ejemplo, patrones_encadenados)
+```
+
+...
+
+#### Función `str_replace_all()` {#str_replace_all}
+
+`str_replace_all()` funciona como `str_replace()` pero sustituye todas las ocurrencias del `pattern` por el `replacement`.
+
+-   En ambas funciones de reemplazo podemos especificar *named vectors* de modo que el nombre especifica el patrón y el valor el reemplazo.
+
+`str_replace_na()` sirve para sustituir los *missings* de un *chr* *vector* por el `replacement`. Por defecto sustituye los `NA` por cadenas de texto `"NA"`.
+
+Veámos un ejemplo con datos de contacto (ficticios) de mis compañeros del blog sobre economía ambiental [Carbon Sense](https://www.carbonsense.net/).
+
+```{r ejemplo de funciones para modificar los strings}
+# guardar este dataset y mostrarlo directamente aquí
+carbon_sense_contacts <- tibble(
+  name = c(
+    "andrew wells", "Charles Nicholson", "Euan GILCHRIST",
+    "Juan Daniel Acuña-Román", "LUCIEN VARGAS", "vAIbhav jAIn"
+  ),
+  phone = c(
+    "+64 21 345 678", "+44-20-7946-0958", "+44 77/0090/0123",      
+    "+506 7012 3456", "+34 612 345 678", "+91 98765 43210"       
+  ),
+  country = c(
+    "New Zealand", "Great Britain", NA, 
+    "Costa Rica", "Spain", "India"       
+  )
+)
+
+carbon_sense_contacts %>% 
+  mutate(name = str_to_title(name),
+         phone = str_replace_all(phone, pattern = c("-" = " ", "/" = " ")),
+         country_code = str_extract(phone, pattern = "^\\+\\d+"),
+         country = str_replace_na(country, replacement = "Great Britain"))
+```

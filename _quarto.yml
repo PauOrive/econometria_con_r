@@ -5,36 +5,43 @@ project:
 book:
   title: "Econometría con R"
   author: "Pau Orive Vidal"
-  date: "2/22/2026"
+  date: today
+  description: "Libro online para aprender a manipular y analizar datos mediante técnicas econométricas y de ciencia de datos con R"
+  repo-url: https://github.com/PauOrive/econometria_con_r
+  repo-actions: [edit, issue]
   chapters:
     - index.qmd
-    - part: "Introducción"
-      chapters:
-        - 01_intro_al_libro.qmd
-        - 02_intro_a_r.qmd
-    - part: "Importar, manipular y visualizar datos"
-      chapters:
-        - 11_importar_datos.qmd
-        - 14_visualizacion_estatica.qmd
-        - 15_visualizacion_interactiva.qmd
-        - 16_datos_geoespaciales.qmd
-    - part: "Análisis econométrico"
-      chapters:
-        - 21_intro_econometria.qmd
-        - 22_regresion_lineal.qmd
-        - 23_analisis_causal.qmd
-    - part: "Ciencia de datos"
-      chapters:
-        - 31_knn.qmd
-        - 32_random_forest.qmd        
-    
-    - references.qmd
+    # - part: "Introducción"
+    #   chapters:
+    #     - 01_intro_al_libro.qmd
+    #     - 02_intro_a_r.qmd
+    # - part: "Importar, manipular y visualizar datos"
+    #   chapters:
+    #     - 11_importar_datos.qmd
+    #     - 14_visualizacion_estatica.qmd
+    #     - 15_visualizacion_interactiva.qmd
+    #     - 16_datos_geoespaciales.qmd
+    # - part: "Análisis econométrico"
+    #   chapters:
+    #     - 21_intro_econometria.qmd
+    #     - 22_regresion_lineal.qmd
+    #     - 23_analisis_causal.qmd
+    # - part: "Ciencia de datos"
+    #   chapters:
+    #     - 31_knn.qmd
+    #     - 32_random_forest.qmd        
+    # 
+    # - references.qmd
 
 bibliography: references.bib
 
 format:
   html:
-    theme: cosmo
+    theme: 
+      light: flatly
+      dark: darkly
+    toc: true
+    number-sections: true
 
 editor: visual
 

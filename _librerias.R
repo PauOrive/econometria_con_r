@@ -27,7 +27,7 @@ library(rebus)        # para especificar regular expressions de una forma más l
 
 # estadística y econometría
 library(moments)      # para calcular momentos de la distribución y realizar tests
-library(survivial)    # para análisis de supervivencia
+library(survival)    # para análisis de supervivencia
 
 # data science
 
