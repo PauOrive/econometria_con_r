@@ -220,6 +220,8 @@ En R hay muchos más operadores definidos mediante `%...%`, e incluso podríamos
 
 -   si `det(A)` es zero, significa que alguna de las variables es linearmente dependiente, de modo que no existe la inversa de A. Si no, todas son linearmente independientes.
 
+-   usamos `eigen(A)` para obtener los eigenvalues y eigenvectors de una matriz A (el output es una lista con los valores y los vectores como elementos). R muestra los eigenvalues en orden descendente porque son los dominantes a medida que aplicamos la misma transformación (es decir, exponenciamos la matriz) más y más veces.
+
 \*esperar al curso de [algebra lineal](https://app.datacamp.com/learn/courses/linear-algebra-for-data-science-in-r)
 
 \*magrittr tiene funciones como multiply_by(), raise_to_power(), etc. pero creo que no merece mucho la pena

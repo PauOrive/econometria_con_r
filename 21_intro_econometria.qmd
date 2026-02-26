@@ -98,7 +98,7 @@ La distribución asintótica de β̂ es normal **por CLT**, no porque ε sea nor
 
 #### Media condicionada
 
-Una regresión es, fundamentalmente, un modelo de **media condicional**
+Una regresión es, fundamentalmente, un modelo de **media condicional** https://timeseriesreasoning.com/contents/deep-dive-into-variance-covariance-matrices/
 
 Aproximación lineal al proceso que genera los datos
 

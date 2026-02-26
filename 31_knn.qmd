@@ -1,1 +1,42 @@
 aún por determinar qué orden seguiré en los contenidos de data science
+
+- knn
+- trees
+- random forests
+- principal component analysis (reducir la redundancia de un dataset)
+
+parece que PCA parte bastante de linear algebra y engeinvalues: 
+
+PCA esencialmente rota el sistema de coordenadas para alinearlo con la forma natural de la nube de datos. Si los puntos forman una elipse en 2D, PC1 será el eje mayor y PC2 el eje menor. Si la elipse es muy alargada, con solo PC1 capturas casi toda la información.
+
+1. Imagina que tienes un conjunto de datos con n observaciones y p variables. Cada observación es un vector en un espacio de p dimensiones. PCA busca encontrar nuevas direcciones (ejes) que capturen mejor la variación de esos datos.
+2. Antes de todo, se centra la matriz de datos restando la media de cada columna. Esto traslada el origen al centroide de la nube de puntos. Sin este paso, la varianza quedaría contaminada por la media.
+"When dealing with data that has features with different scales, it's often important to scale the data first. This is because data that has larger values may sway the data even with relatively little variability"
+3. El corazón de PCA es la matriz de covarianza Σ (o C), que para una matriz de datos centrada X de dimensión n×p se define como: C = (1/n) · Xᵀ X. Esta matriz es simétrica y semidefinida positiva, dos propiedades algebraicas clave. Cada elemento cᵢⱼ mide cómo varían conjuntamente las variables i y j. La diagonal contiene las varianzas de cada variable.
+Aquí entra la parte más importante. PCA resuelve el siguiente problema:
+C · v = λ · v
+Donde:
+
+v es un eigenvector (vector propio): una dirección especial en el espacio original que, al ser transformada por C, solo escala sin rotar.
+λ es el eigenvalor (valor propio): el escalar que indica cuánto escala esa dirección, es decir, cuánta varianza explica.
+
+Como C es simétrica, el Teorema Espectral garantiza que siempre existirán p eigenvectores ortogonales entre sí y con eigenvalores reales no negativos.
+
+Los eigenvectores ordenados de mayor a menor eigenvalor son las componentes principales. El primero (PC1) apunta en la dirección de máxima varianza; el segundo (PC2), ortogonal al primero, en la de segunda mayor varianza; y así sucesivamente.
+La varianza explicada por cada componente es simplemente su eigenvalor dividido entre la suma de todos:
+varianza explicada por PCᵢ = λᵢ / Σλⱼ
+
+Finalmente, los datos se proyectan sobre los nuevos ejes. Si agrupas los k eigenvectores más importantes como columnas de una matriz V (p×k), la proyección es:
+Z = X · V
+Esto es un cambio de base: estás reexpresando los datos en un nuevo sistema de coordenadas donde los ejes son las componentes principales. Si k < p, habrás reducido la dimensionalidad conservando la mayor parte de la información.
+
+Para una matriz cualquiera los eigenvectores no tienen ninguna obligación de ser ortogonales. La ortogonalidad es un regalo que viene exclusivamente de la simetría.
+Y sí, el proceso de PCA pasa obligatoriamente por la matriz de covarianza, lo que garantiza que siempre trabajas con una matriz simétrica y por tanto siempre obtienes componentes ortogonales. No es casualidad, es una decisión de diseño del método: al construir PCA sobre la covarianza se asegura que las componentes sean interpretables e independientes entre sí.
+De hecho puedes pensar en ello como una cadena de garantías:
+
+Datos centrados → matriz de covarianza → simetría garantizada → Teorema Espectral → eigenvectores ortogonales → componentes principales independientes
+
+Por este motivo, luego podemos reproyectar todos los vectores en el nuevo sistema de coordenadas.
+
+la proyección Z = X·V es simplemente un cambio de base limpio: cada coordenada en el nuevo sistema es independiente de las demás, y la distancia entre puntos se preserva. Esto último es importante porque significa que no estás distorsionando la geometría original de los datos al reproyectarlos.
+Y cuando decides quedarte solo con las k primeras componentes para reducir dimensionalidad, la ortogonalidad garantiza que estás descartando las direcciones de menor varianza sin "contaminar" las que conservas. El descarte es quirúrgico precisamente porque los ejes son perpendiculares.
