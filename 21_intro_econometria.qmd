@@ -1,3 +1,145 @@
-intro a la econometría
+# intro a la econometría
 
-básicamente, tratar de alertar que la gente no se ponga a hacer regresiones como locos
+### Empieza por aquí
+
+Antes de ponerte a hacer tests Shapiro-Wilk para comprobar si tus datos siguen una distribución normal o ponerte a correr regresiones como si no hubiera un mañana, merece la pena parar y preguntarnos cuál es nuestro objetivo, de modo que podamos escoger la metodología más adecuada.
+
+*mucho mejor revisar el contenido con Mostly Harmless Econometrics*
+
+*en cierto momento, quizás mejor ya saltar a un capítulo sobre la regresión (?)*
+
+### Cuál es tu objetivo
+
+Inferencia causal vs predicción (siguiendo los apuntes de Biscarri)
+
+-   ¿Qué pasaría con Y si yo interviniera en X?
+
+-   ¿Qué valor tomará Y dado X?
+
+*introducir meme [strong vs weak](https://www.kapwing.com/explore/strong-dog-vs-weak-dog-meme-template)*
+
+### El papel de la regresión
+
+En econometría, se suele empezar explicando la técnica de regresión. No es que sea la única herramienta disponible, ni mucho menos, pero permite trasladar interpretable y versátil.
+
+muchísimas técnicas pueden escribirse como “algún tipo de regresión” (IV, panel, DiD, RDD, etc.)
+
+*revisar estos puntos, ya que son áreas que no conozco tanto*
+
+Hay áreas importantes que no encajan bien en la idea clásica de regresión:
+
+-   Econometría de series temporales (procesos estocásticos, filtros, espectral),
+
+-   Econometría no paramétrica y semiparamétrica,
+
+-   Métodos de simulación (GMM, MSM),
+
+-   Econometría estructural y modelos de decisión.
+
+En predicción, la regresión es sólo una herramienta más, y a menudo no la mejor.
+
+-   no importa por qué X y Y están correlacionados, ni si hay sesgo causal, importa el **error predictivo fuera de muestra**.
+
+### Conceptos centrales
+
+Mi objetivo es que entendais los elementos fundamentales en el análisis econométrico para entender qué estamos haciendo.
+
+-   **Identificación**: define *qué parámetro* tiene sentido estimar.
+
+-   **Modelización del data generating process**: define *cómo conectas el parámetro con los datos*.
+
+-   **Inferencia**: define *qué sabes sobre la precisión de lo estimado*.
+
+...
+
+-   Identificación causal (qué efecto queremos estimar y bajo qué supuestos)
+
+    -   Por si misma, la técnica de regresión sólo revela correlaciones manteniendo constantes otros factores, pero para poder hablar de causalidad necesitamos definir una estrategia de identificación causal (más sobre esto luego). Podemos decir "los contratos que piden el catalán se asocian, de media, con un sueldo un 5% más alto que los que no lo piden", pero no que haya una relación causal (buscar mejor ejemplo)
+
+    -   Supuestos: exogeneidad, exclusión, paralelismo, monotonicidad, etc.
+
+    -   Diseño: IV, DiD, RD, experimentos, controles sintéticos…
+
+-   Inferencia estadística (validez de estimadores, errores estándar, tests)
+
+    -   Es **probabilística**. Dado un estimador y unos supuestos, responde a: ¿Qué tan preciso es lo que estimo y cuánta incertidumbre tengo?
+
+    -   La inferencia **no “arregla” el estimador**, solo cuantifica el nivel de incertidumbre *dado* el estimador.
+
+        -   Es decir, definamos errores estándar o robustos, el coeficiente que estimamos no cambía, sólo cambía el nivel de confianza que tenemos en que ese parámetro sea preciso.
+
+    -   Incluye:
+
+        -   Consistencia, sesgo, varianza, eficiencia.
+
+        -   Errores estándar (robustos, clusterizados, HAC).
+
+        -   Tests, intervalos de confianza, bootstrap.
+
+-   Modelización del proceso generador de datos.
+
+    -   Es **estructural / estadística**, y responde a: *¿Cómo creo que se generan los datos, más allá del parámetro que me interesa?*
+
+    -   Aquí decides:
+
+        -   Forma funcional (lineal, no lineal).
+
+        -   Dinámica temporal, dependencia, heterogeneidad.
+
+        -   Distribuciones del error, reglas de decisión, restricciones económicas.
+
+    -   La distribución no es relevante: en econometría casi nunca partimos de una población normal (e.g. estudio de salarios, otros).
+
+### Características del estimador
+
+La distribución asintótica de β̂ es normal **por CLT**, no porque ε sea normal
+
+### Fundamentos teóricos
+
+#### Media condicionada
+
+Una regresión es, fundamentalmente, un modelo de **media condicional**
+
+Aproximación lineal al proceso que genera los datos
+
+combinación lineal de los componentes: qué se puede y qué no se puede hacer
+
+#### Teorema central del Límite
+
+Casi siempre estimamos formas más o menos complejas de la media
+
+E\[y\|X\] = X\\beta
+
+#### Grados de libertad
+
+si n = k, no hay grados de libertad, por lo que el ajuste es perfecto. No podemos estimar la varianza del error, de modo que no podemos hacer inferencia.
+
+En álgebra lineal buscamos una solución exacta. En econometría sabemos que esta no existe, y tratamos de encontrar la mejor aproximación lineal.
+
+Geométricamente:
+
+-    y es un vector en R\^n
+
+-   las columnas de X generan un subespacio
+
+-   OLS busca el **vector proyectado** de y sobre ese subespacio.
+
+[https://stats.stackexchange.com/questions/123651/geometric-interpretation-of-multiple-correlation-coefficient-r-and-coefficient?](https://stats.stackexchange.com/questions/123651/geometric-interpretation-of-multiple-correlation-coefficient-r-and-coefficient?utm_source=chatgpt.com)
+
+#### Exogeneidad
+
+E[ε∣X]=0E[\varepsilon \mid X] = 0E\[ε∣X\]=0 (exogeneidad),
+
+#### Distribución de los errores
+
+error vs residuo
+
+-   El error ε\varepsilonε **no es observable**
+
+-   El residuo ε^=Y−Xβ^\hat\varepsilon = Y - X\hat\betaε\^=Y−Xβ\^ es un objeto estimado.
+
+-   los tests sobre residuos son tests conjuntos (modelo + normalidad).
+
+### Cómo se especifican los covariates
+
+variables binarias, categóricas, etc.
