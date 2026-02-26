@@ -1,3 +1,10 @@
 # Visualizaciones estáticas
 
-En este capítulo cubriré los básicos de ggplot
+En este capítulo cubriré los básicos de ggplot (el cheatsheet está genial)
+
+## Intro a ggplot
+
+ggplot(data) + 
+  geom_layer(aes(...)) +
+  ...
+  labs 

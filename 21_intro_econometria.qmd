@@ -12,6 +12,8 @@ Antes de ponerte a hacer tests Shapiro-Wilk para comprobar si tus datos siguen u
 
 Inferencia causal vs predicción (siguiendo los apuntes de Biscarri)
 
+tenemos un conjunto de variables independientes que creemos que de alguna forma están relacionadas con los valores de la variable dependiente.
+
 -   ¿Qué pasaría con Y si yo interviniera en X?
 
 -   ¿Qué valor tomará Y dado X?
@@ -80,6 +82,18 @@ Mi objetivo es que entendais los elementos fundamentales en el análisis econom�
 
     -   Es **estructural / estadística**, y responde a: *¿Cómo creo que se generan los datos, más allá del parámetro que me interesa?*
 
+    -   quizás es interesante introducir aquí las "3 vías de obtener los estimadores":
+
+        -   **MCO**: minimiza suma de cuadrados. Requiere muy pocos supuestos pero es el menos flexible.
+
+        <!-- -->
+
+        -   **MV/ML**: maximiza la verosimilitud. Requiere especificar completamente la distribución de Y, lo cual es más supuestos pero produce estimadores eficientes si la distribución está bien especificada.
+
+        <!-- -->
+
+        -   **GMM**: impone solo que ciertas condiciones de momentos sean cero en la población, E\[g(y,θ)\] = 0. No requiere especificar ninguna distribución completa. MCO y MV son casos especiales de GMM con condiciones de momentos particulares.
+
     -   Aquí decides:
 
         -   Forma funcional (lineal, no lineal).
@@ -92,13 +106,21 @@ Mi objetivo es que entendais los elementos fundamentales en el análisis econom�
 
 ### Características del estimador
 
+-   no sesgado
+
+-   lineal
+
+-   consistente
+
+-   ... (?)
+
 La distribución asintótica de β̂ es normal **por CLT**, no porque ε sea normal
 
 ### Fundamentos teóricos
 
 #### Media condicionada
 
-Una regresión es, fundamentalmente, un modelo de **media condicional** https://timeseriesreasoning.com/contents/deep-dive-into-variance-covariance-matrices/
+Una regresión es, fundamentalmente, un modelo de **media condicional**
 
 Aproximación lineal al proceso que genera los datos
 
@@ -110,6 +132,8 @@ Casi siempre estimamos formas más o menos complejas de la media
 
 E\[y\|X\] = X\\beta
 
+el teorema central del límite garantiza que los estimadores MCO son aproximadamente normales en muestras grandes, independientemente de la distribución de los errores, lo que hace que la normalidad de los residuos sea irrelevante asintóticamente
+
 #### Grados de libertad
 
 si n = k, no hay grados de libertad, por lo que el ajuste es perfecto. No podemos estimar la varianza del error, de modo que no podemos hacer inferencia.
@@ -118,7 +142,7 @@ En álgebra lineal buscamos una solución exacta. En econometría sabemos que es
 
 Geométricamente:
 
--    y es un vector en R\^n
+-   y es un vector en R\^n
 
 -   las columnas de X generan un subespacio
 
@@ -128,18 +152,116 @@ Geométricamente:
 
 #### Exogeneidad
 
-E[ε∣X]=0E[\varepsilon \mid X] = 0E\[ε∣X\]=0 (exogeneidad),
+E\[ε∣X\]=0E\[\varepsilon \mid X\] = 0E\[ε∣X\]=0 (exogeneidad),
 
 #### Distribución de los errores
 
 error vs residuo
 
--   El error ε\varepsilonε **no es observable**
+-   El error ε\varepsilonε \*\*no es observable\*\*
 
--   El residuo ε^=Y−Xβ^\hat\varepsilon = Y - X\hat\betaε\^=Y−Xβ\^ es un objeto estimado.
+-   El residuo ε^=Y−Xβ^\hat\varepsilon = Y - X\hat\betaε\^=Y−Xβ\^ es un objeto estimado. Estos existen por errores en la especificación y por aleatoridad fundamental en los datos (la regresióne stima efectos de media, pero la realidad es diversa)
 
 -   los tests sobre residuos son tests conjuntos (modelo + normalidad).
 
 ### Cómo se especifican los covariates
 
 variables binarias, categóricas, etc.
+
+### Tipos de regresión según el tipo de variable y
+
+-   simple/múltiple no tiene mucho sentido distinguirlo, ya que casi siempre vamos a realizar regresiones múltiples
+
+-   si y es binaria: regresión logística
+
+-   si y es numerica: regresión lineal
+
+### Programar la regresión
+
+-   lm(y \~ X -o x1 + x2 + x3 ..., data = dataset)
+
+-   lm(y \~ x1 + 0, data = dataset) no incluye intercept
+
+-   también es posible glm con family = gaussian
+
+-   **transformar variables**: I(...), sqrt()...
+
+    -   al final quizás tendremos que "deshacer" las transformaciones
+
+-   predict(model, newdata) para hacer predicciones
+
+    -   hay que ir con cautela con las extrapolaciones, puesto que como más alejadas esten de los datos originales, menos validez tienen.
+
+    -   Linear models don't know what is possible or not in real life. That means that they can give you predictions that don't make any sense when applied to your data. You need to understand what your data means in order to determine whether a prediction is nonsense or not.
+
+-   summary()
+
+-   coeficients() o coef()
+
+-   fitted() calcula los y hat (diferente de predict, porque usa el dataset existente, no newdata)
+
+-   residuals()
+
+-   librería broom para hacer los modelos más legibles
+
+    -   tidy() para ver coeficientes con std errors y p-value
+
+    -   augment() devuelve resultados a nivel de observación (fitted, resid...)
+
+    -   glance() model-level results (performance metrics)
+
+### visualizar los datos antes de correr regresions 
+
+(ver capítulo de exploratory data analysis)
+
+### model fit
+
+R-squared: qué es alto o bajo depende del contexto
+
+Residual SE (RSE) - sigma en glance(); es mejor para comparar entre modelos
+
+RMSE - ambas métricas en este [video](https://campus.datacamp.com/courses/introduction-to-regression-in-r/assessing-model-fit-3?ex=1)
+
+para visualizar: scatter plot de fitted vs residuals (ggfortify package?)
+
+-   idealmente, el fit de ese gráficod ebería estar entorno a y = 0
+
+-   Q-Q plot: relacionado con la normalidad de los residuos (comprobar si realmente es importante!)
+
+    -   x = theoretical quantiles; y = standardized residuals
+
+    -   la idea es que todos los puntos estén en la línea diagonal
+
+-   scale-location:
+
+    -   x = fitted values; y = sqrt(standardized residuals)
+
+*leverage* para detectar residuals - 2 tipos: función hatvalues, o .hat en augment()
+
+-   Observations with a large distance to the nearest metro station have the highest leverage, because most of the observations have a short distance, so long distances are more extreme.
+
+<!-- -->
+
+-   valores extremos de X
+
+-   valores alejados de la fitted line
+
+*influence:* cómo cambia el resultado del modelo si eliminamos un data point
+
+-   Observations with predictions far away from the trend line have high influence, because they have large residuals and are far away from other observations.
+
+<!-- -->
+
+-   cook's distance: cooks.distance o .cooksd en augment()
+
+### regresión logística
+
+glm con family = binomial
+
+pasar de prob a clasificación, si es \[0, 1\] fácilmente con round()
+
+odds ratio es prob it happens / prob it doesn't happen
+
+-   odds above 1, 1 more likely than 0; below 1 otherwise
+
+-   log(odds_ratio) para hacerlo lineal
