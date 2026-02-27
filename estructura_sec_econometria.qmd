@@ -1,0 +1,287 @@
+# Teoría econométrica
+
+La estructuraciónd e esta sección del libro es compleja porque mi diea es incluir los fundamentos teóricos con las técnicas específicas de cada metodología. Creo que es más útil (o incluso atractivo) que los titulos de losc apítulos sean las metodologáis (DiD, RDD, etc.), pero antes tengo que haber explicado la teoría... a ver cómo consigo hacerlo.
+
+## Los fundamentos
+
+-   Cuál es tu objetivo?
+
+    -   predicción vs inferencia causal
+
+    -   predicción -\> mejor data science; nos obsesiona la capacidad de predecir out of sample.
+
+    -   inferencia causal, este capítulo; nos obsesiona la estrategia de identificación, posibles causas de endogeneidad en el modelo, la modelización de los errores, etc.
+
+-   En qué consiste la econometría?
+
+    -   el objetivo siempre es estimar algún aprámetro, que en la mayoría de los casos son "medias"
+
+    -   población -\> muestra -\> estimador -\> extrapolación
+
+    -   forma canónica: y = f(X) – quizás directamente más abajo ald ecribir la regresión: y = Xbeta
+
+    -   parámetros poblacionales vs parámetros estimados (y sus distribuciones)
+
+    -   queremos capturar la esencia, no el ruido. parte del error es fundamental en base de
+
+-   Los tres ejes de la econometría
+
+    -   **Proceso generador de los datos** (aunque esto es más bien terminología DS):
+
+        -   cómo especificamos el modelo; mezcla de aquello que queremos estimar (e.g. diseño de un DiD) con la forma de los datos (e.g. introducir polinomios)
+
+            -   lineal vs no lineal
+
+                -   un modelo lineal es lineal en los parámetros (no necesariamente en las variables), y eso tiene implicaciones enormes en cómo se estima y cómo se interpreta. Ahí también puedes justificar por qué los modelos lineales ocupan tanto espacio en el libro: no porque sean siempre los más precisos, sino porque son aproximaciones sorprendentemente buenas en muchos contextos y tienen propiedades analíticas que los hacen tractables.
+
+            -   papel central de los modelos lineales (las aproximaciones lineales pueden ser muy buenas aproximaciones)
+
+        -   3 "vias" principales para obtener los estimadores
+
+            -   OLS
+
+            -   GMM
+
+            -   MLE
+
+    -   **Identificación**: cómo vamos a asegurarnos que aquello que estimamos puede tener una identificación causal.
+
+    -   **Inferencia**: es probabilistica, dados nuestros datos y los parámetros que hemos estimado, cómo de seguros estamos de que sean verídicos.
+
+        -   tests de hypotesis
+
+        -   confidence intervals
+
+-   Clases de datos
+
+    -   Según si son datos experimentales o observacionales
+
+        -   Introducir el concepto de los *potential outcomes*
+
+        -   dependiendo del contexto, entender qué metodologías nos sirven y cuales no.
+
+    -   Según si son de sección cruzada, panel o serie temporal
+
+        -   quizás merece la pena explicar con cierto detalle cada uno de los casos y qué los hace especiales para el tratamiento de datos
+
+    -   otras?
+
+-   Propiedades de los estimadores
+
+    -   no sesgado
+
+    -   lineal
+
+    -   eficiencia
+
+    -   consistencia (la más importante)
+
+        -   Teorema Central del Límite
+
+-   El papel de la regresión
+
+    -   central en econometría, por su legacy, flexibilidad y fácil interpretación
+
+        -   una técnica más en data science, a menudo no la que tiene mayor poder predictivo
+
+    -   forma canónica: y = Xbeta + e
+
+        -   es decir, es una media condicionada E\[y\|X\]
+
+-   Fundamentos matemáticos (quizás una sección en sí)
+
+    -   álgebra lineal:
+
+        -   transformaciones del espacio y otros conceptos fundamentales como rango, determinante, etc. (citar 3blue1brown)
+
+        -   conexión con la regresión: buscamos un vector beta en el hyperplano formado por X lo más cercano posible a y
+
+    -   probabilidad:
+
+        -   distribuciones y poco más, ya que no quiero qeu sea una sección demasiado larga.
+
+## Regresión con variable dependiente numerica
+
+Claude, sobre por qué dedicar toda una sección a la regresión:
+
+"Los argumentos que tienes en la estructura preliminar son buenos pero están dispersos. Te propongo una forma de articularlos de manera más cohesionada, que podrías usar en la introducción del bloque o incluso en el prefacio del libro.
+
+El argumento central es que la regresión no es una técnica entre muchas, sino el lenguaje común de la econometría. Prácticamente todas las técnicas causales que verás en el bloque siguiente son extensiones, generalizaciones o casos especiales de la regresión lineal: un DiD es una regresión con una interacción, una RDD es una regresión con un umbral, variables instrumentales es una regresión en dos etapas. Si el lector no tiene una comprensión sólida de qué es lo que estima una regresión, qué significan los supuestos y cómo se construye la inferencia, los capítulos de técnicas causales se vuelven recetas de cocina que se aplican sin entender. Ese es el argumento más fuerte y es el que yo pondría primero.
+
+El segundo argumento, que está implícito en tus notas, es que la regresión es insustituible en la práctica aplicada. No porque sea la técnica con mayor poder predictivo, sino porque combina interpretabilidad, flexibilidad y un marco de inferencia bien desarrollado. En evaluación de políticas, en economía laboral, en economía de la salud, la regresión sigue siendo el caballo de batalla diario.
+
+El tercer argumento es más pedagógico: la regresión es el contexto donde se introducen los conceptos que luego reaparecen en todo el libro, como endogeneidad, supuestos de identificación, errores estándar, inferencia. Aprenderlos en el contexto más simple posible tiene mucho sentido antes de encontrarlos en contextos más complejos".
+
+---
+
+"ANOVA es un caso particular de regresión donde el predictor es categórico, y demostrarlo empíricamente en R con un ejemplo numérico es muy pedagógico. Le dedicas un par de páginas, muestras que los resultados son idénticos, y el lector entiende de golpe por qué la regresión es tan general. También puedes aprovechar para mencionar que esto explica por qué en econometría moderna raramente se usa ANOVA como técnica independiente"
+
+---
+
+Excplicación del estimador MCO para regresiones (derivación)
+
+Ventaja de controlar por otros covariates (vs correlación variable a variable)
+
+Supuestos principales
+
+Cómo añadir variabels que no son numéricas
+
+otras aplicaciones: oaxaca-blinder decomposition
+
+## Regresión con variable dependiente categórica
+
+Bueno, realmente aquí la idea sería incluir tanto modelos de regresión con variable binaria (logit y probit) como multinominal
+
+-   quizás también Tobit
+
+Poner émfasis en que, a pesar de que a menudo no se les presta mucha atención, a la práctica son técnicas muy usadas para caracterizar individuos (e.g. qué factores hacen más probable que una persona genere una baja en el próximo año)
+
+-   MLE dado que conocemos la distribución (en los binomials, no?)
+
+## Series temporales  
+
+Quizás tengo que introducir aquí la teoría sobre time series, aunque no soy experto en ello:
+
+-   Lo más probable es que no incluya time series en el libro
+
+## Datos de panel 
+
+Quizás tengo qeu introducir aquí al teoría sobre los estimadores que se uasn en panel data:
+
+-   WG o DVLS
+
+-   Arellano-Bover, Arellano-Bond (GMM)
+
+-   pensar si estas técnicas encajan con la sección de inferencia causal!!
+
+    -   ser explícito sobre cuando se pueden interpretar como causales y cuando no
+
+Claude:
+
+"La conexión con potential outcomes en panel data la puedes hacer de forma elegante diciendo que el efecto fijo individual captura todo el conjunto de características no observadas e invariantes del individuo, que en el lenguaje de potential outcomes serían confounders que afectan tanto al tratamiento como al outcome. Al eliminarlos, la variación que explotas es mucho más cercana a una comparación válida"
+
+"Lo que es específico de panel data como estrategia de estimación son los estimadores que explotan la dimensión longitudinal: efectos fijos, efectos aleatorios, Arellano-Bond. Estos estimadores existen precisamente porque tienes múltiples observaciones del mismo individuo, y eso te permite controlar por heterogeneidad no observada de una forma que no puedes hacer con sección cruzada.
+
+Por eso creo que la estructura más limpia es tener un capítulo de panel data dentro del bloque de econometría, no de inferencia causal, pero siendo explícito en ese capítulo sobre cuándo los estimadores de panel tienen una lectura causal y cuándo no. Así evitas el problema que señalas: no estás diciendo que panel data sea equivalente a DiD o RDD, sino que es un conjunto de técnicas con sus propios supuestos que en ciertos contextos permiten hacer inferencia causal. Y luego en el capítulo de DiD puedes recordar al lector que DiD típicamente usa datos de panel y remitirle al capítulo anterior para la mecánica del estimador."
+
+## Buenas prácticas
+
+-   OVB y "bad controls" (?)
+
+-   endogeneidad
+
+-   errores estándar (robustos y clusterizados)
+
+-   frequencia en observaciones
+
+-   nivel de agregación de las variables
+
+-   outliers
+
+---
+
+# REESTRUCTURACIÓN DE LA PRIMERA PARTE
+
+**Capítulo 1 — ¿Qué es la econometría?** El objetivo de la econometría. Predicción vs. inferencia causal. Los tres ejes: especificación, identificación, inferencia. Tipos de datos: sección cruzada, panel y series temporales (descripción, sin entrar en técnicas). Datos experimentales vs. observacionales. Introducción a los potential outcomes como marco conceptual (aquí solo la intuición, el desarrollo viene después).
+
+-   Mencionar en los tres ejes o después, que existen 3 metodologías generales (sólo introducción con la intuición):
+
+    -   MCO minimiza distancias,
+
+    -   MLE maximiza la verosimilitud dado lo que sabemos de la distribución, y
+
+    -   GMM impone condiciones de momentos cuando no queremos asumir demasiado
+
+**Capítulo 2 — Fundamentos matemáticos y estadísticos** Álgebra lineal: lo mínimo necesario para entender la regresión (vectors, matrices, transformaciones lineales, rango, proyección). Probabilidad y distribuciones (muy breve: distribuciones básicas, esperanza, varianza, y el TCL). Parámetros poblacionales vs. estimados. Propiedades de los estimadores: insesgadez, consistencia, eficiencia. El Teorema Central del Límite. *Este capítulo puede funcionar también como apéndice si prefieres no ponerlo al principio.*
+
+**Capítulo 3 — Regresión lineal** La forma canónica y su interpretación como media condicional. Derivación del estimador MCO. La ventaja de controlar por covariables frente a correlaciones bivariadas. Los supuestos del modelo. Variables categóricas como predictores, y aquí la conexión con ANOVA. La descomposición de Oaxaca-Blinder como aplicación.
+
+-   Sobre MCO y el álgebra lineal, sí, la conexión es directísima y es probablemente la más bonita de toda la econometría. Te la explico porque creo que te ayuda a decidir cómo presentarla en el libro.
+
+    El problema de MCO es geométricamente muy puro: tienes un vector y (tu variable dependiente) en un espacio de n dimensiones, y tienes una matriz X cuyas columnas generan un subespacio lineal. Como en general y no vive en ese subespacio, buscas el punto del subespacio más cercano a y, es decir, su proyección ortogonal. El estimador MCO es exactamente esa proyección, y la fórmula clásica β = (X'X)⁻¹X'y no es más que la expresión algebraica de esa proyección ortogonal. Los residuos son el vector que va desde la proyección hasta y, y por construcción son ortogonales a todas las columnas de X, que es exactamente la condición de primer orden de la minimización.
+
+    Eso significa que todo lo que importa en MCO tiene una traducción geométrica inmediata. El rango de X determina si la proyección está bien definida, la multicolinealidad perfecta significa que dos columnas de X apuntan en la misma dirección y el subespacio colapsa, y el R² es simplemente el cuadrado del coseno del ángulo entre y y su proyección.
+
+    MLE y GMM en cambio no tienen esa conexión geométrica tan directa. MLE vive en el mundo de la probabilidad y la teoría de la información, y GMM en el mundo de los momentos y la teoría asintótica. Por eso tiene mucho sentido que en el capítulo de álgebra lineal construyas la intuición geométrica pensando ya en MCO, y que el lector llegue al capítulo de regresión con esa imagen mental de la proyección ya formada.
+
+-   [https://stats.stackexchange.com/questions/123651/geometric-interpretation-of-multiple-correlation-coefficient-r-and-coefficient?](https://stats.stackexchange.com/questions/123651/geometric-interpretation-of-multiple-correlation-coefficient-r-and-coefficient?utm_source=chatgpt.com) añadir esta imagen o una similar, aquí o más abajo
+
+-   Mencionar que empezamos con la forma más básica de regresión: lineal con variable dependiente
+
+**Capítulo 4 — Inferencia en regresión** Tests de hipótesis y intervalos de confianza. Errores estándar: clásicos, robustos y clusterizados. Bootstrap. Significancia estadística vs. relevancia práctica (tamaño del efecto).
+
+**Capítulo 5 — Buenas prácticas en especificación** Elección de covariables: el problema de los bad controls, variables omitidas, sobreajuste. Nivel de agregación de variables. Frecuencia de observación. Outliers y valores extremos. Transformaciones funcionales: logaritmos, polinomios, interacciones. Este capítulo actúa como puente hacia la parte causal.
+
+-   conexión con el capítulo siguiente: la regresión lineal es más flexible de lo que parece porque puedes incluir logaritmos, polinomios e interacciones, y que muchas relaciones no lineales en las variables son perfectamente capturables con un modelo lineal en los parámetros. Eso conecta directamente con logit y probit en el capítulo siguiente, que son el ejemplo más natural de cuándo sí necesitas salir de la linealidad: cuando la variable dependiente es binaria, una recta no es una buena aproximación porque puede predecir probabilidades fuera del intervalo cero-uno.
+
+**Capítulo 6 — Regresión con variable dependiente limitada** MLE como método de estimación general. Modelos de variable binaria: logit y probit (son no lineales!!). Interpretación de los efectos marginales. Modelos multinomiales. Modelos Tobit para variables censuradas. Breve mención al modelo de Heckman para selección muestral.
+
+**Capítulo 7 — Datos de panel** Estructura del dato longitudinal. El problema de la heterogeneidad no observada. Efectos fijos (within-group) y su lectura causal. Efectos aleatorios. El test de Hausman. Arellano-Bond para dinámicas con endogeneidad. Conexión explícita con DiD: el panel como sustrato de muchas estrategias causales.
+
+**Capítulo 8 — Series temporales** La clave es ser honesto sobre el alcance del capítulo desde el principio. No sería un capítulo exhaustivo sobre series temporales, sino un capítulo que cubre lo suficiente para que el lector entienda la estructura del dato, los problemas específicos que genera (autocorrelación, estacionariedad, raíces unitarias) y las herramientas básicas (ARIMA, quizás VAR). Añadir una mención explícita a interrupted time series, precisamente porque es el puente entre series temporales e inferencia causal
+
+**Capítulo 9 — Modelos de conteo y duración** incluir aquí los modelos de conteo (poisson), gamma y de supervivencia. Explicar por qué es mejor usar estos modelos que regresiones o MCO
+
+-   Poisson puede estimarse tanto por MLE como por GMM (o más precisamente, por pseudo-MLE o QMLE). Cuando usas MLE para Poisson estás asumiendo que la variable dependiente sigue efectivamente una distribución Poisson, es decir, que la media es igual a la varianza (el supuesto de equidispersión). En la práctica este supuesto se viola con frecuencia porque los datos de conteo suelen tener sobredispersión, es decir, la varianza es mayor que la media.
+
+    Ahí es donde entra GMM: puedes estimar los parámetros de un modelo tipo Poisson imponiendo solo la condición de momentos sobre la media condicional, sin asumir nada sobre la varianza. Esto es lo que a veces se llama Poisson QMLE o Poisson PML, y tiene la propiedad muy conveniente de que los coeficientes son consistentes aunque la distribución verdadera no sea Poisson, siempre que hayas especificado bien la media condicional.
+
+    Para el libro esto tiene una implicación pedagógica interesante: Poisson puede aparecer en el capítulo 9 como ejemplo de que MLE y GMM no son siempre métodos alternativos que compiten, sino que a veces el mismo modelo puede estimarse con ambos dependiendo de los supuestos que estés dispuesto a hacer. Es un momento natural para que el lector entienda la diferencia práctica entre los tres métodos de estimación que introdujiste en el capítulo 1.
+
+# Inferencia causal
+
+## Marco conceptual 
+
+Quizás merece la pena dedicar un capítulo (corto) a la idea de inferencia causal. es decir, los modelos de regresión descritos anteriormente son generalizaciones donde dependiendo del contexto (e.g. si partimos de un RCT o no) podemos proclamar que nuestros resultados son causales.
+
+explicar a fondo la intición de los potential outcomes
+
+-   el problema fundamental de la causalidad (no observamos lo que hubiera pasado si no hubiera habido tratamiento)
+
+-   estimadores que conseguiremos: ATE/ATT/LATE
+
+Enumerar las técnicas más utilizadas, de modo que, a partir de aquí, hay un capítulo para cada una de estas técnicas.
+
+## Variables instrumentales 
+
+teoría + cómo hacerlo con r
+
+## RCT
+
+teoría + cómo hacerlo con r
+
+## Matching 
+
+teoría + cómo hacerlo con r
+
+## Diferencia de diferencias 
+
+teoría + cómo hacerlo con r
+
+## Synthetic control
+
+según Claude merece la pena dejarlo como una sección a parte, ya veré qué hago al final
+
+"DiD funciona bien cuando tienes muchas unidades de control comparables; synthetic control está diseñado para cuando solo tienes una unidad tratada"
+
+## Regresión en discontinuidad 
+
+teoría (strict, fuzzy, spatial) + cómo hacerlo con r
+
+## Regresión cuantilica
+
+teoría + cómo hacerlo con r
+
+---
+
+A partir de aquí, enumero otros modelos que no sabría dónde incluirlos, pero que son interesantes
+
+## \*quizás otros modelos
+
+-   poisson
+
+-   gamma
+
+-   supervivencia
+
+## Apendice matemático al final del libro con derivaciones
