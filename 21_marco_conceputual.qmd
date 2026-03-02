@@ -1,0 +1,109 @@
+# Intro a la econometría
+
+## Estructura
+
+1.  El objetivo de la econometría / empieza por aquí
+
+2.  Predicción vs. inferencia causal. / cuál es tu objetivo
+
+3.  Los tres ejes: especificación, identificación, inferencia.
+
+4.  Tipos de datos: sección cruzada, panel y series temporales (descripción, sin entrar en técnicas).
+
+5.  Datos experimentales vs. observacionales.
+
+### Empieza por aquí
+
+Antes de ponerte a hacer tests Shapiro-Wilk para comprobar si tus datos siguen una distribución normal o ponerte a correr regresiones como si no hubiera un mañana, merece la pena parar y preguntarnos cuál es nuestro objetivo, de modo que podamos escoger la metodología más adecuada.
+
+-   el objetivo siempre es **estimar algún parámetro**, que en la mayoría de los casos son "medias"
+
+-   población -\> muestra -\> estimador -\> extrapolación (añadir esquema)
+
+-   forma canónica: y = f(X) – quizás directamente más abajo ald ecribir la regresión: y = Xbeta
+
+-   parámetros poblacionales vs parámetros estimados (y sus distribuciones)
+
+-   queremos capturar la esencia, no el ruido. parte del error es fundamental en la randomness de la realidad
+
+*mucho mejor revisar el contenido con Mostly Harmless Econometrics*
+
+*en cierto momento, quizás mejor ya saltar a un capítulo sobre la regresión (?)*
+
+### Cuál es tu objetivo
+
+Inferencia causal vs predicción (siguiendo los apuntes de Biscarri)
+
+tenemos un conjunto de variables independientes que creemos que de alguna forma están relacionadas con los valores de la variable dependiente.
+
+-   ¿Qué pasaría con Y si yo interviniera en X?
+
+-   ¿Qué valor tomará Y dado X?
+
+-   predicción -\> mejor data science; nos obsesiona la capacidad de predecir out of sample.
+
+-   inferencia causal, este capítulo; nos obsesiona la estrategia de identificación, posibles causas de endogeneidad en el modelo, la modelización de los errores, etc.
+
+*introducir meme [strong vs weak](https://www.kapwing.com/explore/strong-dog-vs-weak-dog-meme-template)*
+
+### Los 3 ejes
+
+-   **Especificación:**
+
+    -   A ver cómo queda esto para que se disntinga bien de identificación; quizás reordenar las dos clasificaciones que incluyo aquí
+
+    -   Es **estructural / estadística**, y responde a: *¿Cómo creo que se generan los datos, más allá del parámetro que me interesa?*
+
+        -   modelos lineales vs no lineales
+            -   un modelo lineal es lineal en los parámetros (no necesariamente en las variables), y eso tiene implicaciones enormes en cómo se estima y cómo se interpreta. Ahí también puedes justificar por qué los modelos lineales ocupan tanto espacio en el libro: no porque sean siempre los más precisos, sino porque son aproximaciones sorprendentemente buenas en muchos contextos y tienen propiedades analíticas que los hacen tractables.
+        -   incluir polinomios u otras transformaciones
+
+    -   3 metodologías generales (sólo introducción con la intuición) - quizás merece una sección independiente
+
+        -   **MCO**: minimiza suma de cuadrados. Requiere muy pocos supuestos pero es el menos flexible.
+        -   **MV/ML**: maximiza la verosimilitud. Requiere especificar completamente la distribución de Y, lo cual es más supuestos pero produce estimadores eficientes si la distribución está bien especificada.
+        -   **GMM**: impone solo que ciertas condiciones de momentos sean cero en la población, E\[g(y,θ)\] = 0. No requiere especificar ninguna distribución completa. MCO y MV son casos especiales de GMM con condiciones de momentos particulares.
+
+    -   Aquí decides (ver dónde encaja esto mejor):
+
+        -   Forma funcional (lineal, no lineal).
+
+        -   Dinámica temporal, dependencia, heterogeneidad.
+
+        -   Distribuciones del error, reglas de decisión, restricciones económicas.
+
+    -   La distribución no es relevante: en econometría casi nunca partimos de una población normal (e.g. estudio de salarios, otros).
+
+<!-- -->
+
+-   **Identificación**: cómo vamos a asegurarnos que aquello que estimamos puede tener una identificación causal.
+
+    -   credibility revolution
+    -   correlación vs causalidad
+    -   marco conceptual y técnicas principales merecen un capítulo entero
+
+-   **Inferencia**: es probabilistica, dados nuestros datos y los parámetros que hemos estimado, *qué sabes sobre la precisión de lo estimado*
+
+    -   La inferencia **no “arregla” el estimador**, solo cuantifica el nivel de incertidumbre *dado* el estimador.
+
+    -   Es decir, definamos errores estándar o robustos, el coeficiente que estimamos no cambía, sólo cambía el nivel de confianza que tenemos en que ese parámetro sea preciso.
+
+    -   Incluye:
+
+        -   Consistencia, sesgo, varianza, eficiencia.
+
+        -   Errores estándar (robustos, clusterizados, HAC).
+
+        -   Tests, intervalos de confianza, bootstrap.
+
+### Tipos de datos (1)
+
+-   Sección cruzada
+-   Datos de panel
+-   Series temporales
+
+### Tipos de datos (2)
+
+-   datos experimentales
+-   datos observacionales
+-   relevancia en cuanto a qué técnica escoger (quizás lo puedo insertar en el "empezar por aquí" Series temporales
