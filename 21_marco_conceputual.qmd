@@ -12,6 +12,8 @@
 
 5.  Datos experimentales vs. observacionales.
 
+6.  El papel de la regresión
+
 ### Empieza por aquí
 
 Antes de ponerte a hacer tests Shapiro-Wilk para comprobar si tus datos siguen una distribución normal o ponerte a correr regresiones como si no hubiera un mañana, merece la pena parar y preguntarnos cuál es nuestro objetivo, de modo que podamos escoger la metodología más adecuada.
@@ -46,7 +48,7 @@ tenemos un conjunto de variables independientes que creemos que de alguna forma 
 
 *introducir meme [strong vs weak](https://www.kapwing.com/explore/strong-dog-vs-weak-dog-meme-template)*
 
-### Los 3 ejes
+### Los 3 ejes (o 4!)
 
 -   **Especificación:**
 
@@ -58,11 +60,12 @@ tenemos un conjunto de variables independientes que creemos que de alguna forma 
             -   un modelo lineal es lineal en los parámetros (no necesariamente en las variables), y eso tiene implicaciones enormes en cómo se estima y cómo se interpreta. Ahí también puedes justificar por qué los modelos lineales ocupan tanto espacio en el libro: no porque sean siempre los más precisos, sino porque son aproximaciones sorprendentemente buenas en muchos contextos y tienen propiedades analíticas que los hacen tractables.
         -   incluir polinomios u otras transformaciones
 
-    -   3 metodologías generales (sólo introducción con la intuición) - quizás merece una sección independiente
+    -   3 metodologías generales (sólo introducción con la intuición) - quizás merece una sección independiente (el 4o eje)
 
         -   **MCO**: minimiza suma de cuadrados. Requiere muy pocos supuestos pero es el menos flexible.
         -   **MV/ML**: maximiza la verosimilitud. Requiere especificar completamente la distribución de Y, lo cual es más supuestos pero produce estimadores eficientes si la distribución está bien especificada.
         -   **GMM**: impone solo que ciertas condiciones de momentos sean cero en la población, E\[g(y,θ)\] = 0. No requiere especificar ninguna distribución completa. MCO y MV son casos especiales de GMM con condiciones de momentos particulares.
+        -   Sería interesante que, cuando desarrolle más cómo funcionan, explique un poco "qué hay detrás de los commandos que corremos" (closed-form solutions, algoritmos, etc.) es decir, tratar de acercar el concepto a "si lo hicieras a mano, ¿cómo sería?"
 
     -   Aquí decides (ver dónde encaja esto mejor):
 
@@ -71,6 +74,8 @@ tenemos un conjunto de variables independientes que creemos que de alguna forma 
         -   Dinámica temporal, dependencia, heterogeneidad.
 
         -   Distribuciones del error, reglas de decisión, restricciones económicas.
+
+        -   Closed-form solutions vs no (quizás en fundamentos matemáticos)
 
     -   La distribución no es relevante: en econometría casi nunca partimos de una población normal (e.g. estudio de salarios, otros).
 
@@ -107,3 +112,26 @@ tenemos un conjunto de variables independientes que creemos que de alguna forma 
 -   datos experimentales
 -   datos observacionales
 -   relevancia en cuanto a qué técnica escoger (quizás lo puedo insertar en el "empezar por aquí" Series temporales
+
+### El papel de la regresión
+
+En econometría, se suele empezar explicando la técnica de regresión. No es que sea la única herramienta disponible, ni mucho menos, pero permite trasladar interpretable y versátil.
+
+muchísimas técnicas pueden escribirse como “algún tipo de regresión” (IV, panel, DiD, RDD, etc.)
+
+revisar estos puntos, ya que son áreas que no conozco tanto
+
+Hay áreas importantes que no encajan bien en la idea clásica de regresión:
+
+Econometría de series temporales (procesos estocásticos, filtros, espectral),
+
+Econometría no paramétrica y semiparamétrica,
+
+Métodos de simulación (GMM, MSM),
+
+Econometría estructural y modelos de decisión.
+
+En predicción, la regresión es sólo una herramienta más, y a menudo no la mejor.
+
+no importa por qué X y Y están correlacionados, ni si hay sesgo causal, importa el error predictivo fuera de muestra.
+

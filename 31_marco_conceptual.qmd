@@ -1,0 +1,41 @@
+## Marco conceptual
+
+Quizás merece la pena dedicar un capítulo (corto) a la idea de inferencia causal. es decir, los modelos de regresión descritos anteriormente son generalizaciones donde dependiendo del contexto (e.g. si partimos de un RCT o no) podemos proclamar que nuestros resultados son causales.
+
+explicar a fondo la intición de los potential outcomes
+
+-   el problema fundamental de la causalidad (no observamos lo que hubiera pasado si no hubiera habido tratamiento)
+
+-   estimadores que conseguiremos: ATE/ATT/LATE
+
+Enumerar las técnicas más utilizadas, de modo que, a partir de aquí, hay un capítulo para cada una de estas técnicas.
+
+## Variables instrumentales
+
+teoría + cómo hacerlo con r
+
+## RCT
+
+teoría + cómo hacerlo con r
+
+## Matching
+
+teoría + cómo hacerlo con r
+
+## Diferencia de diferencias
+
+teoría + cómo hacerlo con r
+
+## Synthetic control
+
+según Claude merece la pena dejarlo como una sección a parte, ya veré qué hago al final
+
+"DiD funciona bien cuando tienes muchas unidades de control comparables; synthetic control está diseñado para cuando solo tienes una unidad tratada"
+
+## Regresión en discontinuidad
+
+teoría (strict, fuzzy, spatial) + cómo hacerlo con r
+
+## Regresión cuantilica
+
+teoría + cómo hacerlo con r

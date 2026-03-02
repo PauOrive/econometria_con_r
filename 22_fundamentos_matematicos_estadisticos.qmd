@@ -1,0 +1,55 @@
+# Fundamentos matemáticos y estadísticos
+
+## **Estructura**
+
+1.  Álgebra lineal:
+
+2.  Probabilidad y distribuciones (muy breve: distribuciones básicas, esperanza, varianza, y el TCL).
+
+3.  Propiedades de los estimadores: insesgadez, consistencia, eficiencia.
+
+4.  El Teorema Central del Límite.
+
+*Idealmente, esta sección habría que revisarla a medida que vaya escribiendo toda esta parte, puesto que tengo que evitar sí o sí que sea demasiado larga porque entonces se ve como una barrera. Tiene que contener sólamente lo esencial, con enlaces a recursos externos para desarrollarlo.*
+
+### Álgebra lineal
+
+-   lo mínimo necesario para entender la regresión (vectors, matrices y otros conceptos básicos).
+
+-   transformaciones del espacio y otros conceptos fundamentales como rango, determinante, etc. (citar 3blue1brown)
+
+-   conexión con la regresión: buscamos un vector beta en el hyperplano formado por X lo más cercano posible a y
+
+*Otros apuntes*
+
+-   intuición muy clara para entender (más en DS que econometrics) el sentido de las regresiones: generalmente tratamos de estimar X\beta = y donde X es una matriz con las observaciones sobre unos atributos, b un vector de coeficientes e y la variable dependiente. En términos económicos, lo que queremos hacer es ver cómo "afecta" cada variable independiente a la variable dependiente, para encontrar cuáles son las variables que determinan y, o para predecir cómo será y. En términos de álgebra lineal, lo que estamos haciendo es buscar qué vector inicial (beta), tras aplicarle la transformación del espacio X, se convierte en el vector y. Dicho de otra forma, buscamos producir el vector beta a partir de una combinación lineal de las columnas en X; "encontrar los coeficientes x que permiten construir exactamente el vector b como combinación lineal de las columnas de A."
+-   La manera de solucionarlo es multiplicando ambos lados por la matriz inversa de X, X\^-1: X\^-1 %*% X beta = X\^-1* y, de modo que beta = X\^-1 \* y, lo que en términos de álgebra lineal implica seguir el camino inverso: puesto que conocemos y, aplicamos la transformación inversa a X para saber "de dónde venía originalmente el vector beta".
+-   si det(A) es zero, significa que alguna de las variables es linearmente dependiente, de modo que no existe la inversa de A. Si no, todas son linearmente independientes. Que no exista A\^-1 no significa que no exista una solución, pero es lo más probable, porque implicaría que el vector y tiene que vivir en el espacio que se ha reducido...
+-   para matrices que no sean cuadradas (lo más habitual en econometría, donde esperamos tener muuchas observaciones), la interpretación geométrica es similar: las columnas indican dónde los basis vectors del espacio de dimensiones igual al num de columnas "aterriza" en un espacio de dimensiones igual al número de filas. Imaginemos que tenemos 2 columnas y 3 filas, entonces la matriz indica en qué plano aterrizan los vectores de base i y j. Sigue siendo "full rank" porque el número de dimensiones del output space es igual al del input space
+-   lo importante es saber primero cuándo hay solución y si es una solución única (las otras opciones son que no hay, o que hay infinitas)\
+-   Intuición importante: cuando nos encontramos A\^-1MA en una ecuación, lo podemos interpretar como que estamos aplicando una transformación "M" en nuestro sistema de coordenadas traducido a otro sistema de coordenadas:
+    -   A es como nosotros definimos los basis vectors de otro sistema de coordenadas en nuestro sistema
+    -   entonces, aplicamos M, la transformación escrita "en nuestro lenguaje"
+    -   A\^-1 se aplica para volver a traducirlo al sistema de coordenadas "original"
+
+### Probabilidad
+
+-   distribuciones y poco más, ya que no quiero que sea una sección demasiado larga.
+
+### Propiedades de los estimadores
+
+-   insesgadez
+
+-   eficiencia
+
+-   consistencia (la más importante)
+
+### Teorema Central del Límite
+
+mencionar video de 3B1B: <https://www.youtube.com/watch?v=zeJD6dqJ5lo>
+
+Casi siempre estimamos formas más o menos complejas de la media
+
+E[y|X] = X\beta
+
+el teorema central del límite garantiza que los estimadores MCO son aproximadamente normales en muestras grandes, independientemente de la distribución de los errores, lo que hace que la normalidad de los residuos sea irrelevante asintóticamente

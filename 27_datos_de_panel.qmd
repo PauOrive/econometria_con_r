@@ -1,0 +1,15 @@
+
+**Capítulo 7 — Datos de panel** Estructura del dato longitudinal. El problema de la heterogeneidad no observada. Efectos fijos (within-group) y su lectura causal. Efectos aleatorios. El test de Hausman. Arellano-Bond para dinámicas con endogeneidad. Conexión explícita con DiD: el panel como sustrato de muchas estrategias causales.
+
+"La conexión con potential outcomes en panel data la puedes hacer de forma elegante diciendo que el efecto fijo individual captura todo el conjunto de características no observadas e invariantes del individuo, que en el lenguaje de potential outcomes serían confounders que afectan tanto al tratamiento como al outcome. Al eliminarlos, la variación que explotas es mucho más cercana a una comparación válida"
+
+"Lo que es específico de panel data como estrategia de estimación son los estimadores que explotan la dimensión longitudinal: efectos fijos, efectos aleatorios, Arellano-Bond. Estos estimadores existen precisamente porque tienes múltiples observaciones del mismo individuo, y eso te permite controlar por heterogeneidad no observada de una forma que no puedes hacer con sección cruzada.
+
+Por eso creo que la estructura más limpia es tener un capítulo de panel data dentro del bloque de econometría, no de inferencia causal, pero siendo explícito en ese capítulo sobre cuándo los estimadores de panel tienen una lectura causal y cuándo no. Así evitas el problema que señalas: no estás diciendo que panel data sea equivalente a DiD o RDD, sino que es un conjunto de técnicas con sus propios supuestos que en ciertos contextos permiten hacer inferencia causal. Y luego en el capítulo de DiD puedes recordar al lector que DiD típicamente usa datos de panel y remitirle al capítulo anterior para la mecánica del estimador."
+
+-   WG o DVLS
+
+-   Arellano-Bover, Arellano-Bond (GMM)
+
+-   ser explícito sobre cuando se pueden interpretar como causales y cuando no
+

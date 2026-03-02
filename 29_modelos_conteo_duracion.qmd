@@ -1,0 +1,7 @@
+**Capítulo 9 — Modelos de conteo y duración** incluir aquí los modelos de conteo (poisson), gamma y de supervivencia. Explicar por qué es mejor usar estos modelos que regresiones o MCO
+
+-   Poisson puede estimarse tanto por MLE como por GMM (o más precisamente, por pseudo-MLE o QMLE). Cuando usas MLE para Poisson estás asumiendo que la variable dependiente sigue efectivamente una distribución Poisson, es decir, que la media es igual a la varianza (el supuesto de equidispersión). En la práctica este supuesto se viola con frecuencia porque los datos de conteo suelen tener sobredispersión, es decir, la varianza es mayor que la media.
+
+    Ahí es donde entra GMM: puedes estimar los parámetros de un modelo tipo Poisson imponiendo solo la condición de momentos sobre la media condicional, sin asumir nada sobre la varianza. Esto es lo que a veces se llama Poisson QMLE o Poisson PML, y tiene la propiedad muy conveniente de que los coeficientes son consistentes aunque la distribución verdadera no sea Poisson, siempre que hayas especificado bien la media condicional.
+
+    Para el libro esto tiene una implicación pedagógica interesante: Poisson puede aparecer en el capítulo 9 como ejemplo de que MLE y GMM no son siempre métodos alternativos que compiten, sino que a veces el mismo modelo puede estimarse con ambos dependiendo de los supuestos que estés dispuesto a hacer. Es un momento natural para que el lector entienda la diferencia práctica entre los tres métodos de estimación que introdujiste en el capítulo 1.

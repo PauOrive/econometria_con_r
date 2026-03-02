@@ -1,0 +1,21 @@
+**Capítulo 6 — Regresión con variable dependiente limitada** MLE como método de estimación general. Modelos de variable binaria: logit y probit (son no lineales!!). Interpretación de los efectos marginales. Modelos multinomiales. Modelos Tobit para variables censuradas. Breve mención al modelo de Heckman para selección muestral.
+
+### regresión logística
+
+glm con family = binomial
+
+pasar de prob a clasificación, si es \[0, 1\] fácilmente con round()
+
+odds ratio es prob it happens / prob it doesn't happen
+
+-   odds above 1, 1 more likely than 0; below 1 otherwise
+
+-   log(odds_ratio) para hacerlo lineal
+
+Bueno, realmente aquí la idea sería incluir tanto modelos de regresión con variable binaria (logit y probit) como multinominal
+
+-   quizás también Tobit
+
+Poner émfasis en que, a pesar de que a menudo no se les presta mucha atención, a la práctica son técnicas muy usadas para caracterizar individuos (e.g. qué factores hacen más probable que una persona genere una baja en el próximo año)
+
+-   MLE dado que conocemos la distribución (en los binomials, no?)

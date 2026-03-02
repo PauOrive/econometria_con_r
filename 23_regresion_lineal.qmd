@@ -1,0 +1,238 @@
+# La regresión lineal
+
+## Resumen
+
+1.  La forma canónica y su interpretación como media condicional.
+2.  Conceptos básicos: grados de libertad, errores estándar, etc.
+3.  Derivación del estimador MCO.
+4.  Los supuestos del modelo.
+5.  Variables categóricas como predictores, y aquí la conexión con ANOVA.
+6.  La descomposición de Oaxaca-Blinder como aplicación.
+
+*Claramente hay que reordenar todo esto*
+
+INTRO (repite un poco cosas del cap. 1 de esta parte, pero ya está bien)
+
+El argumento central es que la regresión no es una técnica entre muchas, sino el lenguaje común de la econometría. Prácticamente todas las técnicas causales que verás en el bloque siguiente son extensiones, generalizaciones o casos especiales de la regresión lineal: un DiD es una regresión con una interacción, una RDD es una regresión con un umbral, variables instrumentales es una regresión en dos etapas. Si el lector no tiene una comprensión sólida de qué es lo que estima una regresión, qué significan los supuestos y cómo se construye la inferencia, los capítulos de técnicas causales se vuelven recetas de cocina que se aplican sin entender. Ese es el argumento más fuerte y es el que yo pondría primero.
+
+El segundo argumento, que está implícito en tus notas, es que la regresión es insustituible en la práctica aplicada. No porque sea la técnica con mayor poder predictivo, sino porque combina interpretabilidad, flexibilidad y un marco de inferencia bien desarrollado. En evaluación de políticas, en economía laboral, en economía de la salud, la regresión sigue siendo el caballo de batalla diario.
+
+El tercer argumento es más pedagógico: la regresión es el contexto donde se introducen los conceptos que luego reaparecen en todo el libro, como endogeneidad, supuestos de identificación, errores estándar, inferencia. Aprenderlos en el contexto más simple posible tiene mucho sentido antes de encontrarlos en contextos más complejos".
+
+### La forma canónica
+
+y = X \* beta + e
+
+-   Mencionar que empezamos con la forma más básica de regresión: lineal con variable dependiente, pero describir y como vector, X como matriz y beta como vector
+-   Añadir aquí el código para programarla con R??
+
+Una regresión es, fundamentalmente, un modelo de **media condicional**
+
+Aproximación lineal al proceso que genera los datos
+
+combinación lineal de los componentes: qué se puede y qué no se puede hacer
+
+La ventaja de controlar por covariables frente a correlaciones bivariadas
+
+-   En términos económicos, queremos medir cómo cada variable afecta a yyy, identificar determinantes o generar predicciones.
+
+-   En términos geométricos, estamos buscando los coeficientes **β** que permiten construir el vector y como combinación lineal de las columnas de X.
+
+### Conceptos básicos 
+
+(no sé si hablo de ello en otra parte, pero podría rescatar cosas de las que se comentan más abajo)
+
+-   Grados de libertad
+
+    -   si n = k, no hay grados de libertad, por lo que el ajuste es perfecto. No podemos estimar la varianza del error, de modo que no podemos hacer inferencia.
+
+-   Errores
+
+    -   ...
+
+-   Model fit
+
+    -   ...
+
+### Derivación de MCO
+
+Quizás no merece la pena poner aquí MCO, a menos que justifique mi elección.
+
+-   Por ejemplo, porque es buena idea empezar por el método de estimación más básico; pero quizás merece la pena explicar los otros 2 también...
+
+-   Según Claude, era mejor introducir esas metodologías cuando hablemos
+
+Relación con los conceptos que he explicado en la parte de fundamentos matemáticos \> algebra lineal
+
+-   "Sobre MCO y el álgebra lineal, sí, la conexión es directísima y es probablemente la más bonita de toda la econometría.
+
+    El problema de MCO es geométricamente muy puro: tienes un vector y (tu variable dependiente) en un espacio de n dimensiones, y tienes una matriz X cuyas columnas generan un subespacio lineal. Como en general y no vive en ese subespacio, buscas el punto del subespacio más cercano a y, es decir, su proyección ortogonal. El estimador MCO es exactamente esa proyección, y la fórmula clásica β = (X'X)⁻¹X'y no es más que la expresión algebraica de esa proyección ortogonal. Los residuos son el vector que va desde la proyección hasta y, y por construcción son ortogonales a todas las columnas de X, que es exactamente la condición de primer orden de la minimización.
+
+    Eso significa que todo lo que importa en MCO tiene una traducción geométrica inmediata.
+
+    -   El rango de X determina si la proyección está bien definida,
+
+    -   la multicolinealidad perfecta significa que dos columnas de X apuntan en la misma dirección y el subespacio colapsa, y
+
+    -   el R² es simplemente el cuadrado del coseno del ángulo entre y y su proyección.
+
+        MLE y GMM en cambio no tienen esa conexión geométrica tan directa. MLE vive en el mundo de la probabilidad y la teoría de la información, y GMM en el mundo de los momentos y la teoría asintótica. Por eso tiene mucho sentido que en el capítulo de álgebra lineal construyas la intuición geométrica pensando ya en MCO, y que el lector llegue al capítulo de regresión con esa imagen mental de la proyección ya formada.
+
+-   [https://stats.stackexchange.com/questions/123651/geometric-interpretation-of-multiple-correlation-coefficient-r-and-coefficient?](https://stats.stackexchange.com/questions/123651/geometric-interpretation-of-multiple-correlation-coefficient-r-and-coefficient?utm_source=chatgpt.com) añadir esta imagen o una similar, aquí o más abajo
+
+#### Cuándo existe solución exacta
+
+Si XX es cuadrada e invertible:
+
+β=X−1y\beta = X\^{-1} yβ=X−1y
+
+En ese caso, existe una única solución exacta.\
+Desde la perspectiva geométrica, estamos “deshaciendo” la transformación lineal.
+
+Pero esto exige que:
+
+-   las columnas sean linealmente independientes,
+
+-   det⁡(X)≠0\det(X) \neq 0det(X)=0,
+
+-   X tenga rango completo
+
+Si det⁡(X)=0\det(X)=0det(X)=0, hay dependencia lineal → no existe inversa.\
+Eso no implica automáticamente que no haya solución, pero:
+
+-   puede haber infinitas soluciones (si yyy está en el subespacio),
+
+-   o ninguna (si yyy queda fuera)
+
+#### El caso real en econometría
+
+#### Normalmente X **no es cuadrada** (tenemos muchas observaciones y pocas variables). Entonces:
+
+-   No existe X−1X\^{-1}X−1.
+
+-   El sistema suele estar sobredeterminado.
+
+-   yyy casi nunca pertenece exactamente al subespacio generado por las columnas de XXX.
+
+-   Aquí aparece el verdadero rol de la econometría:
+
+> No buscamos resolver exactamente Xβ=yX\beta = yXβ=y, sino encontrar la mejor aproximación posible.
+
+Geométricamente:
+
+-   Las columnas de XXX generan un subespacio.
+
+-   OLS proyecta yyy sobre ese subespacio.
+
+-   El residuo es ortogonal a las columnas de XXX.
+
+-   La solución es:
+
+β\^=(X′X)−1X′y\hat{\beta} = (X'X)\^{-1}X'yβ\^​=(X′X)−1X′y
+
+Siempre que XXX tenga rango completo (no multicolinealidad perfecta).
+
+### Supuestos del modelo
+
+#### Exogeneidad
+
+E\[ε∣X\]=0E\[\varepsilon \mid X\] = 0E\[ε∣X\]=0 (exogeneidad),
+
+#### Distribución de los errores
+
+error vs residuo
+
+-   El error ε\varepsilonε \*\*no es observable\*\*
+
+-   El residuo ε^=Y−Xβ^\hat\varepsilon = Y - X\hat\betaε\^=Y−Xβ\^ es un objeto estimado. Estos existen por errores en la especificación y por aleatoridad fundamental en los datos (la regresióne stima efectos de media, pero la realidad es diversa)
+
+-   los tests sobre residuos son tests conjuntos (modelo + normalidad).
+
+### Cómo se especifican los covariates
+
+variables binarias, categóricas, etc.
+
+### Tipos de regresión según el tipo de variable y
+
+-   simple/múltiple no tiene mucho sentido distinguirlo, ya que casi siempre vamos a realizar regresiones múltiples
+
+-   si y es binaria: regresión logística
+
+-   si y es numerica: regresión lineal
+
+***de algún modo aquí me he centrado en el caso numérica, no?***
+
+"ANOVA es un caso particular de regresión donde el predictor es categórico, y demostrarlo empíricamente en R con un ejemplo numérico es muy pedagógico. Le dedicas un par de páginas, muestras que los resultados son idénticos, y el lector entiende de golpe por qué la regresión es tan general. También puedes aprovechar para mencionar que esto explica por qué en econometría moderna raramente se usa ANOVA como técnica independiente"
+
+---
+
+### Programar la regresión
+
+-   lm(y \~ X -o x1 + x2 + x3 ..., data = dataset)
+
+-   lm(y \~ x1 + 0, data = dataset) no incluye intercept
+
+-   también es posible glm con family = gaussian
+
+-   **transformar variables**: I(...), sqrt()...
+
+    -   al final quizás tendremos que "deshacer" las transformaciones
+
+-   predict(model, newdata) para hacer predicciones
+
+    -   hay que ir con cautela con las extrapolaciones, puesto que como más alejadas esten de los datos originales, menos validez tienen.
+
+    -   Linear models don't know what is possible or not in real life. That means that they can give you predictions that don't make any sense when applied to your data. You need to understand what your data means in order to determine whether a prediction is nonsense or not.
+
+-   summary()
+
+-   coeficients() o coef()
+
+-   fitted() calcula los y hat (diferente de predict, porque usa el dataset existente, no newdata)
+
+-   residuals()
+
+-   librería broom para hacer los modelos más legibles
+
+    -   tidy() para ver coeficientes con std errors y p-value
+
+    -   augment() devuelve resultados a nivel de observación (fitted, resid...)
+
+    -   glance() model-level results (performance metrics)
+
+### visualizar los datos antes de correr regresions
+
+(ver capítulo de exploratory data analysis)
+
+### model fit
+
+R-squared: qué es alto o bajo depende del contexto
+
+Residual SE (RSE) - sigma en glance(); es mejor para comparar entre modelos
+
+RMSE - ambas métricas en este [video](https://campus.datacamp.com/courses/introduction-to-regression-in-r/assessing-model-fit-3?ex=1)
+
+para visualizar: scatter plot de fitted vs residuals (ggfortify package?)
+
+-   idealmente, el fit de ese gráficod ebería estar entorno a y = 0
+
+-   Q-Q plot: relacionado con la normalidad de los residuos (comprobar si realmente es importante!)
+
+    -   x = theoretical quantiles; y = standardized residuals
+
+    -   la idea es que todos los puntos estén en la línea diagonal
+
+-   scale-location:
+
+    -   x = fitted values; y = sqrt(standardized residuals)
+
+*leverage* para detectar residuals - 2 tipos: función hatvalues, o .hat en augment()
+
+-   Observations with a large distance to the nearest metro station have the highest leverage, because most of the observations have a short distance, so long distances are more extreme.
+-   valores extremos de X
+-   valores alejados de la fitted line
+
+*influence:* cómo cambia el resultado del modelo si eliminamos un data point
+
+-   Observations with predictions far away from the trend line have high influence, because they have large residuals and are far away from other observations.
+-   cook's distance: cooks.distance o .cooksd en augment()
