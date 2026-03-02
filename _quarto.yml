@@ -11,27 +11,41 @@ book:
   repo-actions: [edit, issue]
   chapters:
     - index.qmd
-    # - part: "Introducción"
-    #   chapters:
-    #     - 01_intro_al_libro.qmd
-    #     - 02_intro_a_r.qmd
-    # - part: "Importar, manipular y visualizar datos"
-    #   chapters:
-    #     - 11_importar_datos.qmd
-    #     - 14_visualizacion_estatica.qmd
-    #     - 15_visualizacion_interactiva.qmd
-    #     - 16_datos_geoespaciales.qmd
-    # - part: "Análisis econométrico"
-    #   chapters:
-    #     - 21_intro_econometria.qmd
-    #     - 22_regresion_lineal.qmd
-    #     - 23_analisis_causal.qmd
-    # - part: "Ciencia de datos"
-    #   chapters:
-    #     - 31_knn.qmd
-    #     - 32_random_forest.qmd        
-    # 
-    # - references.qmd
+    - intro_al_libro.qmd
+    - part: "Importar, manipular y visualizar datos"
+      chapters:
+        - 10_intro_a_r.qmd
+        - 11_importar_datos.qmd
+        - 12_exploracion_inicial.qmd
+        - 13_manipulacion_datasets.qmd
+        - 14_visualizacion_estatica.qmd
+        - 15_visualizacion_interactiva.qmd
+        - 16_datos_geoespaciales.qmd
+    - part: "Fundamentos de econometría"
+      chapters:
+        - 21_marco_conceputual.qmd
+        - 22_fundamentos_matematicos_estadisticos.qmd
+        - 23_regresion_lineal.qmd
+        - 24_inferencia_y_tests.qmd
+        - 25_buenas_practicas_especificacion.qmd
+        - 26_logit_probit.qmd
+        - 27_datos_de_panel.qmd
+        - 28_series_temporales.qmd
+        - 29_modelos_conteo_duracion.qmd
+    - part: "Inferencia causal"
+      chapters:
+      # reordenar
+        - 31_marco_conceptual.qmd
+        - 32_variables_instrumentales.qmd 
+        - 33_rct.qmd
+        - 34_matching.qmd
+        - 35_diff_in_diff.qmd
+        - 36_control_sintetico.qmd
+        - 37_regresion_discontinuidad.qmd       
+    #- part: "Data Science"
+     # chapters:
+      # aún por definir
+    - references.qmd
 
 bibliography: references.bib
 
