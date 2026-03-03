@@ -12,6 +12,8 @@ odds ratio es prob it happens / prob it doesn't happen
 
 -   log(odds_ratio) para hacerlo lineal
 
+DC tiene una tabla muy interesante en el video de https://campus.datacamp.com/courses/introduction-to-regression-in-r/simple-logistic-regression?ex=5&skip_variants_modal=true en el que se compara cómo de preciso y fácil de interpretar es cada métrica asociada a los resultados ed una logistic regression
+
 Bueno, realmente aquí la idea sería incluir tanto modelos de regresión con variable binaria (logit y probit) como multinominal
 
 -   quizás también Tobit
@@ -19,3 +21,5 @@ Bueno, realmente aquí la idea sería incluir tanto modelos de regresión con va
 Poner émfasis en que, a pesar de que a menudo no se les presta mucha atención, a la práctica son técnicas muy usadas para caracterizar individuos (e.g. qué factores hacen más probable que una persona genere una baja en el próximo año)
 
 -   MLE dado que conocemos la distribución (en los binomials, no?)
+
+FIT: confusion matrix (esto realmente encaja mejor en data science... clasification!)
