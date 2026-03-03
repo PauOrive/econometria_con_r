@@ -4,7 +4,7 @@
 
 1.  El objetivo de la econometría / empieza por aquí
 
-2.  Predicción vs. inferencia causal. / cuál es tu objetivo
+2.  Descriptivo vs. Predicción vs. inferencia causal. / cuál es tu objetivo
 
 3.  Los tres ejes: especificación, identificación, inferencia.
 
@@ -36,11 +36,16 @@ Antes de ponerte a hacer tests Shapiro-Wilk para comprobar si tus datos siguen u
 
 Inferencia causal vs predicción (siguiendo los apuntes de Biscarri)
 
-tenemos un conjunto de variables independientes que creemos que de alguna forma están relacionadas con los valores de la variable dependiente.
+O incluso mejor: descriptivo vs predicción vs inferencia causal (puedo citar este artículo: [link](https://www.tandfonline.com/doi/full/10.1080/09332480.2019.1579578#d1e116))
 
--   ¿Qué pasaría con Y si yo interviniera en X?
+"La distinción más citada hoy en metodología empírica es la de Hernán, Hsu & Healy (2019) — muy influyente en epidemiología y econometría moderna — que propone exactamente tres tipos de preguntas:"
 
--   ¿Qué valor tomará Y dado X?
+Descriptiva — ¿Qué está pasando? (¿Cuánto gana de media un economista?)
+Predictiva — ¿Qué valor esperamos para un nuevo caso? (¿Cuánto ganará este graduado?)
+Causal — ¿Qué pasaría si intervenimos? (¿Cuánto aumentaría el salario si hiciera un máster?)
+
+quizás podría hacer descriptiva vs explicativa/inferencial y luego las dos subramas
+insistir en explicar las diferencias: podemos 
 
 -   predicción -\> mejor data science; nos obsesiona la capacidad de predecir out of sample.
 
@@ -48,28 +53,17 @@ tenemos un conjunto de variables independientes que creemos que de alguna forma 
 
 *introducir meme [strong vs weak](https://www.kapwing.com/explore/strong-dog-vs-weak-dog-meme-template)*
 
-### Los 3 ejes (o 4!)
+### Los 4 ejes
 
 -   **Especificación:**
 
-    -   A ver cómo queda esto para que se disntinga bien de identificación; quizás reordenar las dos clasificaciones que incluyo aquí
-
-    -   Es **estructural / estadística**, y responde a: *¿Cómo creo que se generan los datos, más allá del parámetro que me interesa?*
+    -   Es **estructural / estadística**, y responde a: ¿cómo creo que funciona el mundo?
 
         -   modelos lineales vs no lineales
+
             -   un modelo lineal es lineal en los parámetros (no necesariamente en las variables), y eso tiene implicaciones enormes en cómo se estima y cómo se interpreta. Ahí también puedes justificar por qué los modelos lineales ocupan tanto espacio en el libro: no porque sean siempre los más precisos, sino porque son aproximaciones sorprendentemente buenas en muchos contextos y tienen propiedades analíticas que los hacen tractables.
+
         -   incluir polinomios u otras transformaciones
-
-    -   3 metodologías generales (sólo introducción con la intuición) - quizás merece una sección independiente (el 4o eje)
-
-        -   **MCO**: minimiza suma de cuadrados. Requiere muy pocos supuestos pero es el menos flexible.
-        -   **MV/ML**: maximiza la verosimilitud. Requiere especificar completamente la distribución de Y, lo cual es más supuestos pero produce estimadores eficientes si la distribución está bien especificada.
-        -   **GMM**: impone solo que ciertas condiciones de momentos sean cero en la población, E\[g(y,θ)\] = 0. No requiere especificar ninguna distribución completa. MCO y MV son casos especiales de GMM con condiciones de momentos particulares.
-        -   Sería interesante que, cuando desarrolle más cómo funcionan, explique un poco "qué hay detrás de los commandos que corremos" (closed-form solutions, algoritmos, etc.) es decir, tratar de acercar el concepto a "si lo hicieras a mano, ¿cómo sería?"
-
-    -   Aquí decides (ver dónde encaja esto mejor):
-
-        -   Forma funcional (lineal, no lineal).
 
         -   Dinámica temporal, dependencia, heterogeneidad.
 
@@ -79,15 +73,34 @@ tenemos un conjunto de variables independientes que creemos que de alguna forma 
 
     -   La distribución no es relevante: en econometría casi nunca partimos de una población normal (e.g. estudio de salarios, otros).
 
+    -   La especificación incluye decisiones sobre **qué variables entran en el modelo**, que es donde aparece el riesgo de sesgo por variable omitida. Eso crea un puente natural hacia identificación sin confundir los dos ejes.
+
+    -   tests de validacion
+
+        -   Preguntas del tipo: ¿está el modelo bien especificado? No preguntan sobre el valor de los parámetros sino sobre si el modelo en sí es adecuado. Ejemplos típicos son el test de Ramsey (RESET) para forma funcional, el test de Breusch-Pagan o White para heterocedasticidad, el test de Hausman para endogeneidad, o los tests de raíz unitaria en series temporales.
+
 <!-- -->
 
--   **Identificación**: cómo vamos a asegurarnos que aquello que estimamos puede tener una identificación causal.
+-   **Identificación**: cómo vamos a asegurarnos que aquello que estimamos puede tener una identificación causal. Responde a: ¿cómo voy a aislar el efecto que me interesa?
 
     -   credibility revolution
     -   correlación vs causalidad
     -   marco conceptual y técnicas principales merecen un capítulo entero
 
--   **Inferencia**: es probabilistica, dados nuestros datos y los parámetros que hemos estimado, *qué sabes sobre la precisión de lo estimado*
+<!-- -->
+
+-   **Técnica de estimación**
+
+    -   3 metodologías generales (sólo introducción con la intuición):
+
+        -   **MCO**: minimiza suma de cuadrados. Requiere muy pocos supuestos pero es el menos flexible.
+        -   **MV/ML**: maximiza la verosimilitud. Requiere especificar completamente la distribución de Y, lo cual es más supuestos pero produce estimadores eficientes si la distribución está bien especificada.
+            -   Técnicamente es la distribución del **error**, no de Y directamente, aunque en la práctica es equivalente dado X. Vale la pena ser preciso aquí precisamente porque es la confusión que queremos desactivar desde el principio.
+        -   **GMM**: impone solo que ciertas condiciones de momentos sean cero en la población, E\[g(y,θ)\] = 0. No requiere especificar ninguna distribución completa. MCO y MV son casos especiales de GMM con condiciones de momentos particulares.
+        -   Sería interesante que, cuando desarrolle más cómo funcionan, explique un poco "qué hay detrás de los commandos que corremos" (closed-form solutions, algoritmos, etc.) es decir, tratar de acercar el concepto a "si lo hicieras a mano, ¿cómo sería?"
+        -   la elección de técnica no es independiente de la especificación ni de los supuestos, lo cual es un punto pedagógico importante. OLS es BLUE bajo ciertos supuestos, si los supuestos cambian, cambia el estimador óptimo.
+
+-   **Inferencia**: es **probabilistica**, dados nuestros datos y los parámetros que hemos estimado, *qué sabes sobre la precisión de lo estimado*
 
     -   La inferencia **no “arregla” el estimador**, solo cuantifica el nivel de incertidumbre *dado* el estimador.
 
@@ -99,7 +112,15 @@ tenemos un conjunto de variables independientes que creemos que de alguna forma 
 
         -   Errores estándar (robustos, clusterizados, HAC).
 
-        -   Tests, intervalos de confianza, bootstrap.
+        -   bootstrap
+
+        -   Tests, intervalos de confianza, .
+
+            -   **Tests de hipótesis sobre parámetros**
+                Preguntas del tipo: ¿es β₂ = 0? ¿son β₂ = β₃? Asumen que el modelo está bien especificado y dentro de ese modelo preguntan sobre el valor de los parámetros. Son el núcleo de la inferencia clásica — t-tests, F-tests, intervalos de confianza.
+
+                -   diferentes a los tests de validación del modelo, aunque a veces se solapan (e.g. Hausman)
+
 
 ### Tipos de datos (1)
 
@@ -111,7 +132,8 @@ tenemos un conjunto de variables independientes que creemos que de alguna forma 
 
 -   datos experimentales
 -   datos observacionales
--   relevancia en cuanto a qué técnica escoger (quizás lo puedo insertar en el "empezar por aquí" Series temporales
+-   relación con la identification strategy: "how you use observational data to approximate a real experiment" (MHE, p. 7)
+-   relevancia en cuanto a qué técnica escoger 
 
 ### El papel de la regresión
 

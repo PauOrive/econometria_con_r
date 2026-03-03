@@ -4,11 +4,69 @@ Quizás merece la pena dedicar un capítulo (corto) a la idea de inferencia caus
 
 explicar a fondo la intición de los potential outcomes
 
--   el problema fundamental de la causalidad (no observamos lo que hubiera pasado si no hubiera habido tratamiento)
+-   el problema fundamental de la causalidad (no observamos lo que hubiera pasado si no hubiera habido tratamiento): nunca observamos ambos potential outcomes para el mismo individuo
 
--   estimadores que conseguiremos: ATE/ATT/LATE
+-   potential outcomes framework:
 
-Enumerar las técnicas más utilizadas, de modo que, a partir de aquí, hay un capítulo para cada una de estas técnicas.
+    -   Di treatment dummy: 1 if treated, 0 if not
+
+    -   Y is the outcome of interest
+
+        -   nosotros observamos Yi, que corresponde con Y1i if Di = 1 and Y0i if Di = 0
+
+        -   la notación es un poco lio al principio, así que animar al lector a entender que siempre partimos de lo observado: NO HAY Y1i ni Y01, sólo Yi.
+
+        -   A partir de ahí, tratamos de pasar de lo observado a los potential outcomes, proque si conseguimos pasar de lo observado a uno de los estimadores que defino más abajo, habremos conseguido estimar una relación causal, como si de un experimento aleatorio se tratara.
+
+            -   conocemos Yi y Di, pero para cada individuo, un caso es observado y el otro es contrafactual. Por ejemplo, si Juan fue al hospital, Y1i es observado, Y0i es contrafactual. Si Pepe no fue al hospital, Y0i es observado, Y1i es contrafactual.
+
+        -   Esto lo podemos reescribir como Yi = Y1iDi + (1-Di)Y0i = Y1iDi + Y0i - Y0iDi = Y0i + (**Y1i - Y0i**)Di
+
+            -   Y1i - Y0i is the causal effect para el individuo
+
+            -   Treatment can be different for different people (a algunos les puede ayudar mucho ir al hospital, a otros no tanto). Pero como no vemos el contrafactual en cada persona, debemos calcular la diferencia en términos medio
+
+            -   Reformular en términos de Expectation - selection bias
+
+                -   E\[Yi\|Di = 1\] - E\[Yi\|Di = 0\] = E\[Y1i\|Di = 1\] - E\[Y0i\|Di = 0\]
+
+                -   Sumando y restando E\[Y01\|Di = 1\], obtenemos
+
+                -   E\[Y1i\|Di = 1\] - E\[Y0i\|Di = 1\] + E\[Y0i\|Di = 1\] - E\[Y0i\|Di = 0\]
+
+                -   donde la primera resta es el ATT; podemos agrupar en E\[Y1i - Y0i\|Di = 1\]: la diferencia entre la salud de los hospitalizados vs qué les habría pasado sino se hubieran hospitalizado
+
+                -   la segunda el selection bias: es la diferencia en la salud si nadie hubiera ido al hospital entre el grupo que fue y el que no fue
+
+    -   Estimadores de promedio:
+
+        -   **ATE** — Average Treatment Effect: E\[Y₁ᵢ − Y₀ᵢ\]
+
+        -   **ATT** — Average Treatment Effect on the Treated: E\[Y₁ᵢ − Y₀ᵢ \| Dᵢ = 1\]
+
+        -   **LATE** — Local Average Treatment Effect: el que identifican los instrumentos, solo para los compliers
+
+    -   Todas las metodologías tratan de resolver este problema
+
+-   benchmark ideal: RCT (aunque habría que mencionar el punto del fully blocked experiment)
+
+    -   **random assignment** of Di hace que Di sea independiente de los potential outcomes:
+
+    -   \*para el mathematical chapter, enseñar esperanza condicionada y cuando dos cosas son independientes.
+
+        -   E\[Yi\|Di = 1\] - E\[Yi\|Di = 0\] = E\[Y1i\|Di = 1\] - E\[Y0i\|Di = 0\]
+
+        -   Si Di es aleatorio, entonces E\[Yi\|Di = 0\] = E\[Yi\|Di = 1\], por lo que: E\[Y0i\|Di = 0\] = E\[Y0i\|Di = 1\]
+
+        -   Entonces, E\[Y1i\|Di = 1\] - E\[Y0i\|Di = 0\] = E\[Y1i\|Di = 1\] - E\[Y0i\|Di = 1\] = E\[Y1i - Y0i\|Di = 1\] -\> ATT
+
+        -   Pero como Yi es independiente de Di, entonces,
+
+            -   La esperanza condicional E\[Yᵢ \| Dᵢ = d\] responde a: **"¿cuál es el valor esperado de Y entre los individuos que tienen D = d?"**
+
+                Si D e Y son independientes, saber el valor de D no te da ninguna información sobre Y. La distribución de Y es la misma en todos los subgrupos definidos por D, y por tanto condicionar en D no cambia nada:
+
+    Enumerar las técnicas más utilizadas, de modo que, a partir de aquí, hay un capítulo para cada una de estas técnicas.
 
 ## Variables instrumentales
 
