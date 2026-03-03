@@ -36,6 +36,27 @@
 
 -   distribuciones y poco más, ya que no quiero que sea una sección demasiado larga.
 
+### Esperanza
+
+E(X)
+
+-   básicamente, una generalización de una media ponderada
+-   és el first moment
+-   depende de si X es una variable continua o discreta, tenemos
+    -   continua: E(X) = integral[x * f(x)] dx donde f(x) es la probability density function
+    -   discreta: E(X) = SUM[x*p(x)] donde p(x) es la probability mass function
+    -   en ambos casos, deben de ser absolutely covnergent (i.e. finite)
+-   Propiedades (incluir pruebas a ser posible, ni que sea en el apendice):
+    -   E(cf(X)) = c * E(f(X))
+    -   E(f(X) + a) = E(f(X)) + a
+    -   E(L(X)) = L(E(X)); L is a linear function aX+b, then E(aX+b) = a*E(X) + b
+    -   E(X + Y) = E(X) + E(Y)
+    -   E(XY) = E(X)*E(Y) if X, Y are independent
+    -   E(X) = E(E(X|Y)) - Law of iterated expectations
+    -   Jensen's inequality for non-lienar expectations?
+    -   Si X >= 0, entonces E(X) también >= 0
+    -   Si 
+
 ### Propiedades de los estimadores
 
 -   insesgadez
