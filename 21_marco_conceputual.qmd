@@ -18,19 +18,47 @@
 
 Antes de ponerte a hacer tests Shapiro-Wilk para comprobar si tus datos siguen una distribución normal o ponerte a correr regresiones como si no hubiera un mañana, merece la pena parar y preguntarnos cuál es nuestro objetivo, de modo que podamos escoger la metodología más adecuada.
 
+La lógica pedagógica sería:
+
+1.  **Empiezas por la pregunta**: quieres entender la relación entre `Yi` y `Xi` en la población
+
+2.  **Introduces la CEF** como el objeto que captura esa relación de forma completamente general — sin asumir nada
+
+3.  **Demuestras que es el MMSE predictor** — no es una elección arbitraria, tiene una justificación formal
+
+4.  **Introduces la regresión lineal** como la mejor aproximación lineal a ese objeto — de nuevo con justificación formal, no por convención
+
+5.  **Y luego la estimación** — OLS, GMM, MLE son formas de aproximarte a ese objeto con datos
+
+
+Esquema aún más refinado:
+
+Nivel 0 — El problema general:
+Yi = f(Xi, theta) + ei — existe alguna relación entre Yi y Xi
+Bifurcación según el objetivo:
+En predicción te preocupa minimizar el error fuera de muestra — la regresión es una herramienta más entre muchas.
+En causalidad te preocupa interpretar theta como efectos de intervenciones — aquí la regresión tiene un papel central.
+Rama causal:
+
+La CEF E[Yi|Xi] formaliza qué es f(Xi, theta) en términos poblacionales
+Yi = E[Yi|Xi] + ei es la descomposición exacta, sin supuestos
+Yi = Xi'b + ei es la aproximación lineal, justificada formalmente
+Identificación causal — ¿puedo interpretar b causalmente? RCT, IV, etc.
+Estimación — OLS, GMM, MLE
+Inferencia — errores estándar, tests
+
+
 -   el objetivo siempre es **estimar algún parámetro**, que en la mayoría de los casos son "medias"
 
 -   población -\> muestra -\> estimador -\> extrapolación (añadir esquema)
 
--   forma canónica: y = f(X) – quizás directamente más abajo ald ecribir la regresión: y = Xbeta
+-   forma canónica: y = f(X, theta) – quizás directamente más abajo ald ecribir la regresión: y = Xbeta
 
 -   parámetros poblacionales vs parámetros estimados (y sus distribuciones)
 
 -   queremos capturar la esencia, no el ruido. parte del error es fundamental en la randomness de la realidad
 
 *mucho mejor revisar el contenido con Mostly Harmless Econometrics*
-
-*en cierto momento, quizás mejor ya saltar a un capítulo sobre la regresión (?)*
 
 ### Cuál es tu objetivo
 
