@@ -35,10 +35,17 @@
 ### Probabilidad
 
 -   distribuciones y poco más, ya que no quiero que sea una sección demasiado larga.
+-   quizás merece la pena ver este curso completo: https://www.youtube.com/playlist?list=PLMrJAkhIeNNR3sNYvfgiKgcStwuPSts9V 
+-   en las demostraciones matemáticas incluir sieeempre ejemplos (quizás en discrete es más fácil) 
+-   qué son las random variables: discrete & continuous 
+-   joint and marginal distributions
+
 
 ### Esperanza
 
-E(X)
+E[X]
+La intuición: E[...] es como una función que "aplana" la aleatoriedad y devuelve un número. Todo lo que esté dentro del operador es aleatorio; todo lo que salga es fijo.
+MHE propone 3 teoremas, no sé si es la mejor manera de ordenarlos, o si eso tendr´´ia que ir en "el modelo de regresión"
 
 -   básicamente, una generalización de una media ponderada
 -   és el first moment
@@ -46,16 +53,20 @@ E(X)
     -   continua: E(X) = integral[x * f(x)] dx donde f(x) es la probability density function
     -   discreta: E(X) = SUM[x*p(x)] donde p(x) es la probability mass function
     -   en ambos casos, deben de ser absolutely covnergent (i.e. finite)
+    -   expectation is a population concept
 -   Propiedades (incluir pruebas a ser posible, ni que sea en el apendice):
     -   E(cf(X)) = c * E(f(X))
     -   E(f(X) + a) = E(f(X)) + a
     -   E(L(X)) = L(E(X)); L is a linear function aX+b, then E(aX+b) = a*E(X) + b
+    -   E(f(X)|Xi) = f(Xi) porque cuando tenemos una función condicionada a la variable input, se convierte en una constante
+    -   E[f(Xi) * ei | Xi] = f(Xi) * E[ei | Xi]    
     -   E(X + Y) = E(X) + E(Y)
     -   E(XY) = E(X)*E(Y) if X, Y are independent
     -   E(X) = E(E(X|Y)) - Law of iterated expectations
+        -   Una forma de verlo intuitivamente: si quieres el salario medio de toda la población, puedes primero calcular el salario medio dentro de cada grupo educativo (eso es la CEF), y luego promediar esos grupos ponderando por cuánta gente hay en cada uno (eso es la esperanza exterior, incondicional sobre Xi). El resultado es el salario medio poblacional.
+    -   Var(Yi) = E[Yi^2] - E[Yi]^2
     -   Jensen's inequality for non-lienar expectations?
     -   Si X >= 0, entonces E(X) también >= 0
-    -   Si 
 
 ### Propiedades de los estimadores
 

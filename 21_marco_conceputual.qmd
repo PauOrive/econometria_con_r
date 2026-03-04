@@ -87,6 +87,10 @@ insistir en explicar las diferencias: podemos
     -   correlación vs causalidad
     -   marco conceptual y técnicas principales merecen un capítulo entero
 
+Problemas de identificación → ¿el objeto poblacional tiene la interpretación causal que quiero? ¿Estoy midiendo lo que creo que mido? Esto es pura teoría, no tiene nada que ver con el tamaño muestral.
+Problemas de estimación e inferencia → dado que sé lo que quiero medir, ¿cómo lo estimo bien con datos finitos? ¿Cuánta incertidumbre tengo?
+
+
 <!-- -->
 
 -   **Técnica de estimación**
