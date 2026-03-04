@@ -66,13 +66,75 @@ explicar a fondo la intición de los potential outcomes
 
                 Si D e Y son independientes, saber el valor de D no te da ninguna información sobre Y. La distribución de Y es la misma en todos los subgrupos definidos por D, y por tanto condicionar en D no cambia nada:
 
+            -   (en el capítulo de RCT he desarrollado un poco más la ecuación del RCT)
+
+        -   La regresión permite añadir covariates
+
+            -   el random assignment fue condicional: no se asignó a toda la muestra, sino que se hizo dentro de cada escuela (e.g. students attending shcools of different typoes (e.g. rural vs urban) were more or less likely to be assigned to a small class.
+
+                -   solution: including school fixed effects
+
+            -   añadir otros covariates no es esencial, si la muestra de cada grupo está balanceada, pero permite tener estimates más precisos, ya que disminuye la varianza residual
+
     Enumerar las técnicas más utilizadas, de modo que, a partir de aquí, hay un capítulo para cada una de estas técnicas.
 
-## Variables instrumentales
-
-teoría + cómo hacerlo con r
-
 ## RCT
+
+MHE: "The first question to ask about a randomized experiment is whether the randomization successfully balanced subjects' characteristics across the different treatment groups
+
+-   compare pretreatment features
+
+Causal effect can be obtained by comparing diff in means o mejor, mediante regresión, ya que controla por el efecto de otras variables
+
+dificultades: logistical difficulty, long durantion and potentially high costs
+
+-   puesto en modo de regresión:
+
+    -   Yi = Y0i + (**Y1i - Y0i**)Di
+
+    -   (sumamos y restamos E(Y0i) para poder interpretar los términos de la ecuación)
+
+    -   Yi = E(Y0i) + (Y1i - Y0i)Di + Y0i - E(Y0i)
+
+    -   Yi = alpha + beta\*Di + etai
+
+    -   E(Yi\|Di = 1) = alpha + beta + E(Y0i\|Di = 1)
+
+    -   E(Yi\|Di = 0) = alpha + E(Y0i\|Di = 0)
+
+    -   E(Yi\|Di = 1) - E(Yi\|Di = 0) = beta + **E(etai\|Di = 1) - E(etai\|Di = 0)**
+
+        -   `alpha = E(Y0i)` → el outcome promedio sin tratamiento
+
+        <!-- -->
+
+        -   `beta = Y1i - Y0i` → el efecto del tratamiento (asumen que es constante para simplificar)
+
+        <!-- -->
+
+        -   `etai = Y0i - E(Y0i)` → **la desviación del individuo i respecto a la media**, es decir, la heterogeneidad individual
+
+    -   El selection bias depende de la correlación entre eta y el tratamiento. Es decir, si hay condiciones del individuo que afectan a en qué grupo vas, entonces hay selección bias.
+
+    -   En un RCT, puesto que Di está asignado aleatoriamente,
+
+    -   **E(etai\|Di = 1) = E(etai\|Di = 0)**, de modo que **E(etai\|Di = 1) - E(etai\|Di = 0) = 0**
+
+    -   E(Yi\|Di = 1) - E(Yi\|Di = 0) = beta, de modo que beta recoge el causal effect
+
+    -   También, nótese que E(Y0I) es una constante:
+
+        -   E(etai \| Di = 1) = E(Y0i - E(Y0i) \| Di = 1)
+            = E(Y0i \| Di = 1) - E(Y0i)
+
+        -   E(etai \| Di = 0) = E(Y0i - E(Y0i) \| Di = 0)
+            = E(Y0i \| Di = 0) - E(Y0i)
+
+        -   E(etai \| Di = 1) - E(etai \| Di = 0) = E(Y0i \| Di = 1) *- E(Y0i)* - \[E(Y0i \| Di = 0) - *E(Y0i)\]*
+
+            = E(Y0i \| Di = 1) - E(Y0i \| Di = 0)
+
+## Variables instrumentales
 
 teoría + cómo hacerlo con r
 

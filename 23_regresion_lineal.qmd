@@ -1,13 +1,16 @@
-# La regresión lineal
+# El modelo de regresión
+
+*Revisar este capítulo para que sea (aprox.) un equivalente de Making regression make sense*
 
 ## Resumen
 
 1.  La forma canónica y su interpretación como media condicional.
-2.  Conceptos básicos: grados de libertad, errores estándar, etc.
-3.  Derivación del estimador MCO.
-4.  Los supuestos del modelo.
-5.  Variables categóricas como predictores, y aquí la conexión con ANOVA.
-6.  La descomposición de Oaxaca-Blinder como aplicación.
+2.  Notación
+3.  Conceptos principales: grados de libertad, errores estándar, etc.
+4.  Derivación del estimador MCO.
+5.  Los supuestos del modelo.
+6.  Variables categóricas como predictores, y aquí la conexión con ANOVA.
+7.  La descomposición de Oaxaca-Blinder como aplicación.
 
 *Claramente hay que reordenar todo esto*
 
@@ -21,7 +24,9 @@ El tercer argumento es más pedagógico: la regresión es el contexto donde se i
 
 ### La forma canónica
 
-y = X \* beta + e
+y = f(X, theta) + epsilon
+
+y = X \* beta + epsilon
 
 -   Mencionar que empezamos con la forma más básica de regresión: lineal con variable dependiente, pero describir y como vector, X como matriz y beta como vector
 -   Añadir aquí el código para programarla con R??
@@ -38,7 +43,27 @@ La ventaja de controlar por covariables frente a correlaciones bivariadas
 
 -   En términos geométricos, estamos buscando los coeficientes **β** que permiten construir el vector y como combinación lineal de las columnas de X.
 
-### Conceptos básicos 
+-   Aquí puedo desarrollar bastante los conceptos de MHE: CEF y Law of iterated expectations permite escribir y = E\[Yi \| Xi\] + epsiloni donde E\[ei \| Xi\] = 0. "any random variable yi can be decomposed into a piece that is "explained by Xi" (the CEF) and a piece left over that is orthogonal to any function of Xi
+
+-   CEF solves the minimum mean squared error: E\[Yi\|Xi\] = argmin E\[(Yi-m(Xi))\^2\]
+
+### Conceptos principales
+
+*esto aún hay que reorganizarlo bien*
+
+**El objeto poblacional** — la CEF `E[Yi|Xi]` y su aproximación lineal — se define como el minimizador del error cuadrático esperado. Eso es una propiedad matemática, independiente de cómo estimes nada.
+
+**La estimación** — cómo calculas ese objeto a partir de datos — es otra cuestión. OLS es el método más común, pero hay muchos otros:
+
+-   **MLE** (máxima verosimilitud) — en modelos como probit o logit
+
+-   **GMM** (método de momentos generalizado) — muy común en econometría
+
+-   **IV/2SLS** — para variables instrumentales
+
+-   **WLS** (mínimos cuadrados ponderados) — cuando hay heterocedasticidad
+
+-   **Ridge, Lasso** — cuando hay regularización
 
 (no sé si hablo de ello en otra parte, pero podría rescatar cosas de las que se comentan más abajo)
 
@@ -164,7 +189,7 @@ variables binarias, categóricas, etc.
 
 "ANOVA es un caso particular de regresión donde el predictor es categórico, y demostrarlo empíricamente en R con un ejemplo numérico es muy pedagógico. Le dedicas un par de páginas, muestras que los resultados son idénticos, y el lector entiende de golpe por qué la regresión es tan general. También puedes aprovechar para mencionar que esto explica por qué en econometría moderna raramente se usa ANOVA como técnica independiente"
 
----
+------------------------------------------------------------------------
 
 ### Programar la regresión
 
