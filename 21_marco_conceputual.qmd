@@ -2,172 +2,175 @@
 
 ## Estructura
 
-1.  El objetivo de la econometría / empieza por aquí
+1.  Intro
 
 2.  Descriptivo vs. Predicción vs. inferencia causal. / cuál es tu objetivo
 
-3.  Los tres ejes: especificación, identificación, inferencia.
+3.  El proceso econométrico (resumen)
 
-4.  Tipos de datos: sección cruzada, panel y series temporales (descripción, sin entrar en técnicas).
+4.  Especificación
 
-5.  Datos experimentales vs. observacionales.
+5.  Indentification strategy
 
-6.  El papel de la regresión
+6.  estimación
 
-### Empieza por aquí
+7.  inferencia
 
-Antes de ponerte a hacer tests Shapiro-Wilk para comprobar si tus datos siguen una distribución normal o ponerte a correr regresiones como si no hubiera un mañana, merece la pena parar y preguntarnos cuál es nuestro objetivo, de modo que podamos escoger la metodología más adecuada.
+**INTRO (irá directamente sin heading)**
 
-La lógica pedagógica sería:
+Antes de ponerte a hacer tests Shapiro-Wilk para comprobar si tus datos siguen una distribución normal o correr regresiones como si no hubiera un mañana, merece la pena detenernos a entender por qué usamos estas técnicas en primer lugar. La respuesta está en el punto de partida de cualquier investigación: la pregunta que nos hacemos.
 
-1.  **Empiezas por la pregunta**: quieres entender la relación entre `Yi` y `Xi` en la población
+-   ¿Cómo ha sido la evolución de la duración de procesos de incapacidad temporal en España en los últimos 10 años? ¿cómo varían en función del sexo, grupo de edad, comunidad autónoma, enfermedad causante de la incapacidad y régimen de la persona trabajadora?
 
-2.  **Introduces la CEF** como el objeto que captura esa relación de forma completamente general — sin asumir nada
+-   ¿Qué caracteristicas de una persona se correlacionan con la probabilidad de tener un episodio de incapacidad temporal?
 
-3.  **Demuestras que es el MMSE predictor** — no es una elección arbitraria, tiene una justificación formal
+-   ¿Cuál es la duración más probable para un nuevo proceso de un trabajador de entre 25 y 35 años de Castilla-La Mancha adscrito al Régimen General de la Seguridad Social, que empieza un proceso de incapacidad temporal por un esguince de tobillo?
 
-4.  **Introduces la regresión lineal** como la mejor aproximación lineal a ese objeto — de nuevo con justificación formal, no por convención
+-   ¿Cuál es el impacto que ha tenido el Real Decreto 956/2018, que incrementa el complemento retributivo al 100% desde el primer día de baja para los funcionarios, en la probabilidad de que estos empiecen un proceso de incapacidad temporal?
 
-5.  **Y luego la estimación** — OLS, GMM, MLE son formas de aproximarte a ese objeto con datos
+*breve descripción del contenido de este capítulo (?)*
 
+### ¿Cuál es tu objetivo?
 
-Esquema aún más refinado:
+Las metodologías que usemos en un trabajo que involucra el análisis de datos dependen fundamentalmente del objetivo que perseguimos. Hernán et al. ([2019](tandfonline.com/doi/full/10.1080/09332480.2019.1579578)) proponen dividir estos objetivos en tres categorías, que se recogen en la tabla siguiente. Esta clasificación no implica que un estudio deba encapsularse en una única categoría; lo más habitual es que una investigación incorpore elementos descriptivos antes de pasar a la predicción y/o la inferencia causal. Se trata, sin embargo, de un marco conceptual útil para entender qué hacemos en cada fase del análisis.
 
-Nivel 0 — El problema general:
-Yi = f(Xi, theta) + ei — existe alguna relación entre Yi y Xi
-Bifurcación según el objetivo:
-En predicción te preocupa minimizar el error fuera de muestra — la regresión es una herramienta más entre muchas.
-En causalidad te preocupa interpretar theta como efectos de intervenciones — aquí la regresión tiene un papel central.
-Rama causal:
+| Objetivo | En qué consiste | Tipo de pregunta | Ejemplo de pregunta |
+|--------------|----------------------|--------------|----------------------|
+| Descripción | Resumir de forma quantitativa características del mundo y explorar relaciones entre variables | ¿Qué está pasando? | ¿Cómo ha sido la evolución de la duración de procesos de incapacidad temporal en España en los últimos 10 años? |
+| Predicción | Estimar un valor desconocido a partir de datos disponibles | ¿Qué valor esperamos para un nuevo caso? | ¿Cuál es la duración más probable para un nuevo proceso de incapacidad temporal? |
+| Inferencia causal o contrafactual | Estimar el impacto causal de una variable sobre otra | ¿Qué pasaría si intervenimos? | ¿Cuál es el impacto de incrementar el complemento retributivo de la prestación por incapacidad temporal (IT) en la probabilidad de empezar un proceso de IT? |
 
-La CEF E[Yi|Xi] formaliza qué es f(Xi, theta) en términos poblacionales
-Yi = E[Yi|Xi] + ei es la descomposición exacta, sin supuestos
-Yi = Xi'b + ei es la aproximación lineal, justificada formalmente
-Identificación causal — ¿puedo interpretar b causalmente? RCT, IV, etc.
-Estimación — OLS, GMM, MLE
-Inferencia — errores estándar, tests
+Los trabajos descriptivos suelen quedar en un segundo plano, pero constituyen un primer paso fundamental en cualquier análisis (a veces esta fase se llama "exploratoria"). Antes de aplicar técnicas más complejas, es esencial conocer bien los datos con los que trabajamos. Entender su estructura nos permite detectar anomalías y formarnos una intuición sobre las relaciones que pueden existir entre las variables.
 
+De hecho, en caso de contar con una base de datos rica, la parte descriptiva puede tomar un papel protagonista. Por ejemplo, durante mi estancia como becario en la Autoridad Independiente de Responsabilidad Fiscal (AIReF) participé en un [estudio](https://www.airef.es/es/estudios/incapacidad-temporal/) sobre la incapacidad temporal (IT) en España en el que dispusimos, entre otras, de una base de datos de los cerca de 70 millones de episodios sucedidos entre 2017 y 2024 (es decir, la población entera de episodios de IT para ese periodo). El estudio incorpora hasta tres ejercicios contrafactuales, pero el peso del análisis se lo lleva la parte descriptiva, donde se analizó en profundidad
 
--   el objetivo siempre es **estimar algún parámetro**, que en la mayoría de los casos son "medias"
+Las técnicas empleadas abarcan desde simples cálculos de medias o percentiles de una distribución (🔴en el capítulo xxx explico cómo hacerlo con R🔴) hasta regresiones logísticas para entender qué características de las observaciones se asocian con la variable dependiente, o algoritmos no supervisados como el análisis de clústeres (🔴que se explicarán en los siguientes capítulos🔴). Esta información la podemos comunicar con cifras, aunque en la mayoría de los casos los gráficos constituyen un soporte visual con mayor poder comunicativo.
 
--   población -\> muestra -\> estimador -\> extrapolación (añadir esquema)
+La frontera entre la fase descriptiva por un lado, y la predicción o la inferencia causal por el otro, es algo difusa.
 
--   forma canónica: y = f(X, theta) – quizás directamente más abajo ald ecribir la regresión: y = Xbeta
+*ejemplo de la pregunta sobre la correlación*
 
--   parámetros poblacionales vs parámetros estimados (y sus distribuciones)
+Por ejemplo, cuando queremos predecir un resultado (*outcome*) sobre una variable $y$, empezamos estimando un modelo con los datos disponibles $y = f(X)$, que luego usamos para ...
 
--   queremos capturar la esencia, no el ruido. parte del error es fundamental en la randomness de la realidad
+POR AQUÍ
 
-*mucho mejor revisar el contenido con Mostly Harmless Econometrics*
+A diferencia de las tareas descriptivas, la predicción y las metodologías contrafactuales van más allá de explicar
 
-### Cuál es tu objetivo
+La distinción entre predicción e inferencia causal es más relevante y puede resumirse de la siguiente manera:
 
-Inferencia causal vs predicción (siguiendo los apuntes de Biscarri)
+*introducir meme [strong vs weak](https://www.kapwing.com/explore/strong-dog-vs-weak-dog-meme-template)*
 
-O incluso mejor: descriptivo vs predicción vs inferencia causal (puedo citar este artículo: [link](https://www.tandfonline.com/doi/full/10.1080/09332480.2019.1579578#d1e116))
-
-"La distinción más citada hoy en metodología empírica es la de Hernán, Hsu & Healy (2019) — muy influyente en epidemiología y econometría moderna — que propone exactamente tres tipos de preguntas:"
-
-Descriptiva — ¿Qué está pasando? (¿Cuánto gana de media un economista?)
-Predictiva — ¿Qué valor esperamos para un nuevo caso? (¿Cuánto ganará este graduado?)
-Causal — ¿Qué pasaría si intervenimos? (¿Cuánto aumentaría el salario si hiciera un máster?)
-
-quizás podría hacer descriptiva vs explicativa/inferencial y luego las dos subramas
-insistir en explicar las diferencias: podemos 
+Bromas a parte, es fundamental tener claro cuál es nuestro objetivo, porque el camino que seguiremos a partir de aquí es radicalmente distinto.
 
 -   predicción -\> mejor data science; nos obsesiona la capacidad de predecir out of sample.
 
 -   inferencia causal, este capítulo; nos obsesiona la estrategia de identificación, posibles causas de endogeneidad en el modelo, la modelización de los errores, etc.
 
-*introducir meme [strong vs weak](https://www.kapwing.com/explore/strong-dog-vs-weak-dog-meme-template)*
+### El proceso econométrico
 
-### Los 4 ejes
+-   el objetivo siempre es **estimar algún parámetro**, que en la mayoría de los casos son "medias"
 
--   **Especificación:**
+-   población -\> muestra -\> estimador -\> extrapolación (añadir esquema)
 
-    -   Es **estructural / estadística**, y responde a: ¿cómo creo que funciona el mundo?
+-   queremos capturar la esencia, no el ruido. parte del error es fundamental en la randomness de la realidad
 
-        -   modelos lineales vs no lineales
+*mucho mejor revisar el contenido con Mostly Harmless Econometrics*
 
-            -   un modelo lineal es lineal en los parámetros (no necesariamente en las variables), y eso tiene implicaciones enormes en cómo se estima y cómo se interpreta. Ahí también puedes justificar por qué los modelos lineales ocupan tanto espacio en el libro: no porque sean siempre los más precisos, sino porque son aproximaciones sorprendentemente buenas en muchos contextos y tienen propiedades analíticas que los hacen tractables.
+(1) Definimos la población de interés (raramente tendremos acceso a ella, aunque en mi ejemplo de la Airef sí que era el caso)
+(2) Tomamos una muestra
+(3) Aplicamos un modelo
+    (1) y = f(X)
+    (2) matiz en los estadísticos descriptivos
+(4) estimamos los parámetros
+    (1) tienen su propia distribución
+(5) Relizamos inferencia
+(6) interpretamos y extrapolamos los resultados a la población
 
-        -   incluir polinomios u otras transformaciones
+\[*insertar flujo creado por mi*\]
 
-        -   Dinámica temporal, dependencia, heterogeneidad.
+### **Especificación**
 
-        -   Distribuciones del error, reglas de decisión, restricciones económicas.
+-   Es **estructural / estadística**, y responde a: ¿cómo creo que funciona el mundo?
 
-        -   Closed-form solutions vs no (quizás en fundamentos matemáticos)
+    -   modelos lineales vs no lineales
 
-    -   La distribución no es relevante: en econometría casi nunca partimos de una población normal (e.g. estudio de salarios, otros).
+        -   un modelo lineal es lineal en los parámetros (no necesariamente en las variables), y eso tiene implicaciones enormes en cómo se estima y cómo se interpreta. Ahí también puedes justificar por qué los modelos lineales ocupan tanto espacio en el libro: no porque sean siempre los más precisos, sino porque son aproximaciones sorprendentemente buenas en muchos contextos y tienen propiedades analíticas que los hacen tractables.
 
-    -   La especificación incluye decisiones sobre **qué variables entran en el modelo**, que es donde aparece el riesgo de sesgo por variable omitida. Eso crea un puente natural hacia identificación sin confundir los dos ejes.
+    -   incluir polinomios u otras transformaciones
 
-    -   tests de validacion
+    -   Dinámica temporal, dependencia, heterogeneidad.
 
-        -   Preguntas del tipo: ¿está el modelo bien especificado? No preguntan sobre el valor de los parámetros sino sobre si el modelo en sí es adecuado. Ejemplos típicos son el test de Ramsey (RESET) para forma funcional, el test de Breusch-Pagan o White para heterocedasticidad, el test de Hausman para endogeneidad, o los tests de raíz unitaria en series temporales.
+    -   Distribuciones del error, reglas de decisión, restricciones económicas.
 
-<!-- -->
+    -   Closed-form solutions vs no (quizás en fundamentos matemáticos)
 
--   **Identificación**: cómo vamos a asegurarnos que aquello que estimamos puede tener una identificación causal. Responde a: ¿cómo voy a aislar el efecto que me interesa?
+-   La distribución no es relevante: en econometría casi nunca partimos de una población normal (e.g. estudio de salarios, otros).
 
-    -   credibility revolution
-    -   correlación vs causalidad
-    -   marco conceptual y técnicas principales merecen un capítulo entero
+-   La especificación incluye decisiones sobre **qué variables entran en el modelo**, que es donde aparece el riesgo de sesgo por variable omitida. Eso crea un puente natural hacia identificación sin confundir los dos ejes.
 
-Problemas de identificación → ¿el objeto poblacional tiene la interpretación causal que quiero? ¿Estoy midiendo lo que creo que mido? Esto es pura teoría, no tiene nada que ver con el tamaño muestral.
-Problemas de estimación e inferencia → dado que sé lo que quiero medir, ¿cómo lo estimo bien con datos finitos? ¿Cuánta incertidumbre tengo?
+-   tests de validacion
 
+    -   Preguntas del tipo: ¿está el modelo bien especificado? No preguntan sobre el valor de los parámetros sino sobre si el modelo en sí es adecuado. Ejemplos típicos son el test de Ramsey (RESET) para forma funcional, el test de Breusch-Pagan o White para heterocedasticidad, el test de Hausman para endogeneidad, o los tests de raíz unitaria en series temporales.
 
-<!-- -->
+### **Identificación**
 
--   **Técnica de estimación**
+cómo vamos a asegurarnos que aquello que estimamos puede tener una identificación causal. Responde a: ¿cómo voy a aislar el efecto que me interesa?
 
-    -   3 metodologías generales (sólo introducción con la intuición):
+-   credibility revolution
+-   correlación vs causalidad
+-   **El problema fundamental de la inferencia causal** (el contrafactual no observable), que es la razón por la que necesitamos una estrategia de identificación en primer lugar.
+-   marco conceptual y técnicas principales merecen un capítulo entero
+-   clases de datos
 
-        -   **MCO**: minimiza suma de cuadrados. Requiere muy pocos supuestos pero es el menos flexible.
-        -   **MV/ML**: maximiza la verosimilitud. Requiere especificar completamente la distribución de Y, lo cual es más supuestos pero produce estimadores eficientes si la distribución está bien especificada.
-            -   Técnicamente es la distribución del **error**, no de Y directamente, aunque en la práctica es equivalente dado X. Vale la pena ser preciso aquí precisamente porque es la confusión que queremos desactivar desde el principio.
-        -   **GMM**: impone solo que ciertas condiciones de momentos sean cero en la población, E\[g(y,θ)\] = 0. No requiere especificar ninguna distribución completa. MCO y MV son casos especiales de GMM con condiciones de momentos particulares.
-        -   Sería interesante que, cuando desarrolle más cómo funcionan, explique un poco "qué hay detrás de los commandos que corremos" (closed-form solutions, algoritmos, etc.) es decir, tratar de acercar el concepto a "si lo hicieras a mano, ¿cómo sería?"
-        -   la elección de técnica no es independiente de la especificación ni de los supuestos, lo cual es un punto pedagógico importante. OLS es BLUE bajo ciertos supuestos, si los supuestos cambian, cambia el estimador óptimo.
+Problemas de identificación → ¿el objeto poblacional tiene la interpretación causal que quiero? ¿Estoy midiendo lo que creo que mido? Esto es pura teoría, no tiene nada que ver con el tamaño muestral. Problemas de estimación e inferencia → dado que sé lo que quiero medir, ¿cómo lo estimo bien con datos finitos? ¿Cuánta incertidumbre tengo?
 
--   **Inferencia**: es **probabilistica**, dados nuestros datos y los parámetros que hemos estimado, *qué sabes sobre la precisión de lo estimado*
+### **Técnica de estimación**
 
-    -   La inferencia **no “arregla” el estimador**, solo cuantifica el nivel de incertidumbre *dado* el estimador.
+-   3 metodologías generales (sólo introducción con la intuición):
 
-    -   Es decir, definamos errores estándar o robustos, el coeficiente que estimamos no cambía, sólo cambía el nivel de confianza que tenemos en que ese parámetro sea preciso.
+    -   **MCO**: minimiza suma de cuadrados. Requiere muy pocos supuestos pero es el menos flexible.
+    -   **MV/ML**: maximiza la verosimilitud. Requiere especificar completamente la distribución de Y, lo cual es más supuestos pero produce estimadores eficientes si la distribución está bien especificada.
+        -   Técnicamente es la distribución del **error**, no de Y directamente, aunque en la práctica es equivalente dado X. Vale la pena ser preciso aquí precisamente porque es la confusión que queremos desactivar desde el principio.
+    -   **GMM**: impone solo que ciertas condiciones de momentos sean cero en la población, E\[g(y,θ)\] = 0. No requiere especificar ninguna distribución completa. MCO y MV son casos especiales de GMM con condiciones de momentos particulares.
+    -   Sería interesante que, cuando desarrolle más cómo funcionan, explique un poco "qué hay detrás de los commandos que corremos" (closed-form solutions, algoritmos, etc.) es decir, tratar de acercar el concepto a "si lo hicieras a mano, ¿cómo sería?"
+    -   la elección de técnica no es independiente de la especificación ni de los supuestos, lo cual es un punto pedagógico importante. OLS es BLUE bajo ciertos supuestos, si los supuestos cambian, cambia el estimador óptimo.
 
-    -   Incluye:
+### **Inferencia** 
 
-        -   Consistencia, sesgo, varianza, eficiencia.
+-   es **probabilistica**, dados nuestros datos y los parámetros que hemos estimado, *qué sabes sobre la precisión de lo estimado*
 
-        -   Errores estándar (robustos, clusterizados, HAC).
+-   La inferencia **no “arregla” el estimador**, solo cuantifica el nivel de incertidumbre *dado* el estimador.
 
-        -   bootstrap
+-   Es decir, definamos errores estándar o robustos, el coeficiente que estimamos no cambía, sólo cambía el nivel de confianza que tenemos en que ese parámetro sea preciso.
 
-        -   Tests, intervalos de confianza, .
+-   Incluye:
 
-            -   **Tests de hipótesis sobre parámetros**
-                Preguntas del tipo: ¿es β₂ = 0? ¿son β₂ = β₃? Asumen que el modelo está bien especificado y dentro de ese modelo preguntan sobre el valor de los parámetros. Son el núcleo de la inferencia clásica — t-tests, F-tests, intervalos de confianza.
+    -   Consistencia, sesgo, varianza, eficiencia.
 
-                -   diferentes a los tests de validación del modelo, aunque a veces se solapan (e.g. Hausman)
+    -   Errores estándar (robustos, clusterizados, HAC).
 
+    -   bootstrap
 
-### Tipos de datos (1)
+    -   Tests, intervalos de confianza, .
+
+        -   **Tests de hipótesis sobre parámetros** Preguntas del tipo: ¿es β₂ = 0? ¿son β₂ = β₃? Asumen que el modelo está bien especificado y dentro de ese modelo preguntan sobre el valor de los parámetros. Son el núcleo de la inferencia clásica — t-tests, F-tests, intervalos de confianza.
+
+            -   diferentes a los tests de validación del modelo, aunque a veces se solapan (e.g. Hausman)
+
+### Tipos de datos (1) - insertar en las secciones anteriores
 
 -   Sección cruzada
 -   Datos de panel
 -   Series temporales
 
-### Tipos de datos (2)
+### Tipos de datos (2) - insertar en las secciones anteriores
 
 -   datos experimentales
 -   datos observacionales
 -   relación con la identification strategy: "how you use observational data to approximate a real experiment" (MHE, p. 7)
--   relevancia en cuanto a qué técnica escoger 
+-   relevancia en cuanto a qué técnica escoger
 
-### El papel de la regresión
+### El papel de la regresión (quizás mejor directamente en el cap. 3)
 
 En econometría, se suele empezar explicando la técnica de regresión. No es que sea la única herramienta disponible, ni mucho menos, pero permite trasladar interpretable y versátil.
 
@@ -189,3 +192,16 @@ En predicción, la regresión es sólo una herramienta más, y a menudo no la me
 
 no importa por qué X y Y están correlacionados, ni si hay sesgo causal, importa el error predictivo fuera de muestra.
 
+---
+
+La lógica pedagógica sería:
+  
+Empiezas por la pregunta: quieres entender la relación entre Yi y Xi en la población
+
+Introduces la CEF como el objeto que captura esa relación de forma completamente general — sin asumir nada
+
+Demuestras que es el MMSE predictor — no es una elección arbitraria, tiene una justificación formal
+
+Introduces la regresión lineal como la mejor aproximación lineal a ese objeto — de nuevo con justificación formal, no por convención
+
+Y luego la estimación — OLS, GMM, MLE son formas de aproximarte a ese objeto con datos
