@@ -1,4 +1,48 @@
-# Conceptos básicos de R
+---
+title: "Introducción a R"
+---
+
+# Introducción a R
+
+## Qué es R
+
+-   origenes: sucesor de S, años 90, "The name of the language, R, comes from being both an S language successor and the shared first letter of the authors, Ross and Robert" (wikipedia)
+
+-   lenguage de programación; principalmente funcional, aunque también puede hacerse programación orientada al objeto. Explicar brevemente, comentar diferencias, y algún ejemplo con la función summary(); dejar claro que con aprender la funcional es suficiente para hacer análisis de datos.
+
+-   pensada principalmente para estadística, aunque se pueden hacer otras cosas
+
+## Por qué merece la pena aprender R en la era de la IA 
+
+(un poco desordenado, quizás algo irá en el foreword)
+
+-   de donde sale este libro: preparo apuntes para una oposición, ligado con la necesidad que me he encontrado durante el máster
+
+-   desde que entramos en la era de la IA le preguntamos cualquier cosa a ChatGPT, olvidándonos que existen recursos fiables con la información más clara. Yo mismo le preguntaba cómo pivotar los datos a formato long 5 veces porque me olvidaba de los argumentos.
+
+-   la IA es genial para debuggear o para peticiones específicas, pero yo creo que merece la pena
+
+-   si sólo quieres resultados inmediatos, saber cómo programar una cosa específica, la IA proporciona una gran ayuda
+
+-   no hace falta memorizar todas las funciones, pero merece la pena aprender el funcionamiento básico para poner contexto. De este modo sabes qué preguntar, entiendes la estructura de lo que te manda (la IA no siempre acierta a la primera, etc.)
+
+-   aprender es un proceso, lleva tiempo. pero reconfortante y apasionante.
+
+-   en mi opinión se pone émfasis en la teoría, pero poco en la práctica. Puedes entender las assumptions del estimador de Arellano-Bond, pero quizás luego no sabrías cómo realizar dicho análisis. Este libro complementa ese "hueco"
+
+## Por qué R y no otro lenguaje?
+
+-   R vs otros lenguages de programación (python, Julia, Stata, Excel): <https://pypl.github.io/PYPL.html> o <https://app.datacamp.com/learn/tutorials/r-or-python-for-data-analysis>
+
+-   Poner ejemplos de code snippets en python vs r: en mi opinión R es más legible
+
+-   Lenguaje pensado específicamente para estadística; calidad de visualizaciones, etc.
+
+## Cómo instalar R y un IDE
+
+-   RStudio, VS Code, Positron; recomendación personal: RStudio
+
+## Conceptos básicos de R
 
 En este capítulo explico en mayor detalle los conceptos básicos sobre R:
 
@@ -82,12 +126,22 @@ En este capítulo explico en mayor detalle los conceptos básicos sobre R:
 
 -   rm(), rm(list=ls()) o gc()
 
-**buenas prácticas generales**
+## Buenas prácticas al realizar un proyecto de investigación
 
 -   estructura de carpetas (data, scripts, output), R projects;
 
+-   Rutas relativas y working directory (`here::here()`)  
+
+-   tipos de archivo: .R, .Rmd, .qmd
+
+-   control de versiones: Git, GitHub
+
+
+## Buenas prácticas al escribir código
+
 -   comentar el código para explicar qué hacemos (por si compartimos el código o lo vemos nosotros mismos en el futuro)
 
--   dejar espacios y enters, que sea legible
+-   dejar espacios y enters, que sea legible el código
 
 -   consistencia en el estilo
+

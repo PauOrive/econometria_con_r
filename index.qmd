@@ -1,3 +1,36 @@
+---
+title: "Presentación"
+numbered: false
+---
+
 # ¡Libro en proceso! {.unnumbered}
 
 ⚠️ Esta es una versión preliminar de lo que será un libro enfocado a estudiantes de Grado o de Máster para aprender a realizar análisis econométricos y data science con R.
+
+
+# Presentación 
+
+## Introducción
+
+Este libro introduce los fundamentos del análisis de datos y la econometría utilizando R como herramienta principal.
+
+## Filosofía del libro
+
+Émfasis en entender qué hacemos y por qué lo hacemos de esa manera y no otra. 
+Trade-offs que esto genera
+
+-   enfoque más holístico vs intro clásica a la econometría: en vez de empezar de cabeza con el modelo de regresión lineal y supuestos bajo los cuales la estimación mediante MCO es la mejor opción dentro de los estimadores lineales, damos un paso atrás para entender mejor lo que hacemos
+-   incorpora R y econometría
+
+## A quién va dirigido
+
+Este libro está pensado para estudiantes de grado o máster de economía, empresa y ciencias sociales que quieran aprender a trabajar con datos utilizando R.
+Foco en econometría causal y enfoque conceptal distinto. 
+
+## Estructura del libro
+
+El libro se divide en cuatro partes principales. 
+-   La primera introduce las herramientas necesarias para trabajar con datos en R. Foco en el tidyverse, pero añado otras librerías interesantes (data.table, arrow, plotly y todos los usados para modelos econométricos y de ciencia de datos)
+-   La segunda introduce la teoría econométrica
+-   La tercera pone el foco en las técnicas de inferencia causal
+-   La cuarta presenta metodologías de data science

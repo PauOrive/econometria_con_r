@@ -1,4 +1,13 @@
-# Importar datos
+---
+title: "Importar datos"
+---
+
+# Importar (y exportar) datos
+
+*revisar toda esta sección: el contenido está ya abstante trabajado pero hay que adaptar tres cosas*
+1.   la numeración y ordenación de headings!
+2.   el formato, para que quede estilo 12_x_prueba.qmd 
+3.   incluyo también exportar datos, o no?
 
 # 1. Importar datos
 

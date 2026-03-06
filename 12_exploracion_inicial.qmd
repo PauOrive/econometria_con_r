@@ -1,3 +1,7 @@
+---
+title: "Exploración inicial"
+---
+
 # Exploración inicial
 
 Lo primero que recomiendo hacer al cargar un fichero de datos es tratar de entender su estructura:

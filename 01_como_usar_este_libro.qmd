@@ -1,0 +1,56 @@
+---
+title: "Cómo usar este libro"
+numbered: false
+---
+
+# Cómo usar este libro
+
+*aquí hay que pensar qué cosas encajan mejor en index y cuales aquí*
+*rule of thumb es que index sea muy breve y aquí haya más detalle*
+
+## Intro-motivación
+
+De dónde sale este libro? Unión entre una ambición mientras era estudiante + preparación oposiciones (ponerme un poco en lo personal: soy la clase de personas que en vez de centrarme en lo fundamental y más importante me pierdo siguiendo aquello que más me apasiona... no me llevará a ganar la oposición, pero ojalá resulte en un libro útil para alguien. Sólo si a una persona le sirve, ya estoy contento --de hecho, sólo plantearme escribirlo me ha ayudado enormemente a entender los conceptos y tene runa comprensión mucho más profunda de la econometría)
+
+
+## Dos formas de usar este libro
+
+-   Una como un manual de texto al uso. Está pensado para que funcione así de forma secuencial, de modo que 
+
+-   Otra como busqueda puntual: desde "cómo funciona la función str_extract?" a "¿cuáles son los pasos que debo seguir para realizar un estudio de Diff in Diff?". Directamente desde el buscador de arriba a la izquierda.
+
+
+## Qué contiene este libro (y qué no)
+
+-   Este libro pretende ser un recurso para que todo aquél que necesite revisar un aspecto de cómo programar modelos... quiero decir, que sirve tanto como una referencia fiable para buscar una respuesta rápida a un problema, así como para alguien que quiera aprender de forma comprehensiva cómo manipular y modelar datos con R.
+
+-   hay muchos tipos de datos, pero este libro se centra en el análisis de datos tabulares, que son los más comunes para el análisis econométrico (datos de sección cruzada, panel y de serie temporal).
+
+-   foco en análisis de datos de ciencias sociales, pero otras disciplinas puede serles util también
+
+-   foco en tidyverse, pero con apartados también con data.table
+
+-   no es un repositorio, sino una guía útil, por lo que no incluyo todas las funciones y argumentos (cosa que sería imposible, en cualquier caso), sino que me focalizo en los que considero principales o más útiles.
+
+
+## Convenciones usadas en el libro
+
+-   sintaxis que uso: argumentos, variables y datasets en `formato codigo`, comillas para clases... (consistencia!!)
+
+-   cuando describo una función, añado un code chunk con la descripción de los argumentos y luego muestro su funcionamiento con reprex (si hay muy pocos argumentos relevantes, voy directamente al ejemplo)
+
+-   apendice con todas las librerías y datasets usados
+
+
+## Disclaimer
+
+Escrito por un graduado en economía, por lo que no se puede esperar el rigor técnico o experiencia de catedráticosd e universidad o premios Nobel de economía.
+Aún asi, creo que puede ser muy útil.
+Toda propuesta de mejora es más que bienvenida!
+
+
+##  Instrucciones para darme feedback
+
+-   pull requests (?)
+
+-   correo electrónico (el personal?)

@@ -1,4 +1,16 @@
-Tratar de poner las librerías y los datasets en otros archivos únicos
+---
+title: "Manipular datos"
+---
+
+# Manipular datos
+
+*Tratar de poner las librerías y los datasets en otros archivos únicos*
+
+*revisar toda esta sección: el contenido está ya abstante trabajado pero hay que adaptar tres cosas*
+1.   el formato, para que quede estilo 12_x_prueba.qmd 
+2.   revisar los datasets que uso en los reprex
+3.   separar data.table para el final: una sección que sea "datasets grandes"
+
 
 ## Librerías
 
