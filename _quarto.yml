@@ -11,7 +11,7 @@ book:
   repo-actions: [edit, issue]
   chapters:
     - index.qmd
-    - intro_al_libro.qmd
+    - 01_intro_al_libro.qmd
     - part: "Importar, manipular y visualizar datos"
       chapters:
         - 10_intro_a_r.qmd
@@ -23,25 +23,26 @@ book:
         - 16_datos_geoespaciales.qmd
     - part: "Fundamentos de econometría"
       chapters:
-        - 21_marco_conceputual.qmd
-        - 22_fundamentos_matematicos_estadisticos.qmd
-        - 23_regresion_lineal.qmd
-        - 24_inferencia_y_tests.qmd
-        - 25_buenas_practicas_especificacion.qmd
-        - 26_logit_probit.qmd
-        - 27_datos_de_panel.qmd
-        - 28_series_temporales.qmd
-        - 29_modelos_conteo_duracion.qmd
+        - 20_proceso_econometrico.qmd
+        - 21_fundamentos_matematicos_estadisticos.qmd
+        - 22_poblacion_muestra.qmd
+        - 23_especificacion_modelo.qmd
+        - 24_modelo_regresion.qmd
+        - 25_tecnica_estimacion.qmd
+        - 26_inferencia.qmd
+        - 27_variable_dependiente_limitada.qmd
+        - 28_datos_de_panel.qmd
+        - 29_series_temporales.qmd
     - part: "Inferencia causal"
       chapters:
       # reordenar
-        - 31_marco_conceptual.qmd
-        - 32_variables_instrumentales.qmd 
-        - 33_rct.qmd
-        - 34_matching.qmd
-        - 35_diff_in_diff.qmd
-        - 36_control_sintetico.qmd
-        - 37_regresion_discontinuidad.qmd       
+        - 30_marco_conceptual.qmd
+        - 31_variables_instrumentales.qmd 
+        - 32_rct.qmd
+        - 33_matching.qmd
+        - 34_diff_in_diff.qmd
+        - 35_control_sintetico.qmd
+        - 36_regresion_discontinuidad.qmd       
     #- part: "Data Science"
      # chapters:
       # aún por definir
