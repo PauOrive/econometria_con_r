@@ -1,24 +1,50 @@
-# Intro a la econometría
+---
+title: "El proceso econométrico"
+---
+
+# Decidir título definitivo
+
+*pesnar qué titulo le doy a esta seción introductoria*
+
+Alternativas:
+
+1.  Preguntas, datos y modelos (no me acaba de convencer)
+
+2.  Introducción a la econometría (muy similar al título de la parte y ya he usado "Introducción antes")
+
+3.  Marco conceptual (igual que en la parte de causal inference y creo que prefiero no repetir)
+
+*quizás si renombro el primer capítulo de la sección de causal inference a "potential outcomes" o algo así, uso aquí "Marco conceptual"*
+
+Lo que tengo que pensar es qué forma le doy a este capítulo:
+
+a\. todo seguido fluyendo de la forma más natural
+
+b\. explicando el "proceso econométrico" desde el principio e ir desarrollando cada parte de forma resumida
 
 ## Estructura
 
-1.  Intro
+1.  Todo empieza con una pregunta
 
-2.  Descriptivo vs. Predicción vs. inferencia causal. / cuál es tu objetivo
+2.  Cuál es tu objetivo: Descriptivo vs. Predicción vs. inferencia causal.
 
-3.  El proceso econométrico (resumen)
+3.  El proceso econométrico / la hoja de ruta
 
 4.  Especificación
 
-5.  Indentification strategy
+5.  estimación
 
-6.  estimación
+6.  inferencia
 
-7.  inferencia
+## Todo empieza con una pregunta
 
-**INTRO (irá directamente sin heading)**
+*esto podría ir antes del primer header*
 
-Antes de ponerte a hacer tests Shapiro-Wilk para comprobar si tus datos siguen una distribución normal o correr regresiones como si no hubiera un mañana, merece la pena detenernos a entender por qué usamos estas técnicas en primer lugar. La respuesta está en el punto de partida de cualquier investigación: la pregunta que nos hacemos.
+Antes de ponerte a hacer tests Shapiro-Wilk para comprobar si tus datos siguen una distribución normal o correr regresiones como si no hubiera un mañana, merece la pena detenernos a entender por qué usamos estas técnicas en primer lugar.
+
+*revisar redacción*
+
+La respuesta está en el punto de partida de cualquier investigación: la pregunta que nos hacemos.
 
 -   ¿Cómo ha sido la evolución de la duración de procesos de incapacidad temporal en España en los últimos 10 años? ¿cómo varían en función del sexo, grupo de edad, comunidad autónoma, enfermedad causante de la incapacidad y régimen de la persona trabajadora?
 
@@ -30,12 +56,22 @@ Antes de ponerte a hacer tests Shapiro-Wilk para comprobar si tus datos siguen u
 
 *breve descripción del contenido de este capítulo (?)*
 
-### ¿Cuál es tu objetivo?
+No todas las preguntas son válidas... mejor que sean acotadas y bien definidas (usar la terminología del correo de ESADE EcPol
 
-Las metodologías que usemos en un trabajo que involucra el análisis de datos dependen fundamentalmente del objetivo que perseguimos. Hernán et al. ([2019](tandfonline.com/doi/full/10.1080/09332480.2019.1579578)) proponen dividir estos objetivos en tres categorías, que se recogen en la tabla siguiente. Esta clasificación no implica que un estudio deba encapsularse en una única categoría; lo más habitual es que una investigación incorpore elementos descriptivos antes de pasar a la predicción y/o la inferencia causal. Se trata, sin embargo, de un marco conceptual útil para entender qué hacemos en cada fase del análisis.
+*hablar de "fundamentally unidentified questions?* La pregunta tiene que ser "buena" y hay que poder atacarla con datos. *corregir: la metodología depende de la pregunta + datos que disponemos + elecciones personales*
+
+para responderla, identificamos la población de interés, normalmente sacamos una muestra, y a continaución definimos un modelo.
+
+## ¿Cuál es tu objetivo?
+
+*revisar esta primera afirmación, porque es incompleta: dependen de esto y otras cosas*
+
+Las metodologías que usemos en un trabajo que involucra el análisis de datos dependen fundamentalmente del objetivo que perseguimos.
+
+Hernán et al. ([2019](tandfonline.com/doi/full/10.1080/09332480.2019.1579578)) proponen dividir estos objetivos en tres categorías, que se recogen en la tabla siguiente. Esta clasificación no implica que un estudio deba encapsularse en una única categoría; lo más habitual es que una investigación incorpore elementos descriptivos antes de pasar a la predicción y/o la inferencia causal. Se trata, sin embargo, de un marco conceptual útil para entender qué hacemos en cada fase del análisis.
 
 | Objetivo | En qué consiste | Tipo de pregunta | Ejemplo de pregunta |
-|--------------|----------------------|--------------|----------------------|
+|-----------------|-------------------|-----------------|-------------------|
 | Descripción | Resumir de forma quantitativa características del mundo y explorar relaciones entre variables | ¿Qué está pasando? | ¿Cómo ha sido la evolución de la duración de procesos de incapacidad temporal en España en los últimos 10 años? |
 | Predicción | Estimar un valor desconocido a partir de datos disponibles | ¿Qué valor esperamos para un nuevo caso? | ¿Cuál es la duración más probable para un nuevo proceso de incapacidad temporal? |
 | Inferencia causal o contrafactual | Estimar el impacto causal de una variable sobre otra | ¿Qué pasaría si intervenimos? | ¿Cuál es el impacto de incrementar el complemento retributivo de la prestación por incapacidad temporal (IT) en la probabilidad de empezar un proceso de IT? |
@@ -66,27 +102,97 @@ Bromas a parte, es fundamental tener claro cuál es nuestro objetivo, porque el 
 
 -   inferencia causal, este capítulo; nos obsesiona la estrategia de identificación, posibles causas de endogeneidad en el modelo, la modelización de los errores, etc.
 
-### El proceso econométrico
+## Población y muestra
+
+Una vez tenemos planteada la pregunta, necesitamos datos para responderla.
+
+*una vez tienes clara la pregunta y el objetivo, el segundo ingrediente es evidente — necesitas datos*
+
+(aunque, según la disponibilidad, quizás debemos reformular la pregunta...)
+
+-   población y muestra
+
+    -   definir la población de interés
+
+    -   la metáfora de la sopa: remover bien y sacar una cucharada
+
+-   tipos de datos
+
+    -   por naturaleza: sección cruzada, panel, serie temporal
+
+    -   por proceso generador: observacional vs experimental
+
+-   cuestiones a tener en cuenta al realizar un muestreo
+
+    -   muestra aleatoria y sesgos...
+
+    -   ejemplo: si haces una encuesta sobre ... a los compañeros de tu universidad, vas a sacar conclusiones sobre los estudiantes universitarios, no sobre "los jóvenes"...
+
+## **El tercer ingrediente: definir el modelo**
+
+exploramos una relación económica.
+
+La definimos con un modelo: y = F(X)
+
+Clasificaciones principales de los modelos:
+
+f(X) puede tomar muchas formas, ejemplo del TFM, una red neuronal para no paramétrico, un modelo DSGE para estructural
+
+**1. Paramétrico vs. no paramétrico** La más fundamental. ¿Asumes que f(X) tiene una forma funcional con un número finito de parámetros, o dejas que los datos determinen la forma libremente? Esta distinción existe antes de hablar de regresión — tu ejemplo del TFM es paramétrico aunque no sea una regresión.
+
+**2. Causal vs. predictivo** Ya lo has establecido en la sección 2, pero vale la pena recordarlo aquí porque afecta directamente a qué exiges del modelo. En un modelo causal, los parámetros tienen que tener interpretación estructural. En uno predictivo, solo te importa que f(X) aproxime bien E\[Y\|X\].
+
+**3. Estructural vs. de forma reducida** Esta es más sutil pero importante. Un modelo estructural parte de la teoría económica y especifica mecanismos (tu TFM es un ejemplo). Un modelo de forma reducida describe relaciones estadísticas entre variables observables sin modelizar el mecanismo. La regresión suele ser de forma reducida.
+
+regresión: un modelo paramétrico, generalmente de forma reducida, que puede ser lineal o no lineal.
+
+En econometría, la regresión como forma canónica E\[Y\|X\].
+
+Regresión como vehículo; Flexibilidad, interpretabilidad.
+
+Anticipa el capítulo de especificación (el modelo de regresión es sólo una posibilidad dentrod el mundo de "modelización", pero es un mundo en si mismo que merece investigar con detalle).
+
+---
+
+*añadir estas dos secciónes, que sólo aplican a modelos de regresión paramétricos, no?*
+
+**Sección 5 — La estimación** Breve. La pregunta que responde es: dado el modelo especificado, ¿cómo obtenemos los valores de los parámetros a partir de los datos? Mencionas que existen distintos métodos (OLS, MLE, GMM) con distintas propiedades y supuestos, y que la elección no es trivial. Dos o tres párrafos.
+
+**Sección 6 — La inferencia** Breve también. La pregunta que responde es: ¿cuánta confianza podemos depositar en nuestras estimaciones? Tests, intervalos de confianza, p-values como herramientas para responderla. Dos o tres párrafos.
+
+### La hoja de ruta
+
+insertar esquema / flujo con el marco conceptual que acabo de describir, que sirve como link con el resto de esta parte del libro.
+
+### El proceso econométrico / La hoja de ruta
+
+*quizás mejor volver a la narrativa de "ejes fundamentales" si quiero evitar la lógica secuencial, aunque en mi opinión esa funciona bien*
+
+-   una
 
 -   el objetivo siempre es **estimar algún parámetro**, que en la mayoría de los casos son "medias"
-
--   población -\> muestra -\> estimador -\> extrapolación (añadir esquema)
 
 -   queremos capturar la esencia, no el ruido. parte del error es fundamental en la randomness de la realidad
 
 *mucho mejor revisar el contenido con Mostly Harmless Econometrics*
 
-(1) Definimos la población de interés (raramente tendremos acceso a ella, aunque en mi ejemplo de la Airef sí que era el caso)
-(2) Tomamos una muestra
-(3) Aplicamos un modelo
-    (1) y = f(X)
-    (2) matiz en los estadísticos descriptivos
-(4) estimamos los parámetros
-    (1) tienen su propia distribución
-(5) Relizamos inferencia
-(6) interpretamos y extrapolamos los resultados a la población
-
 \[*insertar flujo creado por mi*\]
+
+### **Identificación**
+
+cómo vamos a asegurarnos que aquello que estimamos puede tener una identificación causal. Responde a: ¿cómo voy a aislar el efecto que me interesa?
+
+-   credibility revolution
+-   correlación vs causalidad
+-   **El problema fundamental de la inferencia causal** (el contrafactual no observable), que es la razón por la que necesitamos una estrategia de identificación en primer lugar.
+-   marco conceptual y técnicas principales merecen un capítulo entero
+-   clases de datos
+
+Problemas de identificación → ¿el objeto poblacional tiene la interpretación causal que quiero? ¿Estoy midiendo lo que creo que mido? Esto es pura teoría, no tiene nada que ver con el tamaño muestral. Problemas de estimación e inferencia → dado que sé lo que quiero medir, ¿cómo lo estimo bien con datos finitos? ¿Cuánta incertidumbre tengo?
+
+SOBRE EL ORDEN IDENTIFICACIÓN \<-\> ESPECIFICACIÓN
+
+Una solución híbrida: presentas los pasos en orden 1, pero incluyes una nota explícita diciendo que identificación y especificación se retroalimentan, y que el orden refleja prioridad lógica, no secuencia mecánica.
 
 ### **Especificación**
 
@@ -112,18 +218,6 @@ Bromas a parte, es fundamental tener claro cuál es nuestro objetivo, porque el 
 
     -   Preguntas del tipo: ¿está el modelo bien especificado? No preguntan sobre el valor de los parámetros sino sobre si el modelo en sí es adecuado. Ejemplos típicos son el test de Ramsey (RESET) para forma funcional, el test de Breusch-Pagan o White para heterocedasticidad, el test de Hausman para endogeneidad, o los tests de raíz unitaria en series temporales.
 
-### **Identificación**
-
-cómo vamos a asegurarnos que aquello que estimamos puede tener una identificación causal. Responde a: ¿cómo voy a aislar el efecto que me interesa?
-
--   credibility revolution
--   correlación vs causalidad
--   **El problema fundamental de la inferencia causal** (el contrafactual no observable), que es la razón por la que necesitamos una estrategia de identificación en primer lugar.
--   marco conceptual y técnicas principales merecen un capítulo entero
--   clases de datos
-
-Problemas de identificación → ¿el objeto poblacional tiene la interpretación causal que quiero? ¿Estoy midiendo lo que creo que mido? Esto es pura teoría, no tiene nada que ver con el tamaño muestral. Problemas de estimación e inferencia → dado que sé lo que quiero medir, ¿cómo lo estimo bien con datos finitos? ¿Cuánta incertidumbre tengo?
-
 ### **Técnica de estimación**
 
 -   3 metodologías generales (sólo introducción con la intuición):
@@ -135,7 +229,17 @@ Problemas de identificación → ¿el objeto poblacional tiene la interpretació
     -   Sería interesante que, cuando desarrolle más cómo funcionan, explique un poco "qué hay detrás de los commandos que corremos" (closed-form solutions, algoritmos, etc.) es decir, tratar de acercar el concepto a "si lo hicieras a mano, ¿cómo sería?"
     -   la elección de técnica no es independiente de la especificación ni de los supuestos, lo cual es un punto pedagógico importante. OLS es BLUE bajo ciertos supuestos, si los supuestos cambian, cambia el estimador óptimo.
 
-### **Inferencia** 
+#### Sobre técnicas de estimación que podrías dejar fuera
+
+OLS, MLE y GMM cubren el 95% de lo que un econometrista aplicado usa. Lo que dejas fuera relevante:
+
+**Econometría bayesiana:** sí merece una mención, aunque sea breve. El argumento para mencionarla es que representa una filosofía distinta sobre qué significa "estimar" — no buscas el valor del parámetro que maximiza algo dado los datos, sino que actualizas una distribución de creencias. Es una diferencia conceptual importante, no solo técnica. Puedes dedicarle dos párrafos diciendo "existe esta otra tradición, aquí está la intuición, no la desarrollamos porque requeriría otro libro".
+
+**Modelos estructurales:** aquí soy más ambivalente. En economía industrial y macroeconomía son centrales, pero implican una filosofía completamente distinta — especificas un modelo económico con sus parámetros estructurales y luego lo estimas. La frontera con "lo que cubre tu libro" es bastante clara, así que con una mención breve en el capítulo introductorio es suficiente.
+
+**Lo que sí añadiría a tu lista principal:** estimación no paramétrica y semiparamétrica. No como un método de estimación separado al nivel de GMM, sino como una familia que aparece de forma natural en RDD (local linear regression) y en ML. Podrías mencionarla en el capítulo de estimación como "existe una tercera vía que no asume forma funcional paramétrica" sin desarrollarla completamente.
+
+### **Inferencia**
 
 -   es **probabilistica**, dados nuestros datos y los parámetros que hemos estimado, *qué sabes sobre la precisión de lo estimado*
 
@@ -192,10 +296,10 @@ En predicción, la regresión es sólo una herramienta más, y a menudo no la me
 
 no importa por qué X y Y están correlacionados, ni si hay sesgo causal, importa el error predictivo fuera de muestra.
 
----
+------------------------------------------------------------------------
 
 La lógica pedagógica sería:
-  
+
 Empiezas por la pregunta: quieres entender la relación entre Yi y Xi en la población
 
 Introduces la CEF como el objeto que captura esa relación de forma completamente general — sin asumir nada
@@ -205,3 +309,15 @@ Demuestras que es el MMSE predictor — no es una elección arbitraria, tiene un
 Introduces la regresión lineal como la mejor aproximación lineal a ese objeto — de nuevo con justificación formal, no por convención
 
 Y luego la estimación — OLS, GMM, MLE son formas de aproximarte a ese objeto con datos
+
+**A tu segunda pregunta:** "limitada" significa que el rango de la variable dependiente está restringido de alguna forma que hace que OLS genere predicciones sin sentido o estimadores con malas propiedades. Hay varios tipos de limitación:
+
+-   **Binaria** (0/1): Y solo toma dos valores → logit, probit. OLS puede predecir probabilidades fuera de \[0,1\].
+
+-   **Censurada**: Y tiene un valor mínimo o máximo artificial — el caso clásico es el gasto en un bien que muchos no compran (muchos ceros, pero no porque no quieran sino porque la variable está "cortada" en cero) → tobit.
+
+-   **Truncada**: directamente no observas las observaciones fuera de cierto rango.
+
+-   **De conteo**: Y solo toma enteros no negativos (0, 1, 2, ...) → Poisson, binomial negativa. OLS puede predecir negativos o no enteros.
+
+-   **De duración**: Y es el tiempo hasta que ocurre un evento, que por definición es positivo y tiene censura (el evento puede no haber ocurrido aún) → modelos de supervivencia.
