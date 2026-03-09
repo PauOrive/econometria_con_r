@@ -2,6 +2,17 @@
 
 Quizás merece la pena dedicar un capítulo (corto) a la idea de inferencia causal. es decir, los modelos de regresión descritos anteriormente son generalizaciones donde dependiendo del contexto (e.g. si partimos de un RCT o no) podemos proclamar que nuestros resultados son causales.
 
+*sobre las preguntas causales y las FUQ:*
+(párrafos que inicialmente estaban en 20_proceso_econometrico)
+
+Además, nos permiten descartar aquellas preguntas que son "fundamentalmente no identificables", es decir, que ningún experimento podría responder. Por ejemplo, podriamos estar interesados en investigar si el hecho de empezar la primaria a los 7 años, en vez de a los 6 años [^30-nota-1] como sucede actualmente, mejora los resultados en los exámenes de primaria, porque pensamos que el celebro a los 7 años está mejor preparado para asimilar conocimientos que a los 6 años. 
+
+Podríamos diseñar un experimento en el que, de forma aleatoria, seleccionamos a algunos alumnos para que empiecen la primaria a los 6 años y otros a los 7 años. No obstante, los alumnos acostumbran a mejorar sus resultados con la edad, por lo que más que el efecto de empezar la educación primaria antes o después, estaremos midiendo el efecto de la edad. En vez del curso, podríamos mantener constante la edad, poniendo el test a los que empezaron con 6 años un año más tarde... pero entonces estos realizarán el examen habiendo estado más tiempo en la escuela, por lo que volveríamos a identificar un efecto distinto del que queríamos, a saber, si empezar la escuela más tarde tiene efectos en el desempeño. Puesto que no hay manera de aislar ese efecto, esta no es una pregunta válida para investigar.  
+
+[^30-nota-1]: En España se empieza la etapa de educación primaria obligatoria a los 6 años, cumplidos o por cumplir dentro del año natural del inicio escolar.
+
+
+
 explicar a fondo la intición de los potential outcomes
 
 -   el problema fundamental de la causalidad (no observamos lo que hubiera pasado si no hubiera habido tratamiento): nunca observamos ambos potential outcomes para el mismo individuo
