@@ -34,7 +34,7 @@ Esta sección presenta las herramientas para hacer una exploración inicial que 
 
 Los problemas más frecuentes de los *messy* datasets y cómo limpiarlos para dejarlos en formato *tidy* se encuentran en la tercera sección, puesto que las soluciones suelen involucrar una serie de herramientas que se presentan en la segunda sección.
 
-## Estructura general {#1.1.estructura-general}
+## Estructura general
 
 Las principales funciones para entender la estructura general de nuestro dataset son:
 
@@ -90,7 +90,7 @@ head(economics)
 tail(economics$pop, n = 10)
 ```
 
-## Clases de las variables {#1.2.clases-variables}
+## Clases de las variables
 
 En general, en las ciencias sociales se acostumbra a distinguir entre:
 
@@ -165,7 +165,7 @@ Al corregir la clase de la columna `unemploy` vemos que la media de personas en 
 
 A continuación, explico más en detalle características interesantes de las diversas clases, así como funciones especificas para trabajar con las clases *character*, *factor* y *datetime*.
 
-### Numeric vs integer {#1.2.1.variables-numericas}
+### Numeric vs integer
 
 Que existan dos clases para definir variables numericas no es casualidad, sino por una cuestión de memoria. Los acrónimos que da *tibble* son *\<int\>* y *\<dbl\>*. Las variables de clase *integer* ocupan menos memoria que las de clase *numeric* o *double*, de modo que cuando no haya decimales, mejor definir las columnas numericas como *integer*. Evidentemente, la diferencia en espacio de memoria escala proporcionalmente al tamaño del dataset.
 
@@ -936,7 +936,7 @@ Inf + -Inf
 
 Estos nombres están reservados los significados enumerados, de modo que no podemos usarlos para como nombres de una variable. Puesto que R distingue entre mayúsculas y minúsculas, `True` no es lo mismo que `TRUE`, de modo que sí que podríamos usar "True" para nombrar una variable... aunque probablemente nunca tenga mucho sentido definir tal variable (véase el capítulo **INTRODUCTORIO!** sobre buenas prácticas al definir variables).
 
-## Análisis exploratorio {#1.3.valores-variables}
+## Análisis exploratorio {#sec-analisis-exploratorio}
 
 Una vez hemos revisado las clases de las variables, procedemos a investigar los valores que toman. Esto lo podemos hacer de forma analítica o mediante visualizaciones. Ambas vías son útiles para detectar valores anómalos, erratas o problemas que tenemos que corregir antes de realizar el análisis, así como para comprender cómo se relacionan los datos como paso previo a cualquier análisis estadístico.
 
@@ -1115,8 +1115,6 @@ Los gráficos principales para :
     -   medidas robustas a outliers
 
     -   masks multimodal dists
-
-<!-- -->
 
 -   distribución de 1 o más variables: dotplots (quite funny), histogramas o density plots si hay muchos casos; boxplot para los quantiles y detectar outliers, aunque fallan en distribuciones multimodales.
 
