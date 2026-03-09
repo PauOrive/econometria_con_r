@@ -2,7 +2,7 @@
 title: "Manipular datos"
 ---
 
-# Manipular datos
+# Manipular datos {#cap-maipular-datos}
 
 *Tratar de poner las librerías y los datasets en otros archivos únicos*
 

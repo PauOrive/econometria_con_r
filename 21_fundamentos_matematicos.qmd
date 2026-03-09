@@ -2,7 +2,7 @@
 title: "Fundamentos matemáticos"
 ---
 
-# Decidir título definitivo
+# Fundamentos matemáticos {#cap-fundamentos-matematicos}
 
 ## Estructura
 

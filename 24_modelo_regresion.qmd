@@ -2,7 +2,7 @@
 title: "El modelo de regresión"
 ---
 
-# El modelo de regresión
+# El modelo de regresión {#cap-modelo-regresion}
 
 *Revisar este capítulo para que sea (aprox.) un equivalente de Making regression make sense*
 

@@ -2,7 +2,7 @@
 title: "Importar datos"
 ---
 
-# Importar (y exportar) datos
+# Importar (y exportar) datos {#cap-importar-exportar-datos}
 
 *revisar toda esta sección: el contenido está ya abstante trabajado pero hay que adaptar tres cosas*
 1.   la numeración y ordenación de headings!

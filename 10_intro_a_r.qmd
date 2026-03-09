@@ -2,7 +2,7 @@
 title: "Introducción a R"
 ---
 
-# Introducción a R
+# Introducción a R {#cap-introducion-a-R}
 
 ## Qué es R
 

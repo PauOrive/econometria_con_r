@@ -2,6 +2,6 @@
 title: "Visualizaciones interactivas"
 ---
 
-# Visualizaciones interactivas
+# Visualizaciones interactivas {#cap-visualizaciones-interactivas}
 
 En este capítulo cubriré los básicos de plotly (con un poco de suerte, algo de dashboards y shiny)

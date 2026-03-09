@@ -2,7 +2,7 @@
 title: "Estimar el modelo"
 ---
 
-# Estimar el modelo
+# Estimar el modelo {#cap-estimar-modelo}
 
 *de momento copio todo lo del capítulo introductorio*
 

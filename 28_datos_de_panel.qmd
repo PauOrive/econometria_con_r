@@ -1,3 +1,8 @@
+---
+title: "Datos de panel"
+---
+
+# Datos de panel {#cap-datos-panel}
 
 **Capítulo 7 — Datos de panel** Estructura del dato longitudinal. El problema de la heterogeneidad no observada. Efectos fijos (within-group) y su lectura causal. Efectos aleatorios. El test de Hausman. Arellano-Bond para dinámicas con endogeneidad. Conexión explícita con DiD: el panel como sustrato de muchas estrategias causales.
 

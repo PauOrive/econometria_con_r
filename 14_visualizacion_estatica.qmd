@@ -2,7 +2,7 @@
 title: "Visualizaciones estáticas"
 ---
 
-# Visualizaciones estáticas
+# Visualizaciones estáticas {#cap-visualizaciones-estaticas}
 
 En este capítulo cubriré los básicos de ggplot (el cheatsheet está genial)
 

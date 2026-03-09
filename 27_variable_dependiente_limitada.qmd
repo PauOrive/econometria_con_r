@@ -1,3 +1,10 @@
+---
+title: "Regresiones con variable dependiente limitada"
+---
+
+# Regresiones con variable dependiente limitada {#cap-variable-dependiente-limitada}
+
+
 **Capítulo 6 — Regresión con variable dependiente limitada** MLE como método de estimación general. Modelos de variable binaria: logit y probit (son no lineales!!). Interpretación de los efectos marginales. Modelos multinomiales. Modelos Tobit para variables censuradas. Breve mención al modelo de Heckman para selección muestral.
 
 ### regresión logística

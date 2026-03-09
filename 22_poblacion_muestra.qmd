@@ -2,7 +2,7 @@
 title: "Población y muestra"
 ---
 
-# Población y muestra
+# Población y muestra {#cap-poblacion-muestra}
 
 *en caso de que no quede cubierto en el cap. introductorio de esta parte, lo desarrollo aquí*
 

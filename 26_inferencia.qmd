@@ -2,6 +2,6 @@
 title: "Inferencia"
 ---
 
-# Inferencia
+# Inferencia {#cap-inferencia}
 
 Capítulo 4 — Inferencia en regresión Tests de hipótesis y intervalos de confianza. Errores estándar: clásicos, robustos y clusterizados. Bootstrap. Significancia estadística vs. relevancia práctica (tamaño del efecto).

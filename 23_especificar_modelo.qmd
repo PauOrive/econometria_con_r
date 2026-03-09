@@ -2,7 +2,7 @@
 title: "Especificar el modelo"
 ---
 
-# Especificar el modelo
+# Especificar el modelo {#cap-especificar-modelo}
 
 *de momento, copio lo que sale en el capitulo introductorio
 

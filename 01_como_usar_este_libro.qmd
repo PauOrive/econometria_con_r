@@ -3,7 +3,7 @@ title: "Cómo usar este libro"
 numbered: false
 ---
 
-# Cómo usar este libro
+# Cómo usar este libro {#cap-como-usar-este-libro}
 
 *aquí hay que pensar qué cosas encajan mejor en index y cuales aquí*
 *rule of thumb es que index sea muy breve y aquí haya más detalle*

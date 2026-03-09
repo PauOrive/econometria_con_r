@@ -2,7 +2,7 @@
 title: "Exploración inicial"
 ---
 
-# Exploración inicial
+# Exploración inicial {#cap-exploracion-inicial}
 
 Lo primero que recomiendo hacer al cargar un fichero de datos es tratar de entender su estructura:
 
