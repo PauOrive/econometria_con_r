@@ -1,0 +1,32 @@
+---
+title: "Estimar el modelo"
+---
+
+# Estimar el modelo
+
+*de momento copio todo lo del capítulo introductorio*
+
+3 metodologías generales (sólo introducción con la intuición):
+
+MCO: minimiza suma de cuadrados. Requiere muy pocos supuestos pero es el menos flexible.
+
+MV/ML: maximiza la verosimilitud. Requiere especificar completamente la distribución de Y, lo cual es más supuestos pero produce estimadores eficientes si la distribución está bien especificada.
+
+Técnicamente es la distribución del error, no de Y directamente, aunque en la práctica es equivalente dado X. Vale la pena ser preciso aquí precisamente porque es la confusión que queremos desactivar desde el principio.
+
+GMM: impone solo que ciertas condiciones de momentos sean cero en la población, E[g(y,θ)] = 0. No requiere especificar ninguna distribución completa. MCO y MV son casos especiales de GMM con condiciones de momentos particulares.
+
+Sería interesante que, cuando desarrolle más cómo funcionan, explique un poco "qué hay detrás de los commandos que corremos" (closed-form solutions, algoritmos, etc.) es decir, tratar de acercar el concepto a "si lo hicieras a mano, ¿cómo sería?"
+
+la elección de técnica no es independiente de la especificación ni de los supuestos, lo cual es un punto pedagógico importante. OLS es BLUE bajo ciertos supuestos, si los supuestos cambian, cambia el estimador óptimo.
+
+Sobre técnicas de estimación que podrías dejar fuera
+
+OLS, MLE y GMM cubren el 95% de lo que un econometrista aplicado usa. Lo que dejas fuera relevante:
+
+Econometría bayesiana: sí merece una mención, aunque sea breve. El argumento para mencionarla es que representa una filosofía distinta sobre qué significa "estimar" — no buscas el valor del parámetro que maximiza algo dado los datos, sino que actualizas una distribución de creencias. Es una diferencia conceptual importante, no solo técnica. Puedes dedicarle dos párrafos diciendo "existe esta otra tradición, aquí está la intuición, no la desarrollamos porque requeriría otro libro".
+
+Modelos estructurales: aquí soy más ambivalente. En economía industrial y macroeconomía son centrales, pero implican una filosofía completamente distinta — especificas un modelo económico con sus parámetros estructurales y luego lo estimas. La frontera con "lo que cubre tu libro" es bastante clara, así que con una mención breve en el capítulo introductorio es suficiente.
+
+Lo que sí añadiría a tu lista principal: estimación no paramétrica y semiparamétrica. No como un método de estimación separado al nivel de GMM, sino como una familia que aparece de forma natural en RDD (local linear regression) y en ML. Podrías mencionarla en el capítulo de estimación como "existe una tercera vía que no asume forma funcional paramétrica" sin desarrollarla completamente.
+

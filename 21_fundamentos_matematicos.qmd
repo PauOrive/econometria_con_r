@@ -1,8 +1,14 @@
-# Fundamentos matemáticos y estadísticos
+---
+title: "Fundamentos matemáticos"
+---
 
-## **Estructura**
+# Decidir título definitivo
 
-1.  Álgebra lineal:
+## Estructura
+
+Idealmente: álgebra lineal, cálculo (?), probabilidad y estadística
+
+1.  Álgebra lineal
 
 2.  Probabilidad y distribuciones (muy breve: distribuciones básicas, esperanza, varianza, y el TCL).
 

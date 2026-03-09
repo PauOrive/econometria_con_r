@@ -1,3 +1,7 @@
+---
+title: "El modelo de regresión"
+---
+
 # El modelo de regresión
 
 *Revisar este capítulo para que sea (aprox.) un equivalente de Making regression make sense*
@@ -7,7 +11,7 @@
 1.  La forma canónica y su interpretación como media condicional.
 2.  Notación
 3.  Conceptos principales: grados de libertad, errores estándar, etc.
-4.  Derivación del estimador MCO.
+4.  Derivación del estimador MCO (o no!! esto es técnica de estimación)
 5.  Los supuestos del modelo.
 6.  Variables categóricas como predictores, y aquí la conexión con ANOVA.
 7.  La descomposición de Oaxaca-Blinder como aplicación.
@@ -261,3 +265,24 @@ para visualizar: scatter plot de fitted vs residuals (ggfortify package?)
 
 -   Observations with predictions far away from the trend line have high influence, because they have large residuals and are far away from other observations.
 -   cook's distance: cooks.distance o .cooksd en augment()
+
+
+*por si encaja a algún lado*
+
+Capítulo 5 — Buenas prácticas en especificación Elección de covariables: el problema de los bad controls, variables omitidas, sobreajuste. Nivel de agregación de variables. Frecuencia de observación. Outliers y valores extremos. Transformaciones funcionales: logaritmos, polinomios, interacciones. Este capítulo actúa como puente hacia la parte causal.
+
+conexión con el capítulo siguiente: la regresión lineal es más flexible de lo que parece porque puedes incluir logaritmos, polinomios e interacciones, y que muchas relaciones no lineales en las variables son perfectamente capturables con un modelo lineal en los parámetros. Eso conecta directamente con logit y probit en el capítulo siguiente, que son el ejemplo más natural de cuándo sí necesitas salir de la linealidad: cuando la variable dependiente es binaria, una recta no es una buena aproximación porque puede predecir probabilidades fuera del intervalo cero-uno.
+
+## Buenas prácticas 
+
+-   OVB y "bad controls" (?)
+
+-   endogeneidad
+
+-   errores estándar (robustos y clusterizados)
+
+-   frequencia en observaciones
+
+-   nivel de agregación de las variables
+
+-   outliers 

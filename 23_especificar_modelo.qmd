@@ -1,0 +1,29 @@
+---
+title: "Especificar el modelo"
+---
+
+# Especificar el modelo
+
+*de momento, copio lo que sale en el capitulo introductorio
+
+Es estructural / estadística, y responde a: ¿cómo creo que funciona el mundo?
+
+modelos lineales vs no lineales
+
+un modelo lineal es lineal en los parámetros (no necesariamente en las variables), y eso tiene implicaciones enormes en cómo se estima y cómo se interpreta. Ahí también puedes justificar por qué los modelos lineales ocupan tanto espacio en el libro: no porque sean siempre los más precisos, sino porque son aproximaciones sorprendentemente buenas en muchos contextos y tienen propiedades analíticas que los hacen tractables.
+
+incluir polinomios u otras transformaciones
+
+Dinámica temporal, dependencia, heterogeneidad.
+
+Distribuciones del error, reglas de decisión, restricciones económicas.
+
+Closed-form solutions vs no (quizás en fundamentos matemáticos)
+
+La distribución no es relevante: en econometría casi nunca partimos de una población normal (e.g. estudio de salarios, otros).
+
+La especificación incluye decisiones sobre qué variables entran en el modelo, que es donde aparece el riesgo de sesgo por variable omitida. Eso crea un puente natural hacia identificación sin confundir los dos ejes.
+
+tests de validacion
+
+Preguntas del tipo: ¿está el modelo bien especificado? No preguntan sobre el valor de los parámetros sino sobre si el modelo en sí es adecuado. Ejemplos típicos son el test de Ramsey (RESET) para forma funcional, el test de Breusch-Pagan o White para heterocedasticidad, el test de Hausman para endogeneidad, o los tests de raíz unitaria en series temporales.

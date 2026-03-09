@@ -24,9 +24,9 @@ book:
     - part: "Fundamentos de econometría"
       chapters:
         - 20_proceso_econometrico.qmd
-        - 21_fundamentos_matematicos_estadisticos.qmd
+        - 21_fundamentos_matematicos.qmd
         - 22_poblacion_muestra.qmd
-        - 23_especificacion_modelo.qmd
+        - 23_especificar_modelo.qmd
         - 24_modelo_regresion.qmd
         - 25_tecnica_estimacion.qmd
         - 26_inferencia.qmd

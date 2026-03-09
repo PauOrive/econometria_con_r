@@ -1,0 +1,23 @@
+---
+title: "Población y muestra"
+---
+
+# Población y muestra
+
+*en caso de que no quede cubierto en el cap. introductorio de esta parte, lo desarrollo aquí*
+
+definir la población de interés
+
+la metáfora de la sopa: remover bien y sacar una cucharada
+
+tipos de datos
+
+por naturaleza: sección cruzada, panel, serie temporal
+
+por proceso generador: observacional vs experimental
+
+cuestiones a tener en cuenta al realizar un muestreo
+
+muestra aleatoria y sesgos...
+
+ejemplo: si haces una encuesta sobre ... a los compañeros de tu universidad, vas a sacar conclusiones sobre los estudiantes universitarios, no sobre "los jóvenes"...
