@@ -1,0 +1,45 @@
+La idea es instalar el package "paletteer2" y escoger alguno de sus palettes.
+Mi idea es usar una paleta original, que no incluya colores muy similares, ni muy oscuros o muy claros, y a pdoer ser con un nomrbe guay
+
+Candidatos para gráficos cualitativos:
+- alhambra
+- acadia,
+- arches
+- badbunny 1 o 2
+- bloodrites
+- cafeterrace
+- charizard
+- clay
+- defaul jama
+- degas
+- grand canyon
+- grand tour
+- hokusai1
+- joan miro
+- kelp1
+- minou
+- pablo picaso1
+- pierre augusterenoir
+- redon
+- rene magritte
+- small world
+- smoky mountains
+- sunset1
+- supersonics 90s
+- targaryen
+- tiepolo
+- varonese
+- virgo
+- wassily kandisnsky 1
+
+
+Candidatos para gráficos continuos:
+-buRd
+- geyser
+- heatmap
+- huida
+- paquin
+- moreau
+- redblues
+- tangerine blues
+- sunset
