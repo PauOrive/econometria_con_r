@@ -42,19 +42,11 @@ En esta segunda parte del libro explico los conceptos y herramientas esenciales 
 
 -   **Datos** para poder responderla
 
-A partir de aquí, debemos definir un **modelo**, es decir, cómo representamos de forma simplificada un proceso económico, en base a una serie de supuestos sobre qué variables importan, cómo se relacionan, y qué queda fuera.
-
-En econometría, la regresión es el vehículo principal para especificar modelos, motivo por el que merece un capítulo propio. Pero definir el modelo es solo el punto de partida: una vez especificado, necesitamos **estimar** sus parámetros, es decir, obtener valores concretos a partir de los datos. Y una vez estimados, necesitamos saber cuánta confianza podemos depositar en ellos, que es exactamente lo que nos permite la **inferencia** estadística.\[\^20-nota-1\]
-
-\[\^20-nota-1\]: El marco conceptual de modelo, estimación e inferencia describe el flujo típico de la econometría aplicada, pero existen excepciones. Los modelos no paramétricos, comunes en *machine learning*, no asumen ninguna forma funcional para describir la relación entre las variables de interés. Y hay contextos, como los modelos de simulación o la predicción pura, donde la inferencia estadística clásica puede quedar fuera del proceso.
-
-El diagrama @figuras/diagrama-proceso-econometrico representa de forma simplificada "el proceso econométrico". En la práctica, sin embargo, el proceso es iterativo y la especificación del modelo se revisa y ajusta a medida que avanza el análisis.
-
-![El proceso econométrico](figura/diagrama-proceso-econometrico.svg){#fig-diagrama-proceso-econometrico}
+Los datos son imprescindibles porque sin ellos no hay análisis cuantitativo posible. Sin embargo, es principalmente el tipo de pregunta lo que determina la hoja de ruta general — si buscamos describir, predecir o identificar una relación causal. Los datos condicionan sobre todo las decisiones técnicas posteriores: qué modelo especificamos y qué técnica de estimación usamos.
 
 ## Todo empieza con una pregunta
 
-Un buen proyecto de investigación empieza con una pregunta bien formulada. Por "bien formulada" me refiero a una preguna concreta que se pueda atacar con datos.
+Un buen proyecto de investigación empieza con una pregunta bien formulada. Por "bien formulada" me refiero a una preguna *concreta* que se pueda atacar con datos.
 
 Veamos algunos ejemplos:
 
@@ -66,27 +58,45 @@ Veamos algunos ejemplos:
 
 -   ¿Cuál es el impacto que ha tenido el Real Decreto 956/2018, que incrementa el complemento retributivo al 100% desde el primer día de baja para los funcionarios, en la probabilidad de que estos empiecen un proceso de incapacidad temporal?
 
-@Angrist-Prischke-2009 recomiendan pensar cómo diseñaríamos un experimento ideal que nos ayudara a responder a nuestra pregunta. Por ejemplo, para medir el impacto que ha tenido la aprobación del Real Decreto 956/2018 en la probabilidad que los funcionarios inicien un episodio de incapacidad temporal (IT), podríamos añadir una cláusula que aplicara la mejora del complemento salarial sólo a la mitad de los funcionarios: por ejemplo, sólo a aquellos nacidos en un día par.\[\^20-nota-2\] De este modo, podríamos comparar la probabilidad de iniciar un episodio de IT entre los que tuvieron la suerte de recibir la prestación por incapacidad temporal del 100% de su base de cotización y los que no, manteniendo el resto de variables constantes.
+@Angrist-Prischke-2009 recomiendan pensar en cómo diseñaríamos un experimento ideal que nos ayudara a responder a nuestra pregunta. Por ejemplo, para medir el impacto que ha tenido la aprobación del Real Decreto 956/2018 en la probabilidad que los funcionarios inicien un episodio de incapacidad temporal (IT), podríamos añadir una cláusula que aplicara la mejora del complemento salarial sólo a la mitad de los funcionarios: por ejemplo, sólo a aquellos nacidos en un día par.\[\^20-nota-1\] De este modo, podríamos comparar la probabilidad de iniciar un episodio de IT entre los que tuvieron la suerte de recibir la prestación por incapacidad temporal del 100% de su base de cotización y los que no, manteniendo el resto de variables constantes.
 
-\[\^20-nota-2\]: Implícitamente, asumo que no existe correlación entre el día del mes en el que nace un funcionario (más concretamente, entre si este es par o impar) y su probabilidad de empezar un proceso de incapacidad temporal, lo que parece bastante razonable.
+\[\^20-nota-1\]: Implícitamente, asumo que no existe correlación entre el día del mes en el que nace un funcionario (más concretamente, si este es par o impar) y su probabilidad de empezar un proceso de incapacidad temporal, lo que parece bastante razonable.
 
 Evidentemente, no todos los experimentos son factibles ni deseables desde un punto de vista ético, pero el mero hecho de pensarlo nos ayuda a explicitar qué factores nos gustaría manipular y cuáles queremos mantener constantes.
 
-Sin embargo, su marco conceptual se aplica exclusivamente a preguntas que busquen identificar relaciones causales, que yo desarrollo en la tercera parte de este libro. Pero de los cuatro ejemplos que he expuesto, sólo la pregunta sobre el Real Decreto busca identificar una relación causal; las otras tres buscan resumir los datos mediante estadísticos descriptivos o predecir valores desconocidos a partir de los datos disponibles.
+Sin embargo, su marco conceptual se aplica exclusivamente a preguntas que busquen identificar relaciones causales, que yo desarrollo en la tercera parte de este libro. Pero de los cuatro ejemplos que he expuesto, sólo la pregunta sobre el Real Decreto trata de identificar una relación causal; las otras tres buscan resumir los datos mediante estadísticos descriptivos o predecir valores desconocidos a partir de los datos disponibles.
 
 Por tanto, antes de continuar, merece la pena definir qué distingue estas clases de preguntas y qué implicaciones tiene para el análisis.
 
-## ¿Cuál es tu objetivo?
+### ¿Cuál es tu objetivo?
 
-Las metodologías quantitativas que usemos en un trabajo de investigación varían significativamente dependiendo del objetivo que perseguimos.
+@Hernán-et-al-2019 proponen una clasificación con **tres categorías en función del objetivo que perseguimos**: describir, predecir o identificar impactos causales. En mi opinión, esta distinción se puede ilustrar fácilmente con una imagen.
 
-@Hernán-et-al-2019 proponen dividir estos objetivos en tres categorías, que se recogen en la tabla siguiente. Esta clasificación no implica que un estudio deba encapsularse en una única categoría. Por ejemplo, es muy común que una investigación incorpore elementos descriptivos antes de pasar a la predicción y/o la inferencia causal. Se trata, sin embargo, de un marco conceptual útil para entender qué hacemos en cada fase del análisis.
+```{r}
+#| label: fig-meme-bob-esponja
+#| echo: false
+#| fig-cap: |
+#|   Meme comparando la exigencia metodológica de cada clase de investigación en 
+#|   función de su objetivo (elaboración propia a partir de una plantilla de ImageResizer).
+#| fig-alt: |
+#|   La figura muestra un meme con tres imágenes de Bob Esponja, cada una más fuerte y
+#|   musculado que la anterior, con tres textos: "análisis descriptivo", "predicción" e
+#|   "inferencia causal", respectivamente.  
+
+knitr::include_graphics("figuras/meme-bobesp-desc-pred-causal.png")
+```
+
+Bromas aparte, a lo largo de esta sección entenderéis por qué la inferencia causal se lleva la versión musculada de Bob Esponja. Pero la importancia de distinguir entre estos tres objetivos va más allá de su exigencia metodológica: cada uno marca una hoja de ruta distinta, y confundirlos es una fuente habitual de errores en la práctica.
+
+La @tbl-preguntas-objetivos concreta en qué consiste cada objetivo y muestra cómo suelen ser las preguntas de cada clase. Esta clasificación no implica que un estudio deba encapsularse en una única categoría. Por ejemplo, es muy común que una investigación incorpore elementos descriptivos antes de pasar a la predicción y/o la inferencia causal. Se trata, sin embargo, de un marco conceptual útil para entender qué hacemos en cada fase del análisis.
 
 | Objetivo | En qué consiste | Tipo de pregunta | Ejemplo de pregunta |
 |------------------|------------------|------------------|------------------|
 | Descripción | Resumir de forma quantitativa características del mundo y explorar relaciones entre variables | ¿Qué está pasando? | ¿Cómo ha sido la evolución de la duración de procesos de incapacidad temporal en España en los últimos 10 años? |
 | Predicción | Estimar un valor desconocido a partir de datos disponibles | ¿Qué valor esperamos para un nuevo caso? | ¿Cuál es la duración más probable para un nuevo proceso de incapacidad temporal? |
 | Inferencia causal o contrafactual | Estimar el impacto causal de una variable sobre otra | ¿Qué pasaría si intervenimos? | ¿Cuál es el impacto de incrementar el complemento retributivo de la prestación por incapacidad temporal (IT) en la probabilidad de empezar un proceso de IT? |
+
+: Clases de preguntas según el objetivo de investiación {#tbl-preguntas-objetivos}
 
 ### El papel del análisis descriptivo
 
@@ -96,45 +106,33 @@ De hecho, en caso de contar con una base de datos rica, la parte descriptiva pue
 
 Las técnicas empleadas abarcan desde simples cálculos de medias o percentiles de una distribución (en la @sec-analisis-exploratorio explico cómo hacerlo con R) hasta regresiones logísticas para entender qué características de las observaciones se asocian con la variable dependiente, o algoritmos no supervisados como el análisis de clústeres. Esta información la podemos comunicar con cifras, aunque en la mayoría de los casos los gráficos constituyen un soporte visual con mayor poder comunicativo.
 
-La frontera entre la fase descriptiva y las otras a veces son algo difusas. Por ejemplo, cuando queremos predecir un resultado (*outcome*) sobre una variable $y$, empezamos estimando un modelo con los datos disponibles $y = f(X)$, que luego usamos para realizar predicciones. @Hernán-et-al-2019 incluyen todo el proceso dentro del saco de la predicción, aunque en mi opinión, hasta que no usamos el modelo para realizar predicciones, estamos llevando a cabo un estudio descriptivo, en concreto, identificando qué valores de $X$ se correlacionan con diferentes valores de $y$.
+La frontera entre la fase descriptiva y las otras a veces son algo difusas. Por ejemplo, cuando queremos predecir un resultado (*outcome*) sobre una variable $y$, empezamos estimando un modelo con los datos disponibles $y = f(X)$, que luego usamos para realizar predicciones $\hat{y}$. @Hernán-et-al-2019 incluyen todo el proceso dentro del saco de la predicción, aunque en mi opinión, hasta que no usamos el modelo para realizar predicciones, estamos llevando a cabo un análisis descriptivo, en concreto, identificando qué valores de $X$ se correlacionan con diferentes valores de $y$.
 
 ### Predicción vs inferencia causal
 
-A diferencia de las tareas descriptivas, la predicción y las metodologías contrafactuales exigen ir más allá de lo directamente observable en los datos. Sin embargo, la distinción entre ambas es quizás aún más relevante y se puede ilustrar fácilmente con una imagen:
+A diferencia de las tareas descriptivas, la predicción y las metodologías contrafactuales exigen ir más allá de lo directamente observable en los datos. Sin embargo, la distinción entre ambas es quizás aún más relevante puesto que conducen a caminos metodológicos completamente distintos.
 
-\[🟡*introducir meme bob-esponja a 3 o 2 partes*\]
+Los trabajos de predicción son muy relevantes en áreas como finanzas o macroeconomía, por no decir vitales en áreas ajenas a la economía como la medicina. Si entrenamos un modelo de *machine learning* con miles de imágenes de ecografías etiquetadas por radiólogos expertos, el modelo aprende a identificar patrones visuales asociados a tumores malignos, lo que tiene el potencial de mejorar el diagnóstico temprano en entornos con acceso limitado a radiólogos o escalar el número de personas a las que hacer cribajes.
 
--   @figuras/meme-bobesp-desc-pred-causal.png
+En estos casos, estamos interesados en mapear unos *inputs* con unos *outputs*, sin prestar demasiada atención a los mecanismos que conectan unos con otros. En otras palabras, nos interesa la correlación, no la causalidad.
 
--   @figuras/meme-bobesp-pred-causal.png
+Otro ejemplo en el campo de las finanzas ilustra precisamente este punto. Podemos entrenar un modelo de procesamiento de lenguaje natural con miles de noticias financieras para predecir movimientos en el precio de las acciones — no porque entendamos por qué ciertas palabras predicen ciertos movimientos, sino porque el patrón existe en los datos y se generaliza a casos nuevos.
 
-Bromas aparte, merece la pena detenernos en explicar la diferencia entre los trabajos de predicción y de inferencia causal puesto que conducen a caminos metodológicos completamente distintos... luego justificaré el mensaje que transmite el meme.
+El objetivo siempre es maximizar la capacidad predictiva del modelo fuera del conjunto de datos que disponemos, ya que queremos aplicarlo para nuevos casos o escenarios futuros. Un modelo es mejor que otro si obtiene mejor puntuación en las métricas que determinan su capacidad predictiva.
 
-Los trabajos de predicción son muy relevantes en áreas como finanzas o macroeconomía, por no decir vitales en áreas ajenas a la economía como la medicina. Si entrenamos un modelo de *machine learning* con miles de imágenes de ecografías para detectar tumores malignos, puede convertirse en una ayuda enorme para mejorar el diagnóstico temprano de cáncer y salvar la vida a miles de pacientes. (quizás citar un ejemplo real/mencionar que han proliferado estas aplicaciones).
+---
 
-*alternativa redactado*
+*quizás dejo el procedimiento para la parte de data science*
 
-"Si entrenamos un modelo con miles de imágenes de ecografías etiquetadas por radiólogos expertos, el modelo aprende a identificar patrones visuales asociados a tumores malignos. Estudios recientes sugieren que estos modelos alcanzan una precisión diagnóstica comparable a la de especialistas humanos, con el potencial de mejorar el diagnóstico temprano en entornos con acceso limitado a radiólogos"
+El procedimiento procedimiento suele ser el siguiente:
 
-"O podemos entrenar un modelo de procesamiento de lenguaje natural con miles de noticias financieras para predecir movimientos en el precio de las acciones — no porque entendamos por qué ciertas palabras predicen ciertos movimientos, sino porque el patrón existe en los datos y se generaliza a casos nuevos."
-
-En estos casos, estamos interesados en mapear unos *inputs* con unos *outputs*. Por ejemplo, imágenes de ecografías con diagnósticos, o las palabras usadas en notícias de diarios en el valor de las acciones. El objetivo es maximizar la capacidad predictiva del modelo fuera del conjunto de datos que disponemos, ya que queremos aplicarlo para nuevos casos o escenarios futuros.
-
-En este sentido, el procedimiento suele ser el siguiente:
-
-1)  Disponemos de unos datos, donde identificamos una variable $y$ que queremos predecir a partir de un conjunto de variables $X$.
+1)  Disponemos de unos datos con una variable $y$ que queremos predecir a partir de un conjunto de variables $X$.
 
 2)  Dividimos aleatoriamente la muestra entre "entrenamiento" y "validación". La proporción varía según el tamaño muestral y el problema, aunque divisiones como 70/30 u 80/20 entre entrenamiento y validación son habituales.
 
-3)  Probamos diferentes modelos y comprobamos diferentes métricas que determinan el ajuste del modelo, como el RMSE o el porcentaje de accuracy.
+3)  Probamos diferentes modelos y comprobamos su capacidad predictiva en la muestra de validación, mediante métricas de rendimiento como el error cuadrático medio (RMSE) en problemas de predicción continua, o el porcentaje de clasificaciones correctas (*accuracy*) en problemas de clasificación.
 
-4)  ***Alternativa de redacción:***
-
-5)  "...métricas que determinan la capacidad predictiva del modelo fuera de la muestra de entrenamiento — como el error cuadrático medio (RMSE) en problemas de predicción continua, o el porcentaje de clasificaciones correctas (accuracy) en problemas de clasificación."
-
-6)  Nos quedamos con el que obtenga mayor puntuación (es decir, que minimiza el error de predicción en la muestra de validación).
-
-Es decir, la interpretabilidad de los parámetros pasa completamente a un segundo plano y un modelo es mejor que otro si tiene mayor poder predictivo.
+4)  Nos quedamos con el que obtenga mayor puntuación (es decir, que minimiza el error de predicción en la muestra de validación).
 
 En el @cap-modelo-regresion explico cómo podemos realizar predicciones a partir de un modelo de regresión en R, aunque cuando el objetivo es realizar predicciones, la regresión es sólo una alternativa más en un universo creciente de técnicas, y a menudo no la más eficiente. Con el advenimiento del *big data*, modelos de *data science* como los árboles de decisión o \[insertar otra\] suelen tener mayor poder predictivo. La cuarta parte del libro desarrolla alguna de las principales técnicas.
 
@@ -142,7 +140,38 @@ En el @cap-modelo-regresion explico cómo podemos realizar predicciones a partir
 
 "En este campo, la regresión es una alternativa más dentro de un ecosistema amplio de técnicas. Con el auge del big data, modelos como los árboles de decisión, los bosques aleatorios o las redes neuronales suelen superar a la regresión clásica en capacidad predictiva, especialmente cuando la relación entre variables es compleja y no lineal. La cuarta parte del libro introduce las principales técnicas de machine learning aplicadas a la predicción."
 
----
+## ------------------------------------------------------------------------
+
+debemos definir un **modelo**, es decir, cómo representamos de forma simplificada un proceso económico, en base a una serie de supuestos sobre qué variables importan, cómo se relacionan, y qué queda fuera.
+
+En econometría, la regresión es el vehículo principal para especificar modelos, motivo por el que merece un capítulo propio. Pero definir el modelo es solo el punto de partida: una vez especificado, necesitamos **estimar** sus parámetros, es decir, obtener valores concretos a partir de los datos. Y una vez estimados, necesitamos saber cuánta confianza podemos depositar en ellos, que es exactamente lo que nos permite la **inferencia** estadística.\[\^20-nota-1\]
+
+\[\^20-nota-1\]: El marco conceptual de modelo, estimación e inferencia describe el flujo típico de la econometría aplicada, pero existen excepciones. Los modelos no paramétricos, comunes en *machine learning*, no asumen ninguna forma funcional para describir la relación entre las variables de interés. Y hay contextos, como los modelos de simulación o la predicción pura, donde la inferencia estadística clásica puede quedar fuera del proceso.
+
+La @fig-diagrama-proceso-econometrico representa de forma simplificada "el proceso econométrico". En la práctica, sin embargo, el proceso es iterativo y la especificación del modelo se revisa y ajusta a medida que avanza el análisis.\[\^20-nota-2\]
+
+\[\^20-nota-2\]: Este diagrama está especialmente pensado para preguntas de inferencia causal, aunque también aplica para preguntas descriptivas que impliquen técnicas econométricas, como las regresiones con variable dependiente limitada. Otras preguntas descriptivas aplican directamente estadísticos sobre la muestra, aplicando ponderacones si es necesario. Por último, en las preguntas predictivas por lo general,
+
+```{r}
+#| label: fig-diagrama-proceso-econometrico
+#| echo: false
+#| out-width: "80%" 
+#| fig-cap: |
+#|   Diagrama del proceso econométrico (elaboración propia).
+#| fig-alt: | 
+#|   Diagrama que muestra las etapas del proceso econométrico. 
+#|   Partimos de una pregunta de investigación (puede clasificarse en una de las 
+#|   siguientes clases: descriptiva, predictiva, contrafactual) y unos datos, que 
+#|   a menudo son una muestra de la población de interés. A partir de aquí definimos
+#|   el modelo que representa la relación entre variables de interés, que generalizo
+#|   como y = f(X). Luego usamos una tecnica de estimación para obtener los 
+#|   parámetros que mejor describen los datos. Finalmente, realizamos inferencia
+#|   para conocer el nivel de certeza que tenemos con nuestros resultados.
+
+knitr::include_graphics("figura/diagrama-proceso-econometrico.svg")
+```
+
+------------------------------------------------------------------------
 
 **POR AQUÍ**
 
