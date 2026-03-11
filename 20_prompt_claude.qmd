@@ -33,3 +33,14 @@ no sé si hay otras calsificaciones o si alguno se puede encapsular dentro de ot
 Te comparto el contenido que he desarrollado yo, aunque hay algunas partes incompletas:
 
 [adjuntar la parte del texto en 20_proceso_econometrico.qmd]
+
+---
+
+cosas en las que me gustaría que se fijara concretamente (quizás decir en una segunda iteración, cuando ya me haya hecho una primera valoración)
+
+"Por ejemplo, si queremos estudiar características de personas, pero sólo disponemos de un listado de viviendas, de modo que el muestreo aleatorio se realiza sobre viviendas."
+-- quizás hay algun ejemplo mejor... yo pensaba en RCT de pueblos o el STAR a nivel de escuelas, pero quizás mejor dejar estos ejemplos
+
+Revisa la parte del sesgo de selección
+
+sesgo de supervivencia quizás lo dejo también para más adelante, o crees que merece la pena de desarrollar aquí?
