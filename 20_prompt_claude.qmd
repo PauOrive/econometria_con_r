@@ -1,0 +1,35 @@
+Hola, estoy escribiendo un libro de Econometría con R con un enfoque pedagógico. Mi estructura es: parte 1: varios capítulos explicando cómo usar R para manipular datos (esto ya lo tengo) parte 2: teoría econométrica: capitulos introductorios sobre los distintos objetivos de la econometría (predicción vs inferencia causal), fundamentos matemáticos y los elementos principales del modelo de regresión y otros modelos (logit, panel, etc.) parte 3: la dedico a la inferencia causal (potential outcomes) y sus técnicas principales (IV, did, rdd) parte 4: la dedicaré a predicción, básicamente machine learning.
+
+
+
+Quiero que me ayudes a revisar el contenido que estoy preparando sobre "población y muestra", en el capítulo de introducción a la parte 2.
+
+Ya he hablado sobre población y ahora quiero hablar sobre la muestra.
+
+Creo que es interesante introducir algunos de los conceptos del proceso de muestreo propio de la estadística, aunque es cierto que en la mayoría de los casos, en econometría ya se usan datasets hechos, (no?) Por lo que tampoco quiero entrar con demasiada profundidad.
+
+
+
+También quería preguntarte qué opinas sobre estos sesgos de muestreo que he encontrado en internet:
+
+
+
+* Sesgo de Selección (o muestral): Ocurre cuando ciertos miembros de la población tienen más probabilidades de ser incluidos que otros, como al realizar una encuesta en línea que excluye a personas sin internet.
+
+* Sesgo de Infracobertura: Cuando parte de la población diana no tiene posibilidad de ser seleccionada, por ejemplo, utilizar un directorio telefónico anticuado.
+
+* Sesgo de Autoselección (o de voluntariado): Los individuos deciden por sí mismos si participan. A menudo, solo aquellos con opiniones extremas o alto interés responden, no representando la media.
+
+* Sesgo de Supervivencia (o de no respuesta): Se produce cuando las personas que abandonan el estudio o no responden difieren sistemáticamente de las que sí lo hacen (por ejemplo, pacientes que abandonan un estudio clínico por efectos secundarios).
+
+* Sesgo de Conveniencia: Seleccionar muestras simplemente porque son fáciles de alcanzar (ej. estudiantes en un pasillo), lo cual no asegura representatividad poblacional
+
+
+
+no sé si hay otras calsificaciones o si alguno se puede encapsular dentro de otro (o si tiene mucho sentido que los cite todos yo)
+
+
+
+Te comparto el contenido que he desarrollado yo, aunque hay algunas partes incompletas:
+
+[adjuntar la parte del texto en 20_proceso_econometrico.qmd]
