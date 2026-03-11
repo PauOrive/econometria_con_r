@@ -194,49 +194,58 @@ Hay veces que contaremos con toda la población, como en el caso de la parte des
 Estos estudios se conocen en estadística como "estudios de censo", y en estos casos no hay incertidumbre sobre los estadísticos que calculamos porque no estamos generalizando a partir de una muestra. 
 Sin embargo, tanto la inferencia causal como la predicción implican un tipo de incertidumbre distinta — no sobre la muestra, sino sobre lo que no observamos: el contrafactual o los casos futuros, respectivamente — que no desaparece aunque dispongamos de datos censales. 
 
-Pero lo más frecuente es que trabajemos sólo con un subconjunto de la población objetivo, es decir, con una **muestra**. 
-Para que las estimaciones que obtenemos de la muestra tengan validez, debemos asegurarnos que esta sea representativa, es decir, que el proceso de muestreo no introduzca sesgos.
-A continuación, describo los conceptos esenciales e identifico las principales fuentes de sesgo que debemos evitar.\[\^20-nota-3\] 
+--- 
+*revisar a partir de aquí*
 
-\[\^20-nota-3\]: Las técnicas de muestreo y diseño de encuestas podrían dar para un capítulo entero, pero puesto que el foco de este libro es en la econometría, redirigo al lector interesado en ello a [!!introducir recurso!!]
+prompt a Claude: ver archivo 20_prompt_claude.qmd
+
+---
+
+Pero lo más frecuente es que trabajemos sólo con un subconjunto de la población objetivo, es decir, con una **muestra**. 
+Para que las estimaciones que obtendremos de la muestra tengan validez, debemos asegurarnos que esta sea representativa, es decir, que el proceso de muestreo no introduzca sesgos.
+En la práctica, los economistas suelen trabajar con datos administrativos, registros públicos o encuestas que ya se han llevado a cabo por organismos estadísticos, que son los que se encargan de diseñar encuestas y técnicas de muestreo.\[\^20-nota-3\] 
+Sin embargo, es importante conocer ciertos conceptos clave y revisar la metodología de obtención de la muestra y, en consecuencia, ser honesto sobre a qué población podremos generalizar las conclusiones.
+
+\[\^20-nota-3\]: Redirigir a recursos que traten esto en mayor profundidad. Ejemplo: https://bookdown.org/edsaul_perez/3-poblacion-y-muestreo22/3.-Poblacion-y-muestreo.html#/title-slide aunque tendría que revisar si encuentro algo mejor (en español)
 
 En primer lugar, la muestra no la extraemos directamente de la población, sino del **marco muestral**, es decir, del listado o registro concreto a partir del cual podemos seleccionar la muestra. 
-Idealmente, el marco muestral debería de coincidir con la muestra, pero a menudo este no es el caso.
+Idealmente, el marco muestral debería de coincidir con la población, pero a menudo este no es el caso.
 Por ejemplo, si queremos estudiar a los trabajadores en activo en España (población objetivo), el marco muestral podría ser el registro de afiliados a la Seguridad Social. 
 Pero ese registro excluye a trabajadores en economía sumergida, que forman parte de la población objetivo pero no del marco muestral.
-La diferencia entre población objetivo y marco muestral es una fuente de sesgo que se llama error de cobertura. 
+La diferencia entre población objetivo y marco muestral es una fuente de sesgo que se llama *sesgo de cobertura*.
 Esto puede darse tanto cuando hay unidades en la población objetivo que no están en el marco muestral, como cuando hay unidades en el marco que no deberían estar en la población. 
 Por ejemplo, puede que el registro no esté actualizado y aparezcan personas que realmente ya no están en activo.
 
-En segundo lugar, el método de muestreo debe garantizar la representatividad de la muestra.
+En segundo lugar, el método de muestreo debe garantizar la **representatividad** de la muestra. 
+La mejor estrategia para ello es obtener la muestra de forma aleatoria, de modo que cada unidad de la población tiene la misma probabilidad de ser seleccionada. 
+La **unidad de muestreo** es la entidad que se utiliza en la selección de la muestra, que puede coincidir o no coincidir con la unidad de investigación. 
+Por ejemplo, si queremos estudiar características de personas, pero sólo disponemos de un listado de viviendas, de modo que el muestreo aleatorio se realiza sobre viviendas.
 
-...
+Se distingue entre el muestreo aleatorio simple, donde la unidad de muestreo es la unidad de investigación, y el muestreo aleatorio estratificado, donde primero se dividela población en subgrupos denominados estratos (por ejemplo, por sexo, o grupos de edad) y luego se selecciona una muestra en cada uno mediante muestreo aleatorio simple. 
+Esta estrategia se suele usar cuando queremos asegurarnos de que todos los valores que toman ciertas variables estan representados (por ejemplo, que haya personas de todas las comunidades autónomas).\[\^20-nota-4\]
 
-La forma como obtenemos, o se ha obtenido dicha muestra es relevante 
+\[\^20-nota-4\]: En cualquier caso, si la muestra es suficientemente grande, el muestreo aleatorio simple es equivalente al estratificado, puesto que la distribución de una muestra aleatoria se asemejará cada vez más a la distribución de la población a medida que crece el tamaño muestral.
 
-*Muestreo*
+Cuando el muestreo no se realiza de forma aleatoria, corremos el riesgo de introducir *sesgo de selección*.
+Los casos más frecuentes son cuando los datos se recogen sobre las personas que se presenten voluntarias, ya 
+solo aquellos con opiniones extremas o alto interés responden, o sobre las personas que nos son más fácil de contactar (por ejemplo, los primeros que nos encontremos por la calle, ya que directamente exluye a todas las personas que no salen a la calle). 
+Este es el caso de bastantes Trabajos de Fin de Grado, que suelen basarse en encuestas que han difundido a sus contactos por WhatsApp. 
+Lo más probable es que las contesten personas que sientan el compromiso de hacerlo (familiares, amigos cercanos o compañeros de clase) o personas que estén muy motivadas a responder porque les interesa mucho la temática, lo que probablemente no sea representativo de la población objetivo del estudio.
 
-- Muestra y representatividad: qué hace que una muestra sea válida para extraer conclusiones sobre la población
-- Sesgo de selección muestral: como problema que surge cuando la muestra no representa bien la población
-
-
-(aunque, según la disponibilidad, quizás debemos reformular la pregunta...)
-
--   cuestiones a tener en cuenta al realizar un muestreo
-
-    -   muestra aleatoria y sesgos...
-
-    -   ejemplo: si haces una encuesta sobre ... a los compañeros de tu universidad, vas a sacar conclusiones sobre los estudiantes universitarios, no sobre "los jóvenes"...
-
-----------
+Por último, pero no menos importante, debemos prestar atención al tamaño de la muestra. En términos generales, a mayor tamaño, mejor.
+Como veremos en los siguientes capítulos, los requerimientos de tamaño muestral para que la inferencia sea válida dependen de la técnica que usemos (por ejemplo, un modelo de variables instrumentales requiere más observaciones que una regresión simple).
 
 ### Clases de datos
 
--   tipos de datos
+*quizás más adelante merece la pena introducir otras categorizaciones*
+
+Si bien es el tipo de pregunta lo que determina en mayor medida el procedimiento metodológico a seguir, los datos condicionan el diseño técnico: qué modelos podemos especificar y qué técnicas de estimación podemos llevar a cabo.
+
 
     -   por naturaleza: sección cruzada, panel, serie temporal
 
     -   por proceso generador: observacional vs experimental
+    -   relación con la identification strategy: "how you use observational data to approximate a real experiment" (MHE, p. 7)
 
 ----------
 
@@ -250,7 +259,7 @@ La forma como obtenemos, o se ha obtenido dicha muestra es relevante
 ## La hoja de ruta
 
 Tal y como he explicado en la @sec-cual-es-tu-objetivo, el tipo de pregunta de investigación determina el curso de acción. 
-El remanente de este capítulo y del resto de esta parte del libro está enfocado a 
+El remanente de este capítulo y del resto de esta parte del libro está enfocado a (el caso de la inferencia causal)?
 
 insertar esquema / flujo con el marco conceptual que acabo de describir, que sirve como link con el resto de esta parte del libro.
 
@@ -264,7 +273,13 @@ En econometría, la regresión es el vehículo principal para especificar modelo
 
 La @fig-diagrama-proceso-econometrico representa de forma simplificada "el proceso econométrico". En la práctica, sin embargo, el proceso es iterativo y la especificación del modelo se revisa y ajusta a medida que avanza el análisis.\[\^20-nota-2\]
 
-\[\^20-nota-2\]: Este diagrama está especialmente pensado para preguntas de inferencia causal, aunque también aplica para preguntas descriptivas que impliquen técnicas econométricas, como las regresiones con variable dependiente limitada. Otras preguntas descriptivas aplican directamente estadísticos sobre la muestra, aplicando ponderacones si es necesario. Por último, en las preguntas predictivas por lo general,
+\[\^20-nota-2\]: Este diagrama está especialmente pensado para preguntas de inferencia causal, aunque también aplica para preguntas descriptivas que impliquen técnicas econométricas, como las regresiones con variable dependiente limitada. Otras preguntas descriptivas aplican directamente estadísticos sobre la muestra, aplicando ponderacones si es necesario. Por último, en las preguntas predictivas por lo general, *(...)*
+
+
+\[*insertar flujo creado por mi*\]
+
+-   queremos capturar la esencia, no el ruido. parte del error es fundamental en la randomness de la realidad
+
 
 ```{r}
 #| label: fig-diagrama-proceso-econometrico
@@ -286,63 +301,13 @@ knitr::include_graphics("figura/diagrama-proceso-econometrico.svg")
 ```
 
 
-### El proceso econométrico / La hoja de ruta
+*a partir de aquí, sólo añadiría los elementos esenciales, ya que se van a desarrollar en los siguientes capítulos*
+*idealmente, los h3 de este h2 "La hoja de ruta" corresponden con los capitulos que se desarrollan a continuación*
 
-*quizás mejor volver a la narrativa de "ejes fundamentales" si quiero evitar la lógica secuencial, aunque en mi opinión esa funciona bien*
+*hasta qué punto "el modelo de regresión" es capítulo separado de "especificar el modelo"?*
+*o, dicho de otra forma, realmente cabe una sección de "especificar el modelo" distinta a "especificar la regresión"?*
 
--   una
-
--   el objetivo siempre es **estimar algún parámetro**, que en la mayoría de los casos son "medias"
-
--   queremos capturar la esencia, no el ruido. parte del error es fundamental en la randomness de la realidad
-
-*mucho mejor revisar el contenido con Mostly Harmless Econometrics*
-
-\[*insertar flujo creado por mi*\]
-
-### **Identificación**
-
-cómo vamos a asegurarnos que aquello que estimamos puede tener una identificación causal. Responde a: ¿cómo voy a aislar el efecto que me interesa?
-
--   credibility revolution
--   correlación vs causalidad
--   **El problema fundamental de la inferencia causal** (el contrafactual no observable), que es la razón por la que necesitamos una estrategia de identificación en primer lugar.
--   marco conceptual y técnicas principales merecen un capítulo entero
--   clases de datos
-
-Problemas de identificación → ¿el objeto poblacional tiene la interpretación causal que quiero? ¿Estoy midiendo lo que creo que mido? Esto es pura teoría, no tiene nada que ver con el tamaño muestral. Problemas de estimación e inferencia → dado que sé lo que quiero medir, ¿cómo lo estimo bien con datos finitos? ¿Cuánta incertidumbre tengo?
-
-SOBRE EL ORDEN IDENTIFICACIÓN \<-\> ESPECIFICACIÓN
-
-Una solución híbrida: presentas los pasos en orden 1, pero incluyes una nota explícita diciendo que identificación y especificación se retroalimentan, y que el orden refleja prioridad lógica, no secuencia mecánica.
-
-### **Especificación**
-
-## **Especificar el modelo**
-
-exploramos una relación económica.
-
-La definimos con un modelo: y = F(X)
-
-Clasificaciones principales de los modelos:
-
-f(X) puede tomar muchas formas, ejemplo del TFM, una red neuronal para no paramétrico, un modelo DSGE para estructural
-
-**1. Paramétrico vs. no paramétrico** La más fundamental. ¿Asumes que f(X) tiene una forma funcional con un número finito de parámetros, o dejas que los datos determinen la forma libremente? Esta distinción existe antes de hablar de regresión — tu ejemplo del TFM es paramétrico aunque no sea una regresión.
-
-**2. Causal vs. predictivo** Ya lo has establecido en la sección 2, pero vale la pena recordarlo aquí porque afecta directamente a qué exiges del modelo. En un modelo causal, los parámetros tienen que tener interpretación estructural. En uno predictivo, solo te importa que f(X) aproxime bien E\[Y\|X\].
-
-**3. Estructural vs. de forma reducida** Esta es más sutil pero importante. Un modelo estructural parte de la teoría económica y especifica mecanismos (tu TFM es un ejemplo). Un modelo de forma reducida describe relaciones estadísticas entre variables observables sin modelizar el mecanismo. La regresión suele ser de forma reducida.
-
-regresión: un modelo paramétrico, generalmente de forma reducida, que puede ser lineal o no lineal.
-
-En econometría, la regresión como forma canónica E\[Y\|X\].
-
-Regresión como vehículo; Flexibilidad, interpretabilidad.
-
-Anticipa el capítulo de especificación (el modelo de regresión es sólo una posibilidad dentrod el mundo de "modelización", pero es un mundo en si mismo que merece investigar con detalle).
-
----
+### Especificar el modelo
 
 -   Es **estructural / estadística**, y responde a: ¿cómo creo que funciona el mundo?
 
@@ -366,7 +331,50 @@ Anticipa el capítulo de especificación (el modelo de regresión es sólo una p
 
     -   Preguntas del tipo: ¿está el modelo bien especificado? No preguntan sobre el valor de los parámetros sino sobre si el modelo en sí es adecuado. Ejemplos típicos son el test de Ramsey (RESET) para forma funcional, el test de Breusch-Pagan o White para heterocedasticidad, el test de Hausman para endogeneidad, o los tests de raíz unitaria en series temporales.
 
-### **Técnica de estimación**
+---
+
+exploramos una relación económica.
+
+La definimos con un modelo: y = F(X)
+
+Clasificaciones principales de los modelos:
+
+f(X) puede tomar muchas formas, ejemplo del TFM, una red neuronal para no paramétrico, un modelo DSGE para estructural
+
+**1. Paramétrico vs. no paramétrico** La más fundamental. ¿Asumes que f(X) tiene una forma funcional con un número finito de parámetros, o dejas que los datos determinen la forma libremente? Esta distinción existe antes de hablar de regresión — tu ejemplo del TFM es paramétrico aunque no sea una regresión.
+
+**2. Causal vs. predictivo** Ya lo has establecido en la sección 2, pero vale la pena recordarlo aquí porque afecta directamente a qué exiges del modelo. En un modelo causal, los parámetros tienen que tener interpretación estructural. En uno predictivo, solo te importa que f(X) aproxime bien E\[Y\|X\].
+
+#### Identificación
+
+cómo vamos a asegurarnos que aquello que estimamos puede tener una identificación causal. Responde a: ¿cómo voy a aislar el efecto que me interesa?
+
+-   credibility revolution
+-   correlación vs causalidad
+-   **El problema fundamental de la inferencia causal** (el contrafactual no observable), que es la razón por la que necesitamos una estrategia de identificación en primer lugar.
+-   marco conceptual y técnicas principales merecen un capítulo entero
+-   clases de datos
+
+Problemas de identificación → ¿el objeto poblacional tiene la interpretación causal que quiero? ¿Estoy midiendo lo que creo que mido? Esto es pura teoría, no tiene nada que ver con el tamaño muestral. Problemas de estimación e inferencia → dado que sé lo que quiero medir, ¿cómo lo estimo bien con datos finitos? ¿Cuánta incertidumbre tengo?
+
+SOBRE EL ORDEN IDENTIFICACIÓN \<-\> ESPECIFICACIÓN
+
+Una solución híbrida: presentas los pasos en orden 1, pero incluyes una nota explícita diciendo que identificación y especificación se retroalimentan, y que el orden refleja prioridad lógica, no secuencia mecánica.
+
+**3. Estructural vs. de forma reducida** Esta es más sutil pero importante. Un modelo estructural parte de la teoría económica y especifica mecanismos (tu TFM es un ejemplo). Un modelo de forma reducida describe relaciones estadísticas entre variables observables sin modelizar el mecanismo. La regresión suele ser de forma reducida.
+
+regresión: un modelo paramétrico, generalmente de forma reducida, que puede ser lineal o no lineal.
+
+En econometría, la regresión como forma canónica E\[Y\|X\].
+
+Regresión como vehículo; Flexibilidad, interpretabilidad.
+
+Anticipa el capítulo de especificación (el modelo de regresión es sólo una posibilidad dentrod el mundo de "modelización", pero es un mundo en si mismo que merece investigar con detalle).
+
+---
+
+
+### Técnica de estimación
 
 -   3 metodologías generales (sólo introducción con la intuición):
 
@@ -387,7 +395,7 @@ OLS, MLE y GMM cubren el 95% de lo que un econometrista aplicado usa. Lo que dej
 
 **Lo que sí añadiría a tu lista principal:** estimación no paramétrica y semiparamétrica. No como un método de estimación separado al nivel de GMM, sino como una familia que aparece de forma natural en RDD (local linear regression) y en ML. Podrías mencionarla en el capítulo de estimación como "existe una tercera vía que no asume forma funcional paramétrica" sin desarrollarla completamente.
 
-### **Inferencia**
+### Inferencia
 
 -   es **probabilistica**, dados nuestros datos y los parámetros que hemos estimado, *qué sabes sobre la precisión de lo estimado*
 
@@ -409,20 +417,9 @@ OLS, MLE y GMM cubren el 95% de lo que un econometrista aplicado usa. Lo que dej
 
             -   diferentes a los tests de validación del modelo, aunque a veces se solapan (e.g. Hausman)
 
-### Tipos de datos (1) - insertar en las secciones anteriores
 
--   Sección cruzada
--   Datos de panel
--   Series temporales
 
-### Tipos de datos (2) - insertar en las secciones anteriores
-
--   datos experimentales
--   datos observacionales
--   relación con la identification strategy: "how you use observational data to approximate a real experiment" (MHE, p. 7)
--   relevancia en cuanto a qué técnica escoger
-
-### El papel de la regresión (quizás mejor directamente en el cap. 3)
+### El papel de la regresión (quizás ya va todo en el cap.3)
 
 En econometría, se suele empezar explicando la técnica de regresión. No es que sea la única herramienta disponible, ni mucho menos, pero permite trasladar interpretable y versátil.
 
@@ -444,7 +441,7 @@ En predicción, la regresión es sólo una herramienta más, y a menudo no la me
 
 no importa por qué X y Y están correlacionados, ni si hay sesgo causal, importa el error predictivo fuera de muestra.
 
-------------------------------------------------------------------------
+---
 
 La lógica pedagógica sería:
 
@@ -458,14 +455,3 @@ Introduces la regresión lineal como la mejor aproximación lineal a ese objeto 
 
 Y luego la estimación — OLS, GMM, MLE son formas de aproximarte a ese objeto con datos
 
-**A tu segunda pregunta:** "limitada" significa que el rango de la variable dependiente está restringido de alguna forma que hace que OLS genere predicciones sin sentido o estimadores con malas propiedades. Hay varios tipos de limitación:
-
--   **Binaria** (0/1): Y solo toma dos valores → logit, probit. OLS puede predecir probabilidades fuera de \[0,1\].
-
--   **Censurada**: Y tiene un valor mínimo o máximo artificial — el caso clásico es el gasto en un bien que muchos no compran (muchos ceros, pero no porque no quieran sino porque la variable está "cortada" en cero) → tobit.
-
--   **Truncada**: directamente no observas las observaciones fuera de cierto rango.
-
--   **De conteo**: Y solo toma enteros no negativos (0, 1, 2, ...) → Poisson, binomial negativa. OLS puede predecir negativos o no enteros.
-
--   **De duración**: Y es el tiempo hasta que ocurre un evento, que por definición es positivo y tiene censura (el evento puede no haber ocurrido aún) → modelos de supervivencia.
