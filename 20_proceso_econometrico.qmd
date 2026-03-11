@@ -188,6 +188,15 @@ Lo importante es establecer claramente cuál es la unidad y delimitar el ámbito
 Fíjate que la población objetivo depende de la pregunta de investigación, y que un estudio con diversas preguntas de investigación puede implicar distintas definiciones de población. 
 Tomemos como ejemplo las preguntas que enumero en la @sec-todo-empieza-con-una-pregunta. A pesar que todas ellas se enmarcan en el [estudio](https://www.airef.es/es/estudios/incapacidad-temporal/) de la AIReF sobre la incapacidad temporal (IT) en España, la población objetivo cambía:  
 
+| Pregunta | Población objetivo |
+|----|----|
+| ¿Cómo ha sido la evolución de la duración de procesos de incapacidad temporal en España en los últimos 10 años? | Todos los trabajadores que han tenido un proceso de incapacidad temporal en España en los últimos 10 años. |
+| ¿Qué características se correlacionan con la duración o frecuencia de los episodios de incapacidad temporal? | Todos los trabajadores que han tenido un proceso de incapacidad temporal en España en los últimos 10 años.\[\^20-nota-2\] |
+| ¿Cuál es la duración más probable para un nuevo proceso de un trabajador con unas características concretas? | Todos los trabajadores en activo. |
+| ¿Cuál es el impacto que ha tenido el Real Decreto 956/2018 en la probabilidad de que estos empiecen un proceso de incapacidad temporal? | Los funcionarios en activo. |
+
+\[\^20-nota-2\]: Si la pregunta se reformula como "¿qué características se correlacionan con la *probabilidad* de tener un episodio?", la población objetivo pasa a ser todos los trabajadores activos, ya que los trabajadores sin episodios son parte relevante de la distribución de interés.
+
 hay veces que contaremos con toda la 
 
 *una vez tienes clara la pregunta y el objetivo, el segundo ingrediente es evidente — necesitas datos*
