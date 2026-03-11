@@ -4,6 +4,21 @@ title: "Regresiones con variable dependiente limitada"
 
 # Regresiones con variable dependiente limitada {#cap-variable-dependiente-limitada}
 
+"limitada" significa que el rango de la variable dependiente está restringido de alguna forma que hace que OLS genere predicciones sin sentido o estimadores con malas propiedades. Hay varios tipos de limitación:
+
+-   **Binaria** (0/1): Y solo toma dos valores → logit, probit. OLS puede predecir probabilidades fuera de \[0,1\].
+
+-   **Censurada**: Y tiene un valor mínimo o máximo artificial — el caso clásico es el gasto en un bien que muchos no compran (muchos ceros, pero no porque no quieran sino porque la variable está "cortada" en cero) → tobit.
+
+-   **Truncada**: directamente no observas las observaciones fuera de cierto rango.
+
+-   **De conteo**: Y solo toma enteros no negativos (0, 1, 2, ...) → Poisson, binomial negativa. OLS puede predecir negativos o no enteros.
+
+-   **De duración**: Y es el tiempo hasta que ocurre un evento, que por definición es positivo y tiene censura (el evento puede no haber ocurrido aún) → modelos de supervivencia.
+
+---
+
+*apuntes previos*
 
 **Capítulo 6 — Regresión con variable dependiente limitada** MLE como método de estimación general. Modelos de variable binaria: logit y probit (son no lineales!!). Interpretación de los efectos marginales. Modelos multinomiales. Modelos Tobit para variables censuradas. Breve mención al modelo de Heckman para selección muestral.
 
