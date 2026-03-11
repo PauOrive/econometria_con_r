@@ -171,22 +171,14 @@ Por este motivo, el @cap-modelo-regresion profundiza en cada uno de sus elemento
 
 ### Población y muestra
 
--   población y muestra
+El segundo ingrediente imprescindible en todo estudio cuantitativo son los datos, la materia prima a partir de la cual extraemos conclusiones. Pero datos sobre qué, exactamente — esa es la primera pregunta que debemos responder, y nos lleva al concepto de **población objetivo**.
 
-    -   definir la población de interés
-
-    -   la metáfora de la sopa: remover bien y sacar una cucharada (?)
-
-El segundo ingrediente imprescindible en todo estudio cuantitativo son los datos. 
-Esta es la materia prima de nuestro estudio, por lo que, a mayor calidad, más potencial tendrá el estudio.
-
-Para obtenerlos, primero debemos identificar nuestra **población objetivo**. 
 Según la [definición](https://www.ine.es/dyngs/COL/index.htm?cid=453) del Instituto Nacional de Estadística (INE), la población es el "conjunto de unidades del que se desea obtener cierta información". 
-Las unidades pueden ser personas, empresas, países... 
-Lo importante es establecer claramente cuál es la unidad y delimitar el ámbito al que se restringe la población a investigar, es decir, los criterios que permiten diferencias si una entidad forma parte o no de la población objetivo.
+Las unidades pueden ser personas, empresas, países, o cualquier entidad que se adecue a la realidad económica que queremos medir.
+Lo importante es establecer claramente cuál es la **unidad de investigación** y delimitar el ámbito geográfico y temporal al que se restringe la población a investigar, es decir, los criterios que permiten diferenciar si una entidad forma parte o no de la población objetivo.
 
-Fíjate que la población objetivo depende de la pregunta de investigación, y que un estudio con diversas preguntas de investigación puede implicar distintas definiciones de población. 
-Tomemos como ejemplo las preguntas que enumero en la @sec-todo-empieza-con-una-pregunta. A pesar que todas ellas se enmarcan en el [estudio](https://www.airef.es/es/estudios/incapacidad-temporal/) de la AIReF sobre la incapacidad temporal (IT) en España, la población objetivo cambía:  
+Fíjate que la población objetivo depende de la pregunta de investigación, y que un mismo estudio con diversas preguntas de investigación puede incluir definiciones de población diferentes. 
+Tomemos como ejemplo las preguntas que enumero en la @sec-todo-empieza-con-una-pregunta. A pesar de que todas ellas se enmarcan en el [estudio](https://www.airef.es/es/estudios/incapacidad-temporal/) de la AIReF sobre la incapacidad temporal (IT) en España, la población objetivo cambia:  
 
 | Pregunta | Población objetivo |
 |----|----|
@@ -197,9 +189,36 @@ Tomemos como ejemplo las preguntas que enumero en la @sec-todo-empieza-con-una-p
 
 \[\^20-nota-2\]: Si la pregunta se reformula como "¿qué características se correlacionan con la *probabilidad* de tener un episodio?", la población objetivo pasa a ser todos los trabajadores activos, ya que los trabajadores sin episodios son parte relevante de la distribución de interés.
 
-hay veces que contaremos con toda la 
+El objetivo de todo estudio es extraer conclusiones sobre la **población objetivo**. 
+Hay veces que contaremos con toda la población, como en el caso de la parte descriptiva del estudio de la AIReF. 
+Estos estudios se conocen en estadística como "estudios de censo", y en estos casos no hay incertidumbre sobre los estadísticos que calculamos porque no estamos generalizando a partir de una muestra. 
+Sin embargo, tanto la inferencia causal como la predicción implican un tipo de incertidumbre distinta — no sobre la muestra, sino sobre lo que no observamos: el contrafactual o los casos futuros, respectivamente — que no desaparece aunque dispongamos de datos censales. 
 
-*una vez tienes clara la pregunta y el objetivo, el segundo ingrediente es evidente — necesitas datos*
+Pero lo más frecuente es que trabajemos sólo con un subconjunto de la población objetivo, es decir, con una **muestra**. 
+Para que las estimaciones que obtenemos de la muestra tengan validez, debemos asegurarnos que esta sea representativa, es decir, que el proceso de muestreo no introduzca sesgos.
+A continuación, describo los conceptos esenciales e identifico las principales fuentes de sesgo que debemos evitar.\[\^20-nota-3\] 
+
+\[\^20-nota-3\]: Las técnicas de muestreo y diseño de encuestas podrían dar para un capítulo entero, pero puesto que el foco de este libro es en la econometría, redirigo al lector interesado en ello a [!!introducir recurso!!]
+
+En primer lugar, la muestra no la extraemos directamente de la población, sino del **marco muestral**, es decir, del listado o registro concreto a partir del cual podemos seleccionar la muestra. 
+Idealmente, el marco muestral debería de coincidir con la muestra, pero a menudo este no es el caso.
+Por ejemplo, si queremos estudiar a los trabajadores en activo en España (población objetivo), el marco muestral podría ser el registro de afiliados a la Seguridad Social. 
+Pero ese registro excluye a trabajadores en economía sumergida, que forman parte de la población objetivo pero no del marco muestral.
+La diferencia entre población objetivo y marco muestral es una fuente de sesgo que se llama error de cobertura. 
+Esto puede darse tanto cuando hay unidades en la población objetivo que no están en el marco muestral, como cuando hay unidades en el marco que no deberían estar en la población. 
+Por ejemplo, puede que el registro no esté actualizado y aparezcan personas que realmente ya no están en activo.
+
+En segundo lugar, el método de muestreo debe garantizar la representatividad de la muestra.
+
+...
+
+La forma como obtenemos, o se ha obtenido dicha muestra es relevante 
+
+*Muestreo*
+
+- Muestra y representatividad: qué hace que una muestra sea válida para extraer conclusiones sobre la población
+- Sesgo de selección muestral: como problema que surge cuando la muestra no representa bien la población
+
 
 (aunque, según la disponibilidad, quizás debemos reformular la pregunta...)
 
@@ -228,7 +247,7 @@ hay veces que contaremos con toda la
 **Sección 6 — La inferencia** Breve también. La pregunta que responde es: ¿cuánta confianza podemos depositar en nuestras estimaciones? Tests, intervalos de confianza, p-values como herramientas para responderla. Dos o tres párrafos.
 
 
-### La hoja de ruta
+## La hoja de ruta
 
 Tal y como he explicado en la @sec-cual-es-tu-objetivo, el tipo de pregunta de investigación determina el curso de acción. 
 El remanente de este capítulo y del resto de esta parte del libro está enfocado a 
