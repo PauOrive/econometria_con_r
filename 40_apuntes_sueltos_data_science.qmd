@@ -1,5 +1,19 @@
 aún por determinar qué orden seguiré en los contenidos de data science
 
+En la intro, describiré el proceso
+*es posible que falte añadir el paso de *parameter tunning*
+
+El procedimiento procedimiento suele ser el siguiente:
+
+Disponemos de unos datos con una variable $y$ que queremos predecir a partir de un conjunto de variables $X$.
+
+Dividimos aleatoriamente la muestra entre "entrenamiento" y "validación". La proporción varía según el tamaño muestral y el problema, aunque divisiones como 70/30 u 80/20 entre entrenamiento y validación son habituales.
+
+Probamos diferentes modelos y comprobamos su capacidad predictiva en la muestra de validación, mediante métricas de rendimiento como el error cuadrático medio (RMSE) en problemas de predicción continua, o el porcentaje de clasificaciones correctas (accuracy) en problemas de clasificación.
+
+Nos quedamos con el que obtenga mayor puntuación (es decir, que minimiza el error de predicción en la muestra de validación).
+
+
 - knn
 - trees
 - random forests
