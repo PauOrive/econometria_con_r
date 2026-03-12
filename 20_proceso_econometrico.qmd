@@ -1,8 +1,4 @@
----
-title: "El proceso econométrico"
----
-
-# Decidir título definitivo {#cap-proceso-econometrico}
+# Preguntas, datos y modelos {#cap-proceso-econometrico}
 
 *pensar qué titulo le doy a esta seción introductoria*
 
@@ -43,8 +39,14 @@ En esta segunda parte del libro explico los conceptos y herramientas esenciales 
 -   **Datos** para poder responderla
 
 Los datos son imprescindibles porque sin ellos no hay análisis cuantitativo posible. 
-Sin embargo, es principalmente el tipo de pregunta lo que determina la hoja de ruta general — si buscamos describir, predecir o identificar una relación causal. 
+Sin embargo, es principalmente el tipo de pregunta lo que determina la hoja de ruta general: si buscamos describir, predecir o identificar una relación causal. 
 Los datos condicionan sobre todo las decisiones técnicas posteriores: qué modelo especificamos y qué técnica de estimación usamos.
+
+En este capítulo establezco bastantes clasificaciones sobre tipos de preguntas, datos y modelos.
+Más que memorizar las categorías, es importante entender qué diferencia una clase de otra, y por qué la distinción es relevante. 
+Mi recomendación es asentar bien estos conceptos antes de seguir. 
+Sin embargo, si en algún momento te sientes abrumado, no te preocupes. 
+Continúa con los siguientes capítulos y cuando vuelva a mencionar una de las clasificaciones puedes volver aquí para revisar las clasificaciones y conceptos clave. 
 
 ## Todo empieza con una pregunta {#sec-todo-empieza-con-una-pregunta}
 
@@ -151,6 +153,9 @@ Detectar que dos variables se mueven juntas no nos dice si una causa a la otra, 
 Para ello, debemos plantearnos qué habría pasado si el curso de acción hubiera sido diferente, es decir, plantear un escenario *contrafactual*, esto es, un escenario alternativo al que efectivamente ocurrió.
 Pero nunca observamos a la misma persona o entidad realizando dos cosas distintas, lo que se conoce como el **problema fundamental de la causalidad**. 
 
+-----
+*aún por terminar esta parte*
+
 Este es un ejercicio fundamental en el área de las políticas públicas, porque permite identificar qué políticas son efectivas y cuales no tienen impacto real en el objetivo que perseguían.
 *tomar uno de los apuntes de Mar-Jacint o de MHE o Stock and Watson*
 Por ejemplo, para comprobar el impacto que tiene en el consumo de electricidad instalar un contador...
@@ -176,6 +181,7 @@ El segundo ingrediente imprescindible en todo estudio cuantitativo son los datos
 Según la [definición](https://www.ine.es/dyngs/COL/index.htm?cid=453) del Instituto Nacional de Estadística (INE), la población es el "conjunto de unidades del que se desea obtener cierta información". 
 Las unidades pueden ser personas, empresas, países, o cualquier entidad que se adecue a la realidad económica que queremos medir.
 Lo importante es establecer claramente cuál es la **unidad de investigación** y delimitar el ámbito geográfico y temporal al que se restringe la población a investigar, es decir, los criterios que permiten diferenciar si una entidad forma parte o no de la población objetivo.
+Para referirnos al tamaño de la población, es decir, el número total de unidades de investigación en la población de interés, usamos $N$. 
 
 Fíjate que la población objetivo depende de la pregunta de investigación, y que un mismo estudio con diversas preguntas de investigación puede incluir definiciones de población diferentes. 
 Tomemos como ejemplo las preguntas que enumero en la @sec-todo-empieza-con-una-pregunta. A pesar de que todas ellas se enmarcan en el [estudio](https://www.airef.es/es/estudios/incapacidad-temporal/) de la AIReF sobre la incapacidad temporal (IT) en España, la población objetivo cambia:  
@@ -192,19 +198,15 @@ Tomemos como ejemplo las preguntas que enumero en la @sec-todo-empieza-con-una-p
 El objetivo de todo estudio es extraer conclusiones sobre la **población objetivo**. 
 Hay veces que contaremos con toda la población, como en el caso de la parte descriptiva del estudio de la AIReF. 
 Estos estudios se conocen en estadística como "estudios de censo", y en estos casos no hay incertidumbre sobre los estadísticos que calculamos porque no estamos generalizando a partir de una muestra. 
-Sin embargo, tanto la inferencia causal como la predicción implican un tipo de incertidumbre distinta — no sobre la muestra, sino sobre lo que no observamos: el contrafactual o los casos futuros, respectivamente — que no desaparece aunque dispongamos de datos censales. 
+Sin embargo, tanto la inferencia causal como la predicción implican un tipo de incertidumbre distinta. No sobre la muestra, sino sobre lo que no observamos: el contrafactual o los casos futuros, respectivamente, que no desaparece aunque dispongamos de datos censales. 
 
---- 
-*revisar a partir de aquí*
-
-prompt a Claude: ver archivo 20_prompt_claude.qmd
-
----
+-----
+*Esta sección queda muy larga, por lo que podría introducir alguna segunda tabla con ejemplos de muestreo y problemas*
 
 Pero lo más frecuente es que trabajemos sólo con un subconjunto de la población objetivo, es decir, con una **muestra**. 
 Para que las estimaciones que obtendremos de la muestra tengan validez, debemos asegurarnos que esta sea representativa, es decir, que el proceso de muestreo no introduzca sesgos.
-En la práctica, los economistas suelen trabajar con datos administrativos, registros públicos o encuestas que ya se han llevado a cabo por organismos estadísticos, que son los que se encargan de diseñar encuestas y técnicas de muestreo.\[\^20-nota-3\] 
-Sin embargo, es importante conocer ciertos conceptos clave y revisar la metodología de obtención de la muestra y, en consecuencia, ser honesto sobre a qué población podremos generalizar las conclusiones.
+En la práctica, los economistas suelen trabajar con datos administrativos, registros públicos o bases de datos recopiladas por organismos estadísticos, que son los que se encargan de diseñar las encuestas y técnicas de muestreo.\[\^20-nota-3\] 
+Sin embargo, es importante conocer ciertos conceptos clave y consultar la metodología de obtención de los datos con los que trabajamos y ser honesto sobre a qué población podremos generalizar las conclusiones.
 
 \[\^20-nota-3\]: Redirigir a recursos que traten esto en mayor profundidad. Ejemplo: https://bookdown.org/edsaul_perez/3-poblacion-y-muestreo22/3.-Poblacion-y-muestreo.html#/title-slide aunque tendría que revisar si encuentro algo mejor (en español)
 
@@ -212,28 +214,33 @@ En primer lugar, la muestra no la extraemos directamente de la población, sino 
 Idealmente, el marco muestral debería de coincidir con la población, pero a menudo este no es el caso.
 Por ejemplo, si queremos estudiar a los trabajadores en activo en España (población objetivo), el marco muestral podría ser el registro de afiliados a la Seguridad Social. 
 Pero ese registro excluye a trabajadores en economía sumergida, que forman parte de la población objetivo pero no del marco muestral.
-La diferencia entre población objetivo y marco muestral es una fuente de sesgo que se llama *sesgo de cobertura*.
+La diferencia entre población objetivo y marco muestral es una fuente de sesgo que se llama **sesgo de cobertura**.
 Esto puede darse tanto cuando hay unidades en la población objetivo que no están en el marco muestral, como cuando hay unidades en el marco que no deberían estar en la población. 
 Por ejemplo, puede que el registro no esté actualizado y aparezcan personas que realmente ya no están en activo.
 
 En segundo lugar, el método de muestreo debe garantizar la **representatividad** de la muestra. 
 La mejor estrategia para ello es obtener la muestra de forma aleatoria, de modo que cada unidad de la población tiene la misma probabilidad de ser seleccionada. 
 La **unidad de muestreo** es la entidad que se utiliza en la selección de la muestra, que puede coincidir o no coincidir con la unidad de investigación. 
-Por ejemplo, si queremos estudiar características de personas, pero sólo disponemos de un listado de viviendas, de modo que el muestreo aleatorio se realiza sobre viviendas.
+Por ejemplo, si queremos estudiar características de personas pero solo disponemos de un listado de viviendas, la unidad de muestreo será la vivienda y la unidad de investigación será la persona, de modo que seleccionamos viviendas aleatoriamente y luego encuestamos a sus residentes.
+Sin embargo, si las personas que no están en casa o que se niegan a participar difieren sistemáticamente de las que sí responden (por ejemplo, porque trabajan más horas, o tienen desconfianza hacia las instituciones), estaremos ante un **sesgo de no respuesta**.\[\^20-nota-4\] 
+
+\[\^20-nota-4\]: Esta es una forma de **sesgo de selección**: si la probabilidad de responder está correlacionada con las variables que nos interesan, la muestra resultante no será representativa. Desarrollo este concepto a continuación.
 
 Se distingue entre el muestreo aleatorio simple, donde la unidad de muestreo es la unidad de investigación, y el muestreo aleatorio estratificado, donde primero se dividela población en subgrupos denominados estratos (por ejemplo, por sexo, o grupos de edad) y luego se selecciona una muestra en cada uno mediante muestreo aleatorio simple. 
-Esta estrategia se suele usar cuando queremos asegurarnos de que todos los valores que toman ciertas variables estan representados (por ejemplo, que haya personas de todas las comunidades autónomas).\[\^20-nota-4\]
+Esta estrategia se suele usar cuando queremos asegurarnos de que ciertos subgrupos estén representados (por ejemplo, que haya personas de todas las comunidades autónomas). 
+Con muestras suficientemente grandes, el muestreo aleatorio simple tiende a reproducir la distribución de la población de forma espontánea, pero el muestreo estratificado ofrece esa garantía incluso con muestras pequeñas.
 
-\[\^20-nota-4\]: En cualquier caso, si la muestra es suficientemente grande, el muestreo aleatorio simple es equivalente al estratificado, puesto que la distribución de una muestra aleatoria se asemejará cada vez más a la distribución de la población a medida que crece el tamaño muestral.
+Cuando el muestreo no se realiza de forma aleatoria, corremos el riesgo de introducir **sesgo de selección**: algunas unidades tienen más probabilidad de acabar en la muestra que otras, y si esa probabilidad está correlacionada con las variables que nos interesan, las estimaciones serán sesgadas. 
+Los casos más frecuentes son el muestreo por conveniencia (seleccionar las unidades más accesibles, como los primeros transeúntes que nos encontremos) y la autoselección (cuando son los propios individuos quienes deciden participar, como en encuestas voluntarias, donde tienden a responder quienes tienen opiniones más extremas o mayor interés en el tema). 
+El ejemplo más cercano para muchos lectores es el de las encuestas de Trabajos de Fin de Grado, difundidas por WhatsApp entre conocidos. 
+Lo más probable es que respondan quienes sienten el compromiso de hacerlo o quienes están muy motivados por la temática, lo cual difícilmente es representativo de la población objetivo del estudio.
 
-Cuando el muestreo no se realiza de forma aleatoria, corremos el riesgo de introducir *sesgo de selección*.
-Los casos más frecuentes son cuando los datos se recogen sobre las personas que se presenten voluntarias, ya 
-solo aquellos con opiniones extremas o alto interés responden, o sobre las personas que nos son más fácil de contactar (por ejemplo, los primeros que nos encontremos por la calle, ya que directamente exluye a todas las personas que no salen a la calle). 
-Este es el caso de bastantes Trabajos de Fin de Grado, que suelen basarse en encuestas que han difundido a sus contactos por WhatsApp. 
-Lo más probable es que las contesten personas que sientan el compromiso de hacerlo (familiares, amigos cercanos o compañeros de clase) o personas que estén muy motivadas a responder porque les interesa mucho la temática, lo que probablemente no sea representativo de la población objetivo del estudio.
-
-Por último, pero no menos importante, debemos prestar atención al tamaño de la muestra. En términos generales, a mayor tamaño, mejor.
-Como veremos en los siguientes capítulos, los requerimientos de tamaño muestral para que la inferencia sea válida dependen de la técnica que usemos (por ejemplo, un modelo de variables instrumentales requiere más observaciones que una regresión simple).
+Por último, pero no menos importante, debemos prestar atención al tamaño de la muestra, al que normalmente nos referimos mediante $n$. 
+En términos generales, a mayor tamaño, mejor.
+Cuantas más observaciones tengamos, menor será la variabilidad de nuestras estimaciones y más precisas serán nuestras conclusiones. 
+La intuición es simple: en una muestra grande es menos probable sobrerepresentar a un subgrupo. 
+Como veremos en los capítulos siguientes, los requerimientos concretos de tamaño muestral dependen de la técnica empleada. 
+Por ejemplo, un modelo de variables instrumentales necesita más observaciones que una regresión simple para producir estimaciones fiables.
 
 ### Clases de datos
 
@@ -241,24 +248,50 @@ Como veremos en los siguientes capítulos, los requerimientos de tamaño muestra
 
 Si bien es el tipo de pregunta lo que determina en mayor medida el procedimiento metodológico a seguir, los datos condicionan el diseño técnico: qué modelos podemos especificar y qué técnicas de estimación podemos llevar a cabo.
 
+En este libro me centro casi exclusivamente en los datos tabulares, es decir, aquellos que están organizados (o pueden organizarse) en filas (observaciones) y columnas (variables). 
+Otros tipos de datos, como imágenes o texto, requieren técnicas distintas que sólamente trato superficialmente en la cuarta parte del libro., ya que son comunes en modelos de *machine learning*. 
 
-    -   por naturaleza: sección cruzada, panel, serie temporal
+Los datos pueden clasificarse, por lo menos según dos criterios.
+El primero es el proceso con el que se generaron o recopilaron los datos, donde disntinguimos entre datos experimentales y datos observacionales. 
 
-    -   por proceso generador: observacional vs experimental
-    -   relación con la identification strategy: "how you use observational data to approximate a real experiment" (MHE, p. 7)
+-   Los **datos experimentales** son aquellos que se obtienen mediante la manipulación activa de variables en entornos controlados, como los que derivan de un diseño experimental como un experimento controlado aleatorizado (RCT, por sus siglas en inglés). 
 
-----------
+-   Los **datos observacionales** son aquellos que se registran sin intervenir ni modificar el entorno. 
 
-*añadir estas dos secciónes, que sólo aplican a modelos de regresión paramétricos, no?*
+La ventaja de contar con datos experimentales es que podemos aislar más fácilmente efectos causales. 
+Sin embargo, en la mayoría de los casos trabajaremos con datos observacionales, ya que realizar experimentos controlados no siempre es viable, ya sea por razones éticas, prácticas o de coste.
+En la jerga de la inferencia causal, se conoce como estrategia de identificación (*identification strategy*) al método por el cual usamos datos observacionales de modo que se asemejen a un contexto experimental. 
+La tercera parte del libro se focaliza en las principales estrategias. 
 
-**Sección 5 — La estimación** Breve. La pregunta que responde es: dado el modelo especificado, ¿cómo obtenemos los valores de los parámetros a partir de los datos? Mencionas que existen distintos métodos (OLS, MLE, GMM) con distintas propiedades y supuestos, y que la elección no es trivial. Dos o tres párrafos.
+El segundo criterio es la naturaleza de los datos, donde se distingue entre datos de sección cruzada, de panel y de serie temporal. Las distinciones se basan en el tamaño de la muestra $n$ y el número de periodos $t$ para el que tenemos observaciones de cada unidad. 
 
-**Sección 6 — La inferencia** Breve también. La pregunta que responde es: ¿cuánta confianza podemos depositar en nuestras estimaciones? Tests, intervalos de confianza, p-values como herramientas para responderla. Dos o tres párrafos.
+-   En los **datos de sección cruzada** disponemos de una observación para cada unidad de investigación tomada en un momento determinado. Es decir, $t=1$ y $n>>t$.\[\^20-nota-5\]    
 
+-   En los **datos de panel** contamos con varias observaciones para cada unidad de investigación tomadas en distintos momentos del tiempo, normalmente a intervalos regulares. Es decir, $t>1$ y $n>1$.  
+
+-   En los **datos de serie temporal** disponemos de múltimes observaciones de una unidad de investigación tomada secuencialmente en el tiempo, normalmente a intervalos regulares. Es decir, $t>>n$. El ejemplo paradigmático son datos sobre la evolución de variables macroeconómicas con el PIB, el IPC, o el precio de valores como el gas o el petróleo. 
+
+\[\^20-nota-5\]: Uso la notación con doble ">>" como en $n>>t$ para indicar que "$n$ es *mucho* más grande que $t$". Véase la @sec-convenciones-notacion para consultar todas las convenciones que uso en cuanto a la notación. 
+
+Es importante no confundir los datos de panel con las secciones cruzadas repetidas, como la Encuesta de Población Activa (EPA), que entrevista cada trimestre a una muestra distinta de hogares. 
+En ambos casos tenemos observaciones en varios momentos del tiempo, pero en la EPA no seguimos a los mismos individuos, sino que cada ola extrae una muestra nueva. 
+Un panel longitudinal, en cambio, sigue a las mismas unidades a lo largo del tiempo.
+
+Cuando todas las unidades tienen observaciones en todos los períodos, hablamos de un panel balanceado; en caso contrario, de un panel no balanceado.
+Esto ocurre, por ejemplo, cuando algunos individuos abandonan un estudio longitudinal.
+En el caso de que las unidades que abandonan el estudio difieren sistemáticamente de los que se mantienen, sufriremos el **sesgo de supervivencia** (*attrition bias* en inglés).
+
+La distinción entre estos tipos de datos condiciona qué modelos podemos especificar y qué supuestos podemos sostener. 
+Por ejemplo, los datos de panel nos permiten relajar el supuesto de que no hay características no observadas que afecten a la variable de interés, siempre que estas sean constantes en el tiempo. 
+Los datos experimentales, por su parte, nos permiten prescindir de supuestos sobre la ausencia de variables omitidas, precisamente porque la aleatorización garantiza que el tratamiento es independiente de cualquier característica de las unidades. 
+A lo largo del libro iremos viendo cómo cada tipo de datos abre o cierra determinadas posibilidades metodológicas.
 
 ## La hoja de ruta
 
-Tal y como he explicado en la @sec-cual-es-tu-objetivo, el tipo de pregunta de investigación determina el curso de acción. 
+Tal y como he explicado en la @sec-cual-es-tu-objetivo, el tipo de pregunta de investigación determina el curso de acción. Sin embargo, una vez tenemos definidos los datos 
+
+
+
 El remanente de este capítulo y del resto de esta parte del libro está enfocado a (el caso de la inferencia causal)?
 
 insertar esquema / flujo con el marco conceptual que acabo de describir, que sirve como link con el resto de esta parte del libro.
