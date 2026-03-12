@@ -172,7 +172,7 @@ La tercera parte de este libro se dedica a las principales técnicas en economet
 En inferencia causal, a diferencia de la predicción, la regresión no es una alternativa más sino el vehículo principal, ya que combina la flexibilidad necesaria para implementar distintas estrategias de identificación con la interpretabilidad de sus coeficientes, que es precisamente lo que nos interesa cuando buscamos cuantificar un efecto causal. 
 Por este motivo, el @cap-modelo-regresion profundiza en cada uno de sus elementos.
 
-## Datos
+## Nuestra materia prima: los datos
 
 ### Población y muestra
 
@@ -248,10 +248,12 @@ Por ejemplo, un modelo de variables instrumentales necesita más observaciones q
 
 Si bien es el tipo de pregunta lo que determina en mayor medida el procedimiento metodológico a seguir, los datos condicionan el diseño técnico: qué modelos podemos especificar y qué técnicas de estimación podemos llevar a cabo.
 
-En este libro me centro casi exclusivamente en los datos tabulares, es decir, aquellos que están organizados (o pueden organizarse) en filas (observaciones) y columnas (variables). 
+En este libro me centro casi exclusivamente en los datos tabulares, es decir, aquellos que están organizados en filas (observaciones) y columnas (variables).\[\^20-nota-5\] 
 Otros tipos de datos, como imágenes o texto, requieren técnicas distintas que sólamente trato superficialmente en la cuarta parte del libro., ya que son comunes en modelos de *machine learning*. 
 
-Los datos pueden clasificarse, por lo menos según dos criterios.
+\[\^20-nota-5\]: Al descargar datos tabulares a veces no siguen esta estructura, por lo que antes de nada deberemos *limpiar* el dataset para dejarlo en formato *tidy*. En el @cap-exploracion-inicial explico cómo hacerlo.   
+
+Los datos tabulares pueden clasificarse, por lo menos según dos criterios.
 El primero es el proceso con el que se generaron o recopilaron los datos, donde disntinguimos entre datos experimentales y datos observacionales. 
 
 -   Los **datos experimentales** son aquellos que se obtienen mediante la manipulación activa de variables en entornos controlados, como los que derivan de un diseño experimental como un experimento controlado aleatorizado (RCT, por sus siglas en inglés). 
@@ -265,17 +267,18 @@ La tercera parte del libro se focaliza en las principales estrategias.
 
 El segundo criterio es la naturaleza de los datos, donde se distingue entre datos de sección cruzada, de panel y de serie temporal. Las distinciones se basan en el tamaño de la muestra $n$ y el número de periodos $t$ para el que tenemos observaciones de cada unidad. 
 
--   En los **datos de sección cruzada** disponemos de una observación para cada unidad de investigación tomada en un momento determinado. Es decir, $t=1$ y $n>>t$.\[\^20-nota-5\]    
+-   En los **datos de sección cruzada** disponemos de una observación para cada unidad de investigación tomada en un momento determinado. Es decir, $t=1$ y $n>>t$.\[\^20-nota-6\]    
 
 -   En los **datos de panel** contamos con varias observaciones para cada unidad de investigación tomadas en distintos momentos del tiempo, normalmente a intervalos regulares. Es decir, $t>1$ y $n>1$.  
 
 -   En los **datos de serie temporal** disponemos de múltimes observaciones de una unidad de investigación tomada secuencialmente en el tiempo, normalmente a intervalos regulares. Es decir, $t>>n$. El ejemplo paradigmático son datos sobre la evolución de variables macroeconómicas con el PIB, el IPC, o el precio de valores como el gas o el petróleo. 
 
-\[\^20-nota-5\]: Uso la notación con doble ">>" como en $n>>t$ para indicar que "$n$ es *mucho* más grande que $t$". Véase la @sec-convenciones-notacion para consultar todas las convenciones que uso en cuanto a la notación. 
+\[\^20-nota-6\]: Uso la notación con doble ">>" como en $n>>t$ para indicar que "$n$ es *mucho* más grande que $t$". Véase la @sec-convenciones-notacion para consultar todas las convenciones que uso en cuanto a la notación. 
 
-Es importante no confundir los datos de panel con las secciones cruzadas repetidas, como la Encuesta de Población Activa (EPA), que entrevista cada trimestre a una muestra distinta de hogares. 
-En ambos casos tenemos observaciones en varios momentos del tiempo, pero en la EPA no seguimos a los mismos individuos, sino que cada ola extrae una muestra nueva. 
-Un panel longitudinal, en cambio, sigue a las mismas unidades a lo largo del tiempo.
+Es importante no confundir los datos de panel con las secciones cruzadas repetidas. 
+En ambos casos tenemos observaciones en varios momentos del tiempo.
+Pero mientras que en un panel se siguen a las mismas unidades a lo largo del tiempo, una sección cruzada repite el mismo procedimiento pero con muestras diferentes en cada iteración. 
+Un ejemplo mixto es la Encuesta de Población Activa (EPA), que entrevista cada trimestre a una muestra distinta de hogares. 
 
 Cuando todas las unidades tienen observaciones en todos los períodos, hablamos de un panel balanceado; en caso contrario, de un panel no balanceado.
 Esto ocurre, por ejemplo, cuando algunos individuos abandonan un estudio longitudinal.
@@ -286,21 +289,120 @@ Por ejemplo, los datos de panel nos permiten relajar el supuesto de que no hay c
 Los datos experimentales, por su parte, nos permiten prescindir de supuestos sobre la ausencia de variables omitidas, precisamente porque la aleatorización garantiza que el tratamiento es independiente de cualquier característica de las unidades. 
 A lo largo del libro iremos viendo cómo cada tipo de datos abre o cierra determinadas posibilidades metodológicas.
 
-## La hoja de ruta
+## Los modelos: una simplificación necesaria
 
-Tal y como he explicado en la @sec-cual-es-tu-objetivo, el tipo de pregunta de investigación determina el curso de acción. Sin embargo, una vez tenemos definidos los datos 
+Tal y como he explicado en la @sec-cual-es-tu-objetivo, el tipo de pregunta de investigación determina el curso de acción. 
+En la mayoría de los casos, el siguiente paso va a ser definir un **modelo**, es decir, cómo representamos de forma simplificada un proceso económico, en base a una serie de supuestos sobre qué variables importan, cómo se relacionan, y qué queda fuera.
+La única excepción son las preguntas descriptivas que se responden mediante estadísticos descriptivos, donde usamos directamente fórmulas conocidas para extraer características que resumen la distribución de los datos. 
+
+> "Todos los modelos son incorrectos, pero algunos son útiles"
+> --- George Box (estadístico inglés)
+
+Del mismo modo que un mapa es útil porque resume el entorno y nos permite orientarnos, un buen modelo destaca los mecanismos relevantes para la pregunta que nos hacemos, dejando de lado todo lo demás. 
+No pretende capturar toda la complejidad del mundo, ni ser lo más realista posible — eso lo haría inútil, igual que un mapa a escala 1:1.
+
+### Clases de modelos
+
+---
+*prompt para claude:*
+estoy pensando en cual es el orden óptimo para presentar las clasificaciones de los modelos (a pesar de que entiendo que no son clasificaciones que siguen un orden jerárquico o secuencial -es decir, en forma de árbol - sino que son clasificaciones por criterios independientes, supongo que hay maneras más claras que otras de presentarlo.
 
 
 
-El remanente de este capítulo y del resto de esta parte del libro está enfocado a (el caso de la inferencia causal)?
+Te comparto lo que tengo de momento. Ten en cuenta que estoy aún en un capitulo introductorio y que el objetivo de algún modo es redirigir el hilo al modelo de regresión, que desarrollaré en el siguiente capítulo. 
+---
 
-insertar esquema / flujo con el marco conceptual que acabo de describir, que sirve como link con el resto de esta parte del libro.
+Como te puedías imaginar a estas alturas, empezemos por ver qué clases de modelos existen. 
+
+En primer lugar, diferenciamos entre modelos estructurales y modelos de forma reducida:\[\^20-nota-7\] 
+
+\[\^20-nota-7\]: He tradiucido directamente el concepto directamente del inglés, donde se usa *reduced form models*. Si alguien conoce una traducción mejor agradezcería que me la compartiera. 
+
+-   Un modelo **estructural** especifica en detalle el mecanismo económico subyacente, que normalmente consta de varias ecuaciones derivadas de la teoría económica.
+
+-   Un modelo de **forma reducida** expresa directamente la relación entre la variable de interés y un conjunto de variables explicativas, sin modelizar explícitamente el mecanismo económico subyacente.
+
+El ejemplo clásico de un modelo estructural es un modelo de oferta y demanda. 
+La teoría económica nos dice que la cantidad demandada $Q^d$ depende del precio $P$ y de la renta de los consumidores $Y$; que la cantidad ofrecida $Q^s$ depende del precio $P$ y del coste de producción $W$, y que, en equilibrio, la cantidad ofrecida es igual a la demandada. 
+Esto se traduce en un sistema de ecuaciones donde el precio y la cantidad se determina de forma simultánea.
+
+$$
+Q^d = \alpha_0 + \alpha_1 P + \alpha_2 Y + \varepsilon^d
+$$
+$$
+Q^s = \beta_0 + \beta_1 P + \beta_2 W + \varepsilon^s
+$$
+$$
+Q^d = Q^s
+$$
+
+Otro ejemplo completamente distinto es el modelo que usé en el Trabajo de Fin de Máster que realicé junto con Cristobal Blanco y Tomás Butelman. 
+Para responder a nuestra pregunta de investigación, a saber, cuál es la probabilidad de que España cumpla su objetivo de producir 81% de electricidad de fuentes renovables en 2030, modelamos el funcionamiento del mercado eléctrico español de forma que el precio de la electricidad, la demanda y la cantidad generada por cada tecnología se resolvían simultáneamente.\[\^20-nota-8\]
+
+\[\^20-nota-8\]: Podeis ver el código del proyecto este [repositorio de GitHub](https://github.com/PauOrive/Spain_ren_gen_2030)
+
+No obstante, en econometría predominan los modelosde forma reducida, normalmente definidos mediante modelos de regresión. 
+*quizás aquí introducir la notación y = f(X)?, porque conecta con la la distinción entre paramétrico y no paramétrico... o no?*
+
+
+En segundo lugar, los modelos pueden ser paramétricos o no paramétricos dependiendo si asumen una forma funcional o no. 
+
+-   Los **modelos paramétricos** especifican una forma funcional en los datos.
+
+-   Los **modelos no paramétricos** dejan que los datos determinen la forma libremente (*tiene sentido esto? me parece poco claro desde un punto de vista pedagógico... quizás habría que hablar del trade-off*)
+
+Otra clasificación más habitual en la jerga del *machine learning* es la distinción entre modelos supervisados y no supervisados. La diferencia radica en si hay o no una variable de interés. 
+
+-   Los **modelos supervisados** contienen una variable de interés, normalmente referida como $y$, a la que queremos aproximarnos.
+
+-   En los **modelos no supervisados** no hay ningñúna variable de interés, sino que buscan patrones y estructuras que en los datos que son ocultos a simple vista. 
+
+
+Podemos clasificar casi cualquier modelo bajo estas tres categorías.
+No obstante, la realidad tampoco se corresponde con una matriz de 3x3 donde cada opción es igual de plausible. 
+Por ejemplo, (*explicar casos comunes y casos muy poco probables*)
+
+Las partes 2 y 3 de este libro se centran casi exclusivamente en modelos supervisados, paramétricos y de forma reducida, mientras que la parte 4 también cubre modelos no paramétricos y modelos no supervisados.
+Es decir, definimos una variable de interés $y$ que queremos explicar en función de un conjunto de variables $X$.
+Podemos representar esto de forma general como $y=f(X)$, donde $f$ es la función que relaciona ambas; su forma concreta dependerá del modelo que especifiquemos.
+
+
+---
+
+## La hoja de ruta en econometría
+
+*(aquí introducir el diagrama, ya centrado en econometría)*
+
+
+exploramos una relación económica.
+
+La definimos con un modelo: y = F(X)
+
+Clasificaciones principales de los modelos:
+
+f(X) puede tomar muchas formas, ejemplo del TFM, una red neuronal para no paramétrico, un modelo DSGE para estructural
+
+**1. Paramétrico vs. no paramétrico** La más fundamental. ¿Asumes que f(X) tiene una forma funcional con un número finito de parámetros, o dejas que los datos determinen la forma libremente? Esta distinción existe antes de hablar de regresión — tu ejemplo del TFM es paramétrico aunque no sea una regresión.
+
+
+
+**3. Estructural vs. de forma reducida** Esta es más sutil pero importante. Un modelo estructural parte de la teoría económica y especifica mecanismos (tu TFM es un ejemplo). Un modelo de forma reducida describe relaciones estadísticas entre variables observables sin modelizar el mecanismo. La regresión suele ser de forma reducida.
+
+regresión: un modelo paramétrico, generalmente de forma reducida, que puede ser lineal o no lineal.
+
+En econometría, la regresión como forma canónica E\[Y\|X\].
+
+Regresión como vehículo; Flexibilidad, interpretabilidad.
+
+Anticipa el capítulo de especificación (el modelo de regresión es sólo una posibilidad dentrod el mundo de "modelización", pero es un mundo en si mismo que merece investigar con detalle).
 
 ----------
 
 debemos definir un **modelo**, es decir, cómo representamos de forma simplificada un proceso económico, en base a una serie de supuestos sobre qué variables importan, cómo se relacionan, y qué queda fuera.
 
-En econometría, la regresión es el vehículo principal para especificar modelos, motivo por el que merece un capítulo propio. Pero definir el modelo es solo el punto de partida: una vez especificado, necesitamos **estimar** sus parámetros, es decir, obtener valores concretos a partir de los datos. Y una vez estimados, necesitamos saber cuánta confianza podemos depositar en ellos, que es exactamente lo que nos permite la **inferencia** estadística.\[\^20-nota-1\]
+En econometría, la regresión es el vehículo principal para especificar modelos, motivo por el que merece un capítulo propio. 
+
+Pero definir el modelo es solo el punto de partida: una vez especificado, necesitamos **estimar** sus parámetros, es decir, obtener valores concretos a partir de los datos. Y una vez estimados, necesitamos saber cuánta confianza podemos depositar en ellos, que es exactamente lo que nos permite la **inferencia** estadística.\[\^20-nota-1\]
 
 \[\^20-nota-1\]: El marco conceptual de modelo, estimación e inferencia describe el flujo típico de la econometría aplicada, pero existen excepciones. Los modelos no paramétricos, comunes en *machine learning*, no asumen ninguna forma funcional para describir la relación entre las variables de interés. Y hay contextos, como los modelos de simulación o la predicción pura, donde la inferencia estadística clásica puede quedar fuera del proceso.
 
@@ -364,19 +466,6 @@ knitr::include_graphics("figura/diagrama-proceso-econometrico.svg")
 
     -   Preguntas del tipo: ¿está el modelo bien especificado? No preguntan sobre el valor de los parámetros sino sobre si el modelo en sí es adecuado. Ejemplos típicos son el test de Ramsey (RESET) para forma funcional, el test de Breusch-Pagan o White para heterocedasticidad, el test de Hausman para endogeneidad, o los tests de raíz unitaria en series temporales.
 
----
-
-exploramos una relación económica.
-
-La definimos con un modelo: y = F(X)
-
-Clasificaciones principales de los modelos:
-
-f(X) puede tomar muchas formas, ejemplo del TFM, una red neuronal para no paramétrico, un modelo DSGE para estructural
-
-**1. Paramétrico vs. no paramétrico** La más fundamental. ¿Asumes que f(X) tiene una forma funcional con un número finito de parámetros, o dejas que los datos determinen la forma libremente? Esta distinción existe antes de hablar de regresión — tu ejemplo del TFM es paramétrico aunque no sea una regresión.
-
-**2. Causal vs. predictivo** Ya lo has establecido en la sección 2, pero vale la pena recordarlo aquí porque afecta directamente a qué exiges del modelo. En un modelo causal, los parámetros tienen que tener interpretación estructural. En uno predictivo, solo te importa que f(X) aproxime bien E\[Y\|X\].
 
 #### Identificación
 
@@ -394,15 +483,7 @@ SOBRE EL ORDEN IDENTIFICACIÓN \<-\> ESPECIFICACIÓN
 
 Una solución híbrida: presentas los pasos en orden 1, pero incluyes una nota explícita diciendo que identificación y especificación se retroalimentan, y que el orden refleja prioridad lógica, no secuencia mecánica.
 
-**3. Estructural vs. de forma reducida** Esta es más sutil pero importante. Un modelo estructural parte de la teoría económica y especifica mecanismos (tu TFM es un ejemplo). Un modelo de forma reducida describe relaciones estadísticas entre variables observables sin modelizar el mecanismo. La regresión suele ser de forma reducida.
 
-regresión: un modelo paramétrico, generalmente de forma reducida, que puede ser lineal o no lineal.
-
-En econometría, la regresión como forma canónica E\[Y\|X\].
-
-Regresión como vehículo; Flexibilidad, interpretabilidad.
-
-Anticipa el capítulo de especificación (el modelo de regresión es sólo una posibilidad dentrod el mundo de "modelización", pero es un mundo en si mismo que merece investigar con detalle).
 
 ---
 
