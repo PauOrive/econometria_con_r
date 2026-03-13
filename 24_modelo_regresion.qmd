@@ -26,6 +26,20 @@ El segundo argumento, que está implícito en tus notas, es que la regresión es
 
 El tercer argumento es más pedagógico: la regresión es el contexto donde se introducen los conceptos que luego reaparecen en todo el libro, como endogeneidad, supuestos de identificación, errores estándar, inferencia. Aprenderlos en el contexto más simple posible tiene mucho sentido antes de encontrarlos en contextos más complejos".
 
+---
+resumen Claude
+
+Empiezas por la pregunta: quieres entender la relación entre Yi y Xi en la población
+
+Introduces la CEF como el objeto que captura esa relación de forma completamente general — sin asumir nada
+
+Demuestras que es el MMSE predictor — no es una elección arbitraria, tiene una justificación formal
+
+Introduces la regresión lineal como la mejor aproximación lineal a ese objeto — de nuevo con justificación formal, no por convención
+
+Y luego la estimación — OLS, GMM, MLE son formas de aproximarte a ese objeto con datos
+---
+
 ### La forma canónica
 
 Es decir, definimos una variable de interés $y$ que queremos explicar en función de un conjunto de variables $X$.
