@@ -23,9 +23,8 @@ book:
         - 16_datos_geoespaciales.qmd
     - part: "Fundamentos de econometría"
       chapters:
-        - 20_proceso_econometrico.qmd
+        - 20_preguntas_datos_modelos.qmd
         - 21_fundamentos_matematicos.qmd
-        - 22_poblacion_muestra.qmd
         - 23_especificar_modelo.qmd
         - 24_modelo_regresion.qmd
         - 25_tecnica_estimacion.qmd
@@ -36,7 +35,7 @@ book:
     - part: "Inferencia causal"
       chapters:
       # reordenar
-        - 30_marco_conceptual.qmd
+        - 30_resultados_potenciales.qmd
         - 31_variables_instrumentales.qmd 
         - 32_rct.qmd
         - 33_matching.qmd
