@@ -144,10 +144,6 @@ Podemos entrenar un modelo de procesamiento de lenguaje natural con miles de not
 El objetivo siempre es **maximizar la capacidad predictiva** del modelo fuera del conjunto de datos que disponemos, ya que queremos aplicarlo para nuevos casos o escenarios futuros. 
 Un modelo es mejor que otro si obtiene mejor puntuación en las métricas que determinan su capacidad predictiva.
 
-En el @cap-modelo-regresion explico cómo podemos realizar predicciones a partir de un modelo de regresión en R, aunque en este campo la regresión es una alternativa más dentro de un ecosistema amplio de técnicas.
-Con el auge del *big data*, modelos como los bosques aleatorios o las redes neuronales suelen superar a la regresión clásica en capacidad predictiva, especialmente cuando la relación entre variables es compleja y no lineal. 
-La cuarta parte del libro introduce las principales técnicas de *machine learning* aplicadas a la predicción.
-
 En cambio, en los ejercicios contrafactuales no nos vale con detectar correlaciones, sino que el objetivo es **identificar relaciones causales**.
 Detectar que dos variables se mueven juntas no nos dice si una causa a la otra, o si ambas responden a un tercer factor. 
 Para ello, debemos plantearnos qué habría pasado si el curso de acción hubiera sido diferente, es decir, plantear un escenario *contrafactual*, esto es, un escenario alternativo al que efectivamente ocurrió.
@@ -166,42 +162,39 @@ Sin embargo, su implementación es logísticamente compleja y costosa: hay que g
 Por tanto, en la mayoría de los casos tratamos de identificar efectos causales en contextos no experimentales. 
 Y es aquí donde recae la complejidad metodológica que transmite el meme. 
 Tendremos que ser muy creativos para encontrar situaciones en las que los datos observacionales se aproximan a condiciones experimentales.
-Y muy meticulosos para justificar cada decisión metodológica, especialmente respecto a las posibles fuentes de endogeneidad.
-La tercera parte de este libro se dedica a las principales técnicas en econometría causal, como el uso de variables instrumentales, estimadores de diferencia en diferencias y diseños de regresión en discontinuidad.
-
-En inferencia causal, a diferencia de la predicción, la regresión no es una alternativa más sino el vehículo principal, ya que combina la flexibilidad necesaria para implementar distintas estrategias de identificación con la interpretabilidad de sus coeficientes, que es precisamente lo que nos interesa cuando buscamos cuantificar un efecto causal. 
-Por este motivo, el @cap-modelo-regresion profundiza en cada uno de sus elementos.
+Y ser muy meticulosos para justificar cada decisión metodológica, especialmente respecto a las posibles fuentes de endogeneidad.
+La tercera parte de este libro profundiza en estos conceptos y explica cómo llevar a cabo las principales técnicas en econometría causal, como el uso de variables instrumentales, estimadores de diferencia en diferencias y diseños de regresión en discontinuidad.
 
 ## Nuestra materia prima: los datos
 
-### Población y muestra
+### Población objetivo y unidades de investigación
 
 El segundo ingrediente imprescindible en todo estudio cuantitativo son los datos, la materia prima a partir de la cual extraemos conclusiones. Pero datos sobre qué, exactamente — esa es la primera pregunta que debemos responder, y nos lleva al concepto de **población objetivo**.
 
-Según la [definición](https://www.ine.es/dyngs/COL/index.htm?cid=453) del Instituto Nacional de Estadística (INE), la población es el "conjunto de unidades del que se desea obtener cierta información". 
+Según la [definición del Instituto Nacional de Estadística](https://www.ine.es/dyngs/COL/index.htm?cid=453) (INE), la población es el "conjunto de unidades del que se desea obtener cierta información". 
 Las unidades pueden ser personas, empresas, países, o cualquier entidad que se adecue a la realidad económica que queremos medir.
-Lo importante es establecer claramente cuál es la **unidad de investigación** y delimitar el ámbito geográfico y temporal al que se restringe la población a investigar, es decir, los criterios que permiten diferenciar si una entidad forma parte o no de la población objetivo.
+Lo importante es establecer claramente cuál es la **unidad de investigación** y delimitar el **ámbito geográfico y temporal** al que se restringe la población a investigar, es decir, los criterios que permiten diferenciar si una entidad forma parte o no de la población objetivo.
 Para referirnos al tamaño de la población, es decir, el número total de unidades de investigación en la población de interés, usamos $N$. 
 
 Fíjate que la población objetivo depende de la pregunta de investigación, y que un mismo estudio con diversas preguntas de investigación puede incluir definiciones de población diferentes. 
-Tomemos como ejemplo las preguntas que enumero en la @sec-todo-empieza-con-una-pregunta. A pesar de que todas ellas se enmarcan en el [estudio](https://www.airef.es/es/estudios/incapacidad-temporal/) de la AIReF sobre la incapacidad temporal (IT) en España, la población objetivo cambia:  
+Tomemos como ejemplo las preguntas que enumero en la @sec-todo-empieza-con-una-pregunta. 
+A pesar de que todas ellas se enmarcan en el [estudio](https://www.airef.es/es/estudios/incapacidad-temporal/) de la AIReF sobre la incapacidad temporal (IT) en España, la población objetivo cambia.
+Las unidades de investigación son siempre personas (trabajadoras o funcionarias).
 
 | Pregunta | Población objetivo |
 |----|----|
 | ¿Cómo ha sido la evolución de la duración de procesos de incapacidad temporal en España en los últimos 10 años? | Todos los trabajadores que han tenido un proceso de incapacidad temporal en España en los últimos 10 años. |
 | ¿Qué características se correlacionan con la duración o frecuencia de los episodios de incapacidad temporal? | Todos los trabajadores que han tenido un proceso de incapacidad temporal en España en los últimos 10 años.\[\^20-nota-2\] |
-| ¿Cuál es la duración más probable para un nuevo proceso de un trabajador con unas características concretas? | Todos los trabajadores en activo. |
-| ¿Cuál es el impacto que ha tenido el Real Decreto 956/2018 en la probabilidad de que estos empiecen un proceso de incapacidad temporal? | Los funcionarios en activo. |
+| ¿Cuál es la duración más probable para un nuevo proceso de un trabajador con unas características concretas? | Todos los trabajadores en activo actualmente. |
+| ¿Cuál es el impacto que ha tenido el Real Decreto 956/2018 en la probabilidad de que estos empiecen un proceso de incapacidad temporal? | Los funcionarios en activo dureante el período de análisisd e interés (antes y después de la publicación del Decreto). |
 
 \[\^20-nota-2\]: Si la pregunta se reformula como "¿qué características se correlacionan con la *probabilidad* de tener un episodio?", la población objetivo pasa a ser todos los trabajadores activos, ya que los trabajadores sin episodios son parte relevante de la distribución de interés.
 
+### Estudios de censo y muestras
+
 El objetivo de todo estudio es extraer conclusiones sobre la **población objetivo**. 
 Hay veces que contaremos con toda la población, como en el caso de la parte descriptiva del estudio de la AIReF. 
-Estos estudios se conocen en estadística como "estudios de censo", y en estos casos no hay incertidumbre sobre los estadísticos que calculamos porque no estamos generalizando a partir de una muestra. 
-Sin embargo, tanto la inferencia causal como la predicción implican un tipo de incertidumbre distinta. No sobre la muestra, sino sobre lo que no observamos: el contrafactual o los casos futuros, respectivamente, que no desaparece aunque dispongamos de datos censales. 
-
------
-*Esta sección queda muy larga, por lo que podría introducir alguna segunda tabla con ejemplos de muestreo y problemas*
+Estos estudios se conocen en estadística como "estudios de censo", y en estos casos no hay incertidumbre sobre los estadísticos que calculamos porque no estamos generalizando a partir de una muestra. Sin embargo, tanto la inferencia causal como la predicción implican un tipo de incertidumbre distinta. No sobre la muestra, sino sobre lo que no observamos: el contrafactual o los casos futuros, respectivamente, que no desaparece aunque dispongamos de datos censales. 
 
 Pero lo más frecuente es que trabajemos sólo con un subconjunto de la población objetivo, es decir, con una **muestra**. 
 Para que las estimaciones que obtendremos de la muestra tengan validez, debemos asegurarnos que esta sea representativa, es decir, que el proceso de muestreo no introduzca sesgos.
@@ -209,6 +202,8 @@ En la práctica, los economistas suelen trabajar con datos administrativos, regi
 Sin embargo, es importante conocer ciertos conceptos clave y consultar la metodología de obtención de los datos con los que trabajamos y ser honesto sobre a qué población podremos generalizar las conclusiones.
 
 \[\^20-nota-3\]: Redirigir a recursos que traten esto en mayor profundidad. Ejemplo: https://bookdown.org/edsaul_perez/3-poblacion-y-muestreo22/3.-Poblacion-y-muestreo.html#/title-slide aunque tendría que revisar si encuentro algo mejor (en español)
+
+### Métodos de muestreo y sesgos derivados
 
 En primer lugar, la muestra no la extraemos directamente de la población, sino del **marco muestral**, es decir, del listado o registro concreto a partir del cual podemos seleccionar la muestra. 
 Idealmente, el marco muestral debería de coincidir con la población, pero a menudo este no es el caso.
@@ -250,10 +245,12 @@ Si bien es el tipo de pregunta lo que determina en mayor medida el procedimiento
 
 En este libro me centro casi exclusivamente en los datos tabulares, es decir, aquellos que están organizados en filas (observaciones) y columnas (variables).\[\^20-nota-5\] 
 Otros tipos de datos, como imágenes o texto, requieren técnicas distintas que sólamente trato superficialmente en la cuarta parte del libro., ya que son comunes en modelos de *machine learning*. 
+Los datos tabulares pueden clasificarse, por lo menos según dos criterios.
 
 \[\^20-nota-5\]: Al descargar datos tabulares a veces no siguen esta estructura, por lo que antes de nada deberemos *limpiar* el dataset para dejarlo en formato *tidy*. En el @cap-exploracion-inicial explico cómo hacerlo.   
 
-Los datos tabulares pueden clasificarse, por lo menos según dos criterios.
+#### Datos experimentales vs observacionales
+
 El primero es el proceso con el que se generaron o recopilaron los datos, donde disntinguimos entre datos experimentales y datos observacionales. 
 
 -   Los **datos experimentales** son aquellos que se obtienen mediante la manipulación activa de variables en entornos controlados, como los que derivan de un diseño experimental como un experimento controlado aleatorizado (RCT, por sus siglas en inglés). 
@@ -265,13 +262,15 @@ Sin embargo, en la mayoría de los casos trabajaremos con datos observacionales,
 En la jerga de la inferencia causal, se conoce como estrategia de identificación (*identification strategy*) al método por el cual usamos datos observacionales de modo que se asemejen a un contexto experimental. 
 La tercera parte del libro se focaliza en las principales estrategias. 
 
+#### Sección cruzada, panel y serie temporal
+
 El segundo criterio es la naturaleza de los datos, donde se distingue entre datos de sección cruzada, de panel y de serie temporal. Las distinciones se basan en el tamaño de la muestra $n$ y el número de periodos $t$ para el que tenemos observaciones de cada unidad. 
 
 -   En los **datos de sección cruzada** disponemos de una observación para cada unidad de investigación tomada en un momento determinado. Es decir, $t=1$ y $n>>t$.\[\^20-nota-6\]    
 
 -   En los **datos de panel** contamos con varias observaciones para cada unidad de investigación tomadas en distintos momentos del tiempo, normalmente a intervalos regulares. Es decir, $t>1$ y $n>1$.  
 
--   En los **datos de serie temporal** disponemos de múltimes observaciones de una unidad de investigación tomada secuencialmente en el tiempo, normalmente a intervalos regulares. Es decir, $t>>n$. El ejemplo paradigmático son datos sobre la evolución de variables macroeconómicas con el PIB, el IPC, o el precio de valores como el gas o el petróleo. 
+-   En los **datos de serie temporal** disponemos de múltimes observaciones de una unidad de investigación tomada secuencialmente en el tiempo, normalmente a intervalos regulares. Es decir, $t>1$ y $n=1$. El ejemplo paradigmático son datos sobre la evolución de variables macroeconómicas con el PIB, el IPC, o el precio de valores como el gas o el petróleo. 
 
 \[\^20-nota-6\]: Uso la notación con doble ">>" como en $n>>t$ para indicar que "$n$ es *mucho* más grande que $t$". Véase la @sec-convenciones-notacion para consultar todas las convenciones que uso en cuanto a la notación. 
 
@@ -303,68 +302,99 @@ No pretende capturar toda la complejidad del mundo, ni ser lo más realista posi
 
 ### Clases de modelos
 
----
-*prompt para claude:*
-estoy pensando en cual es el orden óptimo para presentar las clasificaciones de los modelos (a pesar de que entiendo que no son clasificaciones que siguen un orden jerárquico o secuencial -es decir, en forma de árbol - sino que son clasificaciones por criterios independientes, supongo que hay maneras más claras que otras de presentarlo.
-
-
-
-Te comparto lo que tengo de momento. Ten en cuenta que estoy aún en un capitulo introductorio y que el objetivo de algún modo es redirigir el hilo al modelo de regresión, que desarrollaré en el siguiente capítulo. 
----
-
 Como te puedías imaginar a estas alturas, empezemos por ver qué clases de modelos existen. 
 
-En primer lugar, diferenciamos entre modelos estructurales y modelos de forma reducida:\[\^20-nota-7\] 
+#### Modelos supervisados vs no supervisados
 
-\[\^20-nota-7\]: He tradiucido directamente el concepto directamente del inglés, donde se usa *reduced form models*. Si alguien conoce una traducción mejor agradezcería que me la compartiera. 
+La clasificación más general — más habitual en la jerga del *machine learning* que la econometría — es la distinción entre modelos supervisados y no supervisados. La diferencia radica en si tenemos una variable de interés que queremos estudiar o no. 
+
+-   Los **modelos supervisados** contienen una variable de interés, normalmente referida como $y$, a la que queremos aproximarnos a partir de un conjunto de variables $X$.
+
+-   En los **modelos no supervisados** no hay ningñúna variable de interés, sino que buscan patrones y estructuras que en los datos que son ocultos a simple vista, como agruparlos las observaciones en un número determinado de grupos en función de ciertas características (*clustering*). 
+
+#### Modelos paramétricos vs no paramétricos
+
+En segundo lugar, los modelos pueden ser paramétricos o no paramétricos dependiendo si asumen una forma funcional o no.\[\^20-nota-7\] 
+
+\[\^20-nota-7\]: Existe también una categoría intermedia: los modelos semiparamétricos, que combina una parte paramétrica con una parte no paramétrica. Un ejemplo relevante en econometría es el modelo de duración de Cox, que trataremos en la @sec-modelos-duracion-supervivencia.
+
+-   Los **modelos paramétricos** especifican una forma funcional en los datos.
+
+-   Los **modelos no paramétricos** dejan que los datos determinen la forma libremente.
+
+Como es común en las elecciones metodológicas, cada opción tiene sus ventajas y desventajas.
+Los modelos paramétricos son más interpretables y requieren menos datos, pero pueden ser incorrectos si la forma funcional que asumimos no se ajusta a la realidad. 
+Los modelos no paramétricos son más flexibles, pero requieren más datos y son más difíciles de interpretar.
+
+#### Modelos estructurales vs de forma reducida
+
+Por último, la distinción más relevante en econometría es la que hay entre modelos estructurales y modelos de forma reducida.\[\^20-nota-8\] 
+
+\[\^20-nota-8\]: He tradiucido directamente el concepto directamente del inglés, donde se usa *reduced form models*. Si alguien conoce una traducción mejor agradezcería que me la compartiera. 
 
 -   Un modelo **estructural** especifica en detalle el mecanismo económico subyacente, que normalmente consta de varias ecuaciones derivadas de la teoría económica.
 
 -   Un modelo de **forma reducida** expresa directamente la relación entre la variable de interés y un conjunto de variables explicativas, sin modelizar explícitamente el mecanismo económico subyacente.
 
+El *trade-off* en este caso es que los modelos de forma reducida son más simples pero se sustentan en suposiciones robustas, mientras que los modelos estructurales son más complejos, pero acostumbran a requerir supuestos más fuertes. 
+De hecho, en la década de los noventa y los 2000s hubo un debate importante en la academia acerca de qué estrategía debería priorizarse para probar efectos causales en econometría, un debate aún relevante a día de hoy, al que volveré en el @cap-resultados-potenciales.
+
+Los modelos estructurales son predominantes en macroeconomía y organización industrial, así como en las simulaciones que tratan de simular escenarios contrafactuales.
 El ejemplo clásico de un modelo estructural es un modelo de oferta y demanda. 
-La teoría económica nos dice que la cantidad demandada $Q^d$ depende del precio $P$ y de la renta de los consumidores $Y$; que la cantidad ofrecida $Q^s$ depende del precio $P$ y del coste de producción $W$, y que, en equilibrio, la cantidad ofrecida es igual a la demandada. 
+La teoría económica nos dice que la cantidad demandada depende del precio y de la renta de los consumidores, que la cantidad ofrecida depende del precio y del coste de producción, y que, en equilibrio, la cantidad ofrecida es igual a la demandada. 
 Esto se traduce en un sistema de ecuaciones donde el precio y la cantidad se determina de forma simultánea.
 
-$$
-Q^d = \alpha_0 + \alpha_1 P + \alpha_2 Y + \varepsilon^d
-$$
-$$
-Q^s = \beta_0 + \beta_1 P + \beta_2 W + \varepsilon^s
-$$
-$$
-Q^d = Q^s
-$$
+Otro ejemplo con una aplicación completamente diferente es la simulación que usamos en el Trabajo de Fin de Máster que realicé junto con Cristobal Blanco y Tomás Butelman. 
+Para responder a nuestra pregunta de investigación, a saber, cuál es la probabilidad de que España cumpla su objetivo de producir 81% de electricidad de fuentes renovables en 2030, modelamos el funcionamiento del mercado eléctrico español de forma que el precio de la electricidad, la demanda y la cantidad generada por cada tecnología se resolvían simultáneamente.\[\^20-nota-9\]
 
-Otro ejemplo completamente distinto es el modelo que usé en el Trabajo de Fin de Máster que realicé junto con Cristobal Blanco y Tomás Butelman. 
-Para responder a nuestra pregunta de investigación, a saber, cuál es la probabilidad de que España cumpla su objetivo de producir 81% de electricidad de fuentes renovables en 2030, modelamos el funcionamiento del mercado eléctrico español de forma que el precio de la electricidad, la demanda y la cantidad generada por cada tecnología se resolvían simultáneamente.\[\^20-nota-8\]
+\[\^20-nota-9\]: Podeis ver el código del proyecto en este [repositorio de GitHub](https://github.com/PauOrive/Spain_ren_gen_2030)
 
-\[\^20-nota-8\]: Podeis ver el código del proyecto este [repositorio de GitHub](https://github.com/PauOrive/Spain_ren_gen_2030)
+En econometría, sin embargo, predominan los modelos de forma reducida, así que en los siguientes capítulos ya veremos numerosos ejemplos.
 
-No obstante, en econometría predominan los modelosde forma reducida, normalmente definidos mediante modelos de regresión. 
-*quizás aquí introducir la notación y = f(X)?, porque conecta con la la distinción entre paramétrico y no paramétrico... o no?*
+### Las clases más comunes a la práctica
 
-
-En segundo lugar, los modelos pueden ser paramétricos o no paramétricos dependiendo si asumen una forma funcional o no. 
-
--   Los **modelos paramétricos** especifican una forma funcional en los datos.
-
--   Los **modelos no paramétricos** dejan que los datos determinen la forma libremente (*tiene sentido esto? me parece poco claro desde un punto de vista pedagógico... quizás habría que hablar del trade-off*)
-
-Otra clasificación más habitual en la jerga del *machine learning* es la distinción entre modelos supervisados y no supervisados. La diferencia radica en si hay o no una variable de interés. 
-
--   Los **modelos supervisados** contienen una variable de interés, normalmente referida como $y$, a la que queremos aproximarnos.
-
--   En los **modelos no supervisados** no hay ningñúna variable de interés, sino que buscan patrones y estructuras que en los datos que son ocultos a simple vista. 
-
-
-Podemos clasificar casi cualquier modelo bajo estas tres categorías.
+Esta clasificación aplica a todo tipo de modelos en función de la pregunta a la que responden, ya sean modelos descriptivos, predictivos o contrafactuales.
+De hecho, podríamos clasificar cualquier modelo en función de estas categorías.
 No obstante, la realidad tampoco se corresponde con una matriz de 3x3 donde cada opción es igual de plausible. 
-Por ejemplo, (*explicar casos comunes y casos muy poco probables*)
+
+Por ejemplo, los modelos estructurales son casi siempre paramétricos y supervisados ya que necesitan imponer suficiente estructura para ser tratables. 
+Los modelos no supervisados, en cambio, aparecen casi exclusivamente en el ámbito no paramétrico, puesto que no tiene mucho sentido imponer una forma funcional cuando el objetivo es "dejar que los datos hablen por si mismos".
+La siguiente tabla especifica mediante un tick verde ✅ las combinaciones comunes (con ejemplos entre paréntesis), con un símbolo de advertencia ⚠️ las combinaciones posibles, pero menos comunes, y con una cruz roja ❌ aquellas que no tienen sentido conceptual, por lo que existen en la literatura.
+
+|   |   | Supervisado | No supervisado |
+|----|----|----|----|
+| **Forma reducida** | **Paramétrico** | ✅ (regresión) | ❌ |
+| **Forma reducida** | **No paramétrico** | ✅(bosques aleatorios) | ✅(análisis de clústers) |
+| **Estructural** | **Paramétrico** | ✅(DGSE) | ❌ |
+| **Estructural** | **No paramétrico** | ⚠️ | ❌ |
+
+: \*DGSE son las siglas en inglés de los modelos dmacroeconómicos de equilibrio general dinámico estocásticoequilibrio general dinámico estocástico
 
 Las partes 2 y 3 de este libro se centran casi exclusivamente en modelos supervisados, paramétricos y de forma reducida, mientras que la parte 4 también cubre modelos no paramétricos y modelos no supervisados.
+
+### El papel de la regresión en econometría
+
+La mayoría de libros introductorios a la econometría suelen empezar con el modelo de regresión. 
+Cuando yo estudié econometría en el Grado, el libro de texto de referencia era la *Introduction to Econometrics* de @Stock-Watson-2015.
+Si bien es cierto que incluyen un capítulo introductorio en el que establecen algunas de las clasificaciones que yo he mencionado también aquí, el primer capítulo que no es introductorio parte casi desde el principio con el modelo de regresión, sin justificar muy bien por qué ni qué alternativas hay.
+No me malinterpreteis, el libro es muy bueno — de hecho, mucho mejor que este en cuanto a rigor metodológico ya que está escrito por un profesores de Hardvard y Princeton — y su filosofía de usar como hilo conductor preguntas como ¿mejora los resultados en los exámenes de primaria reducir el tamaño de las clases? funciona perfectamente para ir descubriendo poco a poco los componentes relevantes al especificar un modelo de regesión. 
+Sin embargo, creo que es útil aportar contexto adicional y poner el foco en entender qué hacemos y por qué lo hacemos.
+
+Por este motivo he empezado el capítulo subrayando las distintas clases de preguntas de investigación.
+Podemos utilizar modelos de regresión para llevar a cabo descripciones, predicciones y análsis contrafactuales, y en los siguientes capítulos explicaré cómo hacerlo en R.
+Sin embargo, en el campo de la predicción la regresión es una alternativa más dentro de un ecosistema creciente de técnicas.
+Con el auge del *big data*, modelos como los bosques aleatorios o las redes neuronales suelen superar a la regresión clásica en capacidad predictiva, especialmente cuando la relación entre variables es compleja y no lineal, por lo que es mejor decantarse por estos métodos.
+
+En inferencia causal, en cambio, la regresión no es una alternativa más sino el vehículo principal, ya que combina la flexibilidad necesaria para implementar distintas estrategias de identificación con la interpretabilidad de sus coeficientes, que es precisamente lo que nos interesa cuando buscamos cuantificar un efecto causal. 
+Puesto que este es el foco principal del libro, en el @cap-modelo-regresion explico los conceptos principales y cuestiones a tener en cuenta para especificar un buen modelo de regresión. 
+
+Sin embargo, volvamos una vez más a la *bigger picture*, para entender cuáles son las fases que tiene toda estimación econométrica...
+
+
+
 Es decir, definimos una variable de interés $y$ que queremos explicar en función de un conjunto de variables $X$.
-Podemos representar esto de forma general como $y=f(X)$, donde $f$ es la función que relaciona ambas; su forma concreta dependerá del modelo que especifiquemos.
+Podemos representar esto de forma general como $y=\textrm{f}(X)$, donde $\textrm{f}$ es la función que relaciona ambas; su forma concreta dependerá del modelo que especifiquemos.
+
 
 
 ---
@@ -380,15 +410,6 @@ La definimos con un modelo: y = F(X)
 
 Clasificaciones principales de los modelos:
 
-f(X) puede tomar muchas formas, ejemplo del TFM, una red neuronal para no paramétrico, un modelo DSGE para estructural
-
-**1. Paramétrico vs. no paramétrico** La más fundamental. ¿Asumes que f(X) tiene una forma funcional con un número finito de parámetros, o dejas que los datos determinen la forma libremente? Esta distinción existe antes de hablar de regresión — tu ejemplo del TFM es paramétrico aunque no sea una regresión.
-
-
-
-**3. Estructural vs. de forma reducida** Esta es más sutil pero importante. Un modelo estructural parte de la teoría económica y especifica mecanismos (tu TFM es un ejemplo). Un modelo de forma reducida describe relaciones estadísticas entre variables observables sin modelizar el mecanismo. La regresión suele ser de forma reducida.
-
-regresión: un modelo paramétrico, generalmente de forma reducida, que puede ser lineal o no lineal.
 
 En econometría, la regresión como forma canónica E\[Y\|X\].
 
