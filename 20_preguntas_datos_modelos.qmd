@@ -336,39 +336,42 @@ Por último, la distinción más relevante en econometría es la que hay entre m
 
 -   Un modelo de **forma reducida** expresa directamente la relación entre la variable de interés y un conjunto de variables explicativas, sin modelizar explícitamente el mecanismo económico subyacente.
 
-El *trade-off* en este caso es que los modelos de forma reducida son más simples pero se sustentan en suposiciones robustas, mientras que los modelos estructurales son más complejos, pero acostumbran a requerir supuestos más fuertes. 
+El *trade-off* en este caso es que los modelos de forma reducida son más simples y requieren menos supuestos teóricos, lo que los hace más transparentes. 
+Los modelos estructurales, en cambio, son más complejos y requieren supuestos más fuertes, pero permiten simulaciones y análisis contrafactuales más ricos.
 De hecho, en la década de los noventa y los 2000s hubo un debate importante en la academia acerca de qué estrategía debería priorizarse para probar efectos causales en econometría, un debate aún relevante a día de hoy, al que volveré en el @cap-resultados-potenciales.
+A modo de *spoiler* --- aunque en verdad responde más bien a mis limitaciones técnicas --- los modelos estructurales quedan fuera del alcance de este libro. 
+Sin embargo, merece la pena ilustrarlos con un par de ejemplos para entender mejor qué los distingue de los modelos de forma reducida.
 
-Los modelos estructurales son predominantes en macroeconomía y organización industrial, así como en las simulaciones que tratan de simular escenarios contrafactuales.
+Los modelos estructurales son muy comunes en áreas como la macroeconomía y organización industrial.
 El ejemplo clásico de un modelo estructural es un modelo de oferta y demanda. 
 La teoría económica nos dice que la cantidad demandada depende del precio y de la renta de los consumidores, que la cantidad ofrecida depende del precio y del coste de producción, y que, en equilibrio, la cantidad ofrecida es igual a la demandada. 
 Esto se traduce en un sistema de ecuaciones donde el precio y la cantidad se determina de forma simultánea.
 
-Otro ejemplo con una aplicación completamente diferente es la simulación que usamos en el Trabajo de Fin de Máster que realicé junto con Cristobal Blanco y Tomás Butelman. 
-Para responder a nuestra pregunta de investigación, a saber, cuál es la probabilidad de que España cumpla su objetivo de producir 81% de electricidad de fuentes renovables en 2030, modelamos el funcionamiento del mercado eléctrico español de forma que el precio de la electricidad, la demanda y la cantidad generada por cada tecnología se resolvían simultáneamente.\[\^20-nota-9\]
+Una de las principales ventajas de los modelos estructurales es que permiten simular diferentes escenarios y observar cómo difieren los resultados.
+Esto es justo lo que hice en el Trabajo de Fin de Máster que realicé junto con Cristobal Blanco y Tomás Butelman. 
+Para responder a nuestra pregunta de investigación, a saber, cuál es la probabilidad de que España cumpla su objetivo de producir 81% de electricidad de fuentes renovables en 2030, modelamos el funcionamiento del mercado eléctrico español de forma que el precio de la electricidad, la demanda y la cantidad generada por cada tecnología se resolvían simultáneamente.
+De este modo pudimos, entre otras cosas, comprobar cómo cambiaba dicha probabilidad al considerar un escenario alternativo en el que las centrales nucleares que tienen previsto el cese de su actividad a finales de esta década, reciben una moratoria y siguen operando unos años más.\[\^20-nota-9\]
 
-\[\^20-nota-9\]: Podeis ver el código del proyecto en este [repositorio de GitHub](https://github.com/PauOrive/Spain_ren_gen_2030)
-
-En econometría, sin embargo, predominan los modelos de forma reducida, así que en los siguientes capítulos ya veremos numerosos ejemplos.
+\[\^20-nota-9\]: Podeis ver el código del proyecto en este [repositorio de GitHub](https://github.com/PauOrive/Spain_ren_gen_2030). Concretamente, el modelo (estructural) que simula el funcionamiento del mercado eléctrico está en [esta ruta](https://github.com/PauOrive/Spain_ren_gen_2030/actualizar_cuando_la_tenga).
 
 ### Las clases más comunes a la práctica
 
 Esta clasificación aplica a todo tipo de modelos en función de la pregunta a la que responden, ya sean modelos descriptivos, predictivos o contrafactuales.
 De hecho, podríamos clasificar cualquier modelo en función de estas categorías.
-No obstante, la realidad tampoco se corresponde con una matriz de 3x3 donde cada opción es igual de plausible. 
+No obstante, la realidad tampoco se corresponde con una matriz donde cada opción es igual de plausible. 
 
 Por ejemplo, los modelos estructurales son casi siempre paramétricos y supervisados ya que necesitan imponer suficiente estructura para ser tratables. 
 Los modelos no supervisados, en cambio, aparecen casi exclusivamente en el ámbito no paramétrico, puesto que no tiene mucho sentido imponer una forma funcional cuando el objetivo es "dejar que los datos hablen por si mismos".
-La siguiente tabla especifica mediante un tick verde ✅ las combinaciones comunes (con ejemplos entre paréntesis), con un símbolo de advertencia ⚠️ las combinaciones posibles, pero menos comunes, y con una cruz roja ❌ aquellas que no tienen sentido conceptual, por lo que existen en la literatura.
+La siguiente tabla especifica mediante un tick verde ✅ las combinaciones comunes (con ejemplos entre paréntesis), con un símbolo de advertencia ⚠️ las combinaciones posibles, pero menos comunes, y con una cruz roja ❌ aquellas que no tienen sentido conceptual.
 
 |   |   | Supervisado | No supervisado |
 |----|----|----|----|
 | **Forma reducida** | **Paramétrico** | ✅ (regresión) | ❌ |
-| **Forma reducida** | **No paramétrico** | ✅(bosques aleatorios) | ✅(análisis de clústers) |
-| **Estructural** | **Paramétrico** | ✅(DGSE) | ❌ |
+| **Forma reducida** | **No paramétrico** | ✅ (bosques aleatorios) | ✅ (análisis de clústers) |
+| **Estructural** | **Paramétrico** | ✅ (DGSE) | ❌ |
 | **Estructural** | **No paramétrico** | ⚠️ | ❌ |
 
-: \*DGSE son las siglas en inglés de los modelos dmacroeconómicos de equilibrio general dinámico estocásticoequilibrio general dinámico estocástico
+: \*DGSE son las siglas en inglés de los modelos macroeconómicos de equilibrio general dinámico estocástico.
 
 Las partes 2 y 3 de este libro se centran casi exclusivamente en modelos supervisados, paramétricos y de forma reducida, mientras que la parte 4 también cubre modelos no paramétricos y modelos no supervisados.
 
@@ -377,7 +380,8 @@ Las partes 2 y 3 de este libro se centran casi exclusivamente en modelos supervi
 La mayoría de libros introductorios a la econometría suelen empezar con el modelo de regresión. 
 Cuando yo estudié econometría en el Grado, el libro de texto de referencia era la *Introduction to Econometrics* de @Stock-Watson-2015.
 Si bien es cierto que incluyen un capítulo introductorio en el que establecen algunas de las clasificaciones que yo he mencionado también aquí, el primer capítulo que no es introductorio parte casi desde el principio con el modelo de regresión, sin justificar muy bien por qué ni qué alternativas hay.
-No me malinterpreteis, el libro es muy bueno — de hecho, mucho mejor que este en cuanto a rigor metodológico ya que está escrito por un profesores de Hardvard y Princeton — y su filosofía de usar como hilo conductor preguntas como ¿mejora los resultados en los exámenes de primaria reducir el tamaño de las clases? funciona perfectamente para ir descubriendo poco a poco los componentes relevantes al especificar un modelo de regesión. 
+No me malinterpreteis, el libro es muy bueno — de hecho, mucho mejor que este en cuanto a rigor metodológico ya que está escrito por profesores de Harvard y Princeton.
+Y me parece que utilizar como hilo conductor preguntas de investigación como "¿mejora los resultados en los exámenes de primaria reducir el tamaño de las clases?" funciona perfectamente para ir descubriendo poco a poco los componentes relevantes al especificar un modelo de regesión. 
 Sin embargo, creo que es útil aportar contexto adicional y poner el foco en entender qué hacemos y por qué lo hacemos.
 
 Por este motivo he empezado el capítulo subrayando las distintas clases de preguntas de investigación.
@@ -388,61 +392,39 @@ Con el auge del *big data*, modelos como los bosques aleatorios o las redes neur
 En inferencia causal, en cambio, la regresión no es una alternativa más sino el vehículo principal, ya que combina la flexibilidad necesaria para implementar distintas estrategias de identificación con la interpretabilidad de sus coeficientes, que es precisamente lo que nos interesa cuando buscamos cuantificar un efecto causal. 
 Puesto que este es el foco principal del libro, en el @cap-modelo-regresion explico los conceptos principales y cuestiones a tener en cuenta para especificar un buen modelo de regresión. 
 
-Sin embargo, volvamos una vez más a la *bigger picture*, para entender cuáles son las fases que tiene toda estimación econométrica...
-
-
-
-Es decir, definimos una variable de interés $y$ que queremos explicar en función de un conjunto de variables $X$.
-Podemos representar esto de forma general como $y=\textrm{f}(X)$, donde $\textrm{f}$ es la función que relaciona ambas; su forma concreta dependerá del modelo que especifiquemos.
-
-
-
----
+Sin embargo, volvamos una vez más a la *bigger picture*, para entender cuáles son las fases que tiene toda estimación econométrica.
 
 ## La hoja de ruta en econometría
 
-*(aquí introducir el diagrama, ya centrado en econometría)*
+Preguntas, datos y modelos... parece que ya hemos cubierto todo el material que prometía este capítulo. 
+A estas alturas, ya sabes que es imporante distinguir si tu pregunta de investigación es descriptiva, predictiva o contrafactual, y que las partes 2 y 3 de este libro se centran precisamente en preguntas de la última clase. 
+También conoces los principales sesgos que puede acarrear un proceso de muestreo, así como las clases de datos con los que normalmente se trabaja en econometría, y ya sitúas el modelo de regresión dentro del universo de los modelos.
 
+Pero el modelo de regresión es un mundo en si mismo; como excplicaba en la sección anterior, una de sus mayores ventajas es su flexibilidad. 
+El proceso de definir un modelo de regresión concreto en un trabajo de investigación se llama **especificar el modelo**, y es común incluir varias especificaciones en un mismo estudio para comprobar cómo varían los resultados si modificamos algún elemento ligeramente. 
+La especificación del modelo se basa fundamentalmente en el tipo de datos que tenemos: 
 
-exploramos una relación económica.
+-   Dependiendo de si disponemos de datos experimentales u observacionales podremos hacer unos supuestos u otros para reivindicar causalidad.
+-   Dependiendo de si disponemos de datos de sección cruzada, de panel o de serie temporal, podremos aprovechar distintas características de los datos para reforzar nuestros supuestos o controlar por factores no observados.
+-   La forma funcional del modelo depende en gran medida de la clase de variable de interés $y$ que estudiamos (por ejemplo, si $y$ es categórica o continua).
 
-La definimos con un modelo: y = F(X)
+Una vez especificado, necesitamos **estimar** sus parámetros, es decir, obtener valores concretos a partir de los datos. 
+Y una vez estimados, necesitamos saber cuánta confianza podemos depositar en ellos, que es exactamente lo que nos permite la **inferencia** estadística.
 
-Clasificaciones principales de los modelos:
-
-
-En econometría, la regresión como forma canónica E\[Y\|X\].
-
-Regresión como vehículo; Flexibilidad, interpretabilidad.
-
-Anticipa el capítulo de especificación (el modelo de regresión es sólo una posibilidad dentrod el mundo de "modelización", pero es un mundo en si mismo que merece investigar con detalle).
-
-----------
-
-debemos definir un **modelo**, es decir, cómo representamos de forma simplificada un proceso económico, en base a una serie de supuestos sobre qué variables importan, cómo se relacionan, y qué queda fuera.
-
-En econometría, la regresión es el vehículo principal para especificar modelos, motivo por el que merece un capítulo propio. 
-
-Pero definir el modelo es solo el punto de partida: una vez especificado, necesitamos **estimar** sus parámetros, es decir, obtener valores concretos a partir de los datos. Y una vez estimados, necesitamos saber cuánta confianza podemos depositar en ellos, que es exactamente lo que nos permite la **inferencia** estadística.\[\^20-nota-1\]
-
-\[\^20-nota-1\]: El marco conceptual de modelo, estimación e inferencia describe el flujo típico de la econometría aplicada, pero existen excepciones. Los modelos no paramétricos, comunes en *machine learning*, no asumen ninguna forma funcional para describir la relación entre las variables de interés. Y hay contextos, como los modelos de simulación o la predicción pura, donde la inferencia estadística clásica puede quedar fuera del proceso.
-
-La @fig-diagrama-proceso-econometrico representa de forma simplificada "el proceso econométrico". En la práctica, sin embargo, el proceso es iterativo y la especificación del modelo se revisa y ajusta a medida que avanza el análisis.\[\^20-nota-2\]
-
-\[\^20-nota-2\]: Este diagrama está especialmente pensado para preguntas de inferencia causal, aunque también aplica para preguntas descriptivas que impliquen técnicas econométricas, como las regresiones con variable dependiente limitada. Otras preguntas descriptivas aplican directamente estadísticos sobre la muestra, aplicando ponderacones si es necesario. Por último, en las preguntas predictivas por lo general, *(...)*
-
-
-\[*insertar flujo creado por mi*\]
-
--   queremos capturar la esencia, no el ruido. parte del error es fundamental en la randomness de la realidad
-
+La @fig-diagrama-proceso-econometrico representa de forma simplificada este "proceso econométrico". 
+En la práctica, sin embargo, el proceso es iterativo y la especificación del modelo se revisa y ajusta a medida que avanza el análisis.\[\^20-nota-2\]
 
 ```{r}
 #| label: fig-diagrama-proceso-econometrico
 #| echo: false
 #| out-width: "80%" 
 #| fig-cap: |
-#|   Diagrama del proceso econométrico (elaboración propia).
+#|   Diagrama del proceso econométrico (elaboración propia). Este diagrama está 
+#|   especialmente pensado para modelos de regresión, es decir, principalmente
+#|   preguntas de inferencia causal. Sin embargo, también aplica para preguntas 
+#|   descriptivas que impliquen técnicas econométricas, como las regresiones con 
+#|   variable dependiente limitada, o preguntas de predicción que usen regresiones,
+#|   donde el último paso sería usar el modelo para calcular los valores ajustados.   
 #| fig-alt: | 
 #|   Diagrama que muestra las etapas del proceso econométrico. 
 #|   Partimos de una pregunta de investigación (puede clasificarse en una de las 
@@ -456,12 +438,15 @@ La @fig-diagrama-proceso-econometrico representa de forma simplificada "el proce
 knitr::include_graphics("figura/diagrama-proceso-econometrico.svg")
 ```
 
+Los siguientes capítulos siguen esta misma hoja de ruta: el modelo de regresión y su especificación, las técnicas de estimación, la inferencia estadística, y extensiones como los modelos con variable dependiente limitada, los modelos de panel y los modelos de series temporales.
 
-*a partir de aquí, sólo añadiría los elementos esenciales, ya que se van a desarrollar en los siguientes capítulos*
-*idealmente, los h3 de este h2 "La hoja de ruta" corresponden con los capitulos que se desarrollan a continuación*
+**TERMINAR EL CAPÍTULO AQUÍ!!**
+*dejo lo siguiente como "anotaciones" para cuando empiece a desarrollar esos capítulos.*
 
-*hasta qué punto "el modelo de regresión" es capítulo separado de "especificar el modelo"?*
-*o, dicho de otra forma, realmente cabe una sección de "especificar el modelo" distinta a "especificar la regresión"?*
+*especificar el modelo y el modelo de regresión realmente será un solo capítulo*
+
+---
+
 
 ### Especificar el modelo
 
@@ -483,12 +468,14 @@ knitr::include_graphics("figura/diagrama-proceso-econometrico.svg")
 
 -   La especificación incluye decisiones sobre **qué variables entran en el modelo**, que es donde aparece el riesgo de sesgo por variable omitida. Eso crea un puente natural hacia identificación sin confundir los dos ejes.
 
+-   queremos capturar la esencia, no el ruido. parte del error es fundamental en la randomness de la realidad
+
 -   tests de validacion
 
     -   Preguntas del tipo: ¿está el modelo bien especificado? No preguntan sobre el valor de los parámetros sino sobre si el modelo en sí es adecuado. Ejemplos típicos son el test de Ramsey (RESET) para forma funcional, el test de Breusch-Pagan o White para heterocedasticidad, el test de Hausman para endogeneidad, o los tests de raíz unitaria en series temporales.
 
 
-#### Identificación
+#### Identificación (dentro de especificación, no?)
 
 cómo vamos a asegurarnos que aquello que estimamos puede tener una identificación causal. Responde a: ¿cómo voy a aislar el efecto que me interesa?
 
@@ -503,7 +490,6 @@ Problemas de identificación → ¿el objeto poblacional tiene la interpretació
 SOBRE EL ORDEN IDENTIFICACIÓN \<-\> ESPECIFICACIÓN
 
 Una solución híbrida: presentas los pasos en orden 1, pero incluyes una nota explícita diciendo que identificación y especificación se retroalimentan, y que el orden refleja prioridad lógica, no secuencia mecánica.
-
 
 
 ---
@@ -526,9 +512,6 @@ OLS, MLE y GMM cubren el 95% de lo que un econometrista aplicado usa. Lo que dej
 
 **Econometría bayesiana:** sí merece una mención, aunque sea breve. El argumento para mencionarla es que representa una filosofía distinta sobre qué significa "estimar" — no buscas el valor del parámetro que maximiza algo dado los datos, sino que actualizas una distribución de creencias. Es una diferencia conceptual importante, no solo técnica. Puedes dedicarle dos párrafos diciendo "existe esta otra tradición, aquí está la intuición, no la desarrollamos porque requeriría otro libro".
 
-**Modelos estructurales:** aquí soy más ambivalente. En economía industrial y macroeconomía son centrales, pero implican una filosofía completamente distinta — especificas un modelo económico con sus parámetros estructurales y luego lo estimas. La frontera con "lo que cubre tu libro" es bastante clara, así que con una mención breve en el capítulo introductorio es suficiente.
-
-**Lo que sí añadiría a tu lista principal:** estimación no paramétrica y semiparamétrica. No como un método de estimación separado al nivel de GMM, sino como una familia que aparece de forma natural en RDD (local linear regression) y en ML. Podrías mencionarla en el capítulo de estimación como "existe una tercera vía que no asume forma funcional paramétrica" sin desarrollarla completamente.
 
 ### Inferencia
 
@@ -551,42 +534,3 @@ OLS, MLE y GMM cubren el 95% de lo que un econometrista aplicado usa. Lo que dej
         -   **Tests de hipótesis sobre parámetros** Preguntas del tipo: ¿es β₂ = 0? ¿son β₂ = β₃? Asumen que el modelo está bien especificado y dentro de ese modelo preguntan sobre el valor de los parámetros. Son el núcleo de la inferencia clásica — t-tests, F-tests, intervalos de confianza.
 
             -   diferentes a los tests de validación del modelo, aunque a veces se solapan (e.g. Hausman)
-
-
-
-### El papel de la regresión (quizás ya va todo en el cap.3)
-
-En econometría, se suele empezar explicando la técnica de regresión. No es que sea la única herramienta disponible, ni mucho menos, pero permite trasladar interpretable y versátil.
-
-muchísimas técnicas pueden escribirse como “algún tipo de regresión” (IV, panel, DiD, RDD, etc.)
-
-revisar estos puntos, ya que son áreas que no conozco tanto
-
-Hay áreas importantes que no encajan bien en la idea clásica de regresión:
-
-Econometría de series temporales (procesos estocásticos, filtros, espectral),
-
-Econometría no paramétrica y semiparamétrica,
-
-Métodos de simulación (GMM, MSM),
-
-Econometría estructural y modelos de decisión.
-
-En predicción, la regresión es sólo una herramienta más, y a menudo no la mejor.
-
-no importa por qué X y Y están correlacionados, ni si hay sesgo causal, importa el error predictivo fuera de muestra.
-
----
-
-La lógica pedagógica sería:
-
-Empiezas por la pregunta: quieres entender la relación entre Yi y Xi en la población
-
-Introduces la CEF como el objeto que captura esa relación de forma completamente general — sin asumir nada
-
-Demuestras que es el MMSE predictor — no es una elección arbitraria, tiene una justificación formal
-
-Introduces la regresión lineal como la mejor aproximación lineal a ese objeto — de nuevo con justificación formal, no por convención
-
-Y luego la estimación — OLS, GMM, MLE son formas de aproximarte a ese objeto con datos
-
