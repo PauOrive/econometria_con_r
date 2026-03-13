@@ -28,6 +28,9 @@ El tercer argumento es más pedagógico: la regresión es el contexto donde se i
 
 ### La forma canónica
 
+Es decir, definimos una variable de interés $y$ que queremos explicar en función de un conjunto de variables $X$.
+Podemos representar esto de forma general como $y=\textrm{f}(X)$, donde $\textrm{f}$ es la función que relaciona ambas; su forma concreta dependerá del modelo que especifiquemos.
+
 y = f(X, theta) + epsilon
 
 y = X \* beta + epsilon
