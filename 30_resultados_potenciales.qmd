@@ -12,6 +12,11 @@ Podríamos diseñar un experimento en el que, de forma aleatoria, seleccionamos 
 [^30-nota-1]: En España se empieza la etapa de educación primaria obligatoria a los 6 años, cumplidos o por cumplir dentro del año natural del inicio escolar.
 
 
+*dos referencias interesantes para hablar sobre la credibility revolution*
+
+https://pubs.aeaweb.org/doi/pdfplus/10.1257/jep.31.2.33
+https://arxiv.org/pdf/2501.06873 
+
 
 explicar a fondo la intición de los potential outcomes
 
