@@ -58,7 +58,7 @@ La forma más básica de definir estos elementos es definir los datos y el mapeo
 
 #### El mapeo (los "aesthetics")
 
-El mapeo se define mediante la función `aes()`, donde asignamos el valor de algunas variables a alguno de los siguientes elementos:
+El mapeo se define mediante la función `aes()` para vincular uno de los siguientes elementos a una variable del dataset:
 
 -   `x`, los valores del eje x.
 -   `y`, los valores del eje y.
@@ -69,6 +69,8 @@ El mapeo se define mediante la función `aes()`, donde asignamos el valor de alg
 -   `shape`, la forma de la geometría, por ejemplo de los puntos.
 -   `linetype`, el tipo de línea.
 -   `label`, el texto que aparece.
+
+Los "aesthetics" se diferencian de los "atributos" en tanto que los primeros dependen de los valores que toman las variables y los segundos no. Por ejemplo, si queremos que en un gráfico de puntos los continentes se representen con un color diferente, debemos definir esta relación dentro de `aes()`: `aes(color = continent)`. En cambio, si queremos definir que todos los puntos sean de color azul, entonces definimos el color fuera de la función `aes()` y asignamos directamente el color: `color = "blue"`.
 
 Por defecto, todas las funciones de geometría tienen el argumento `inherit.aes = TRUE`, de modo que heredan los datos y el mapeo establecido en `ggplot()`. Sin embargo, también podemos definir los datos y/o mapeo directamente dentro de la función de geometría.
 
@@ -160,7 +162,7 @@ Luego, ir una a una explicando un poco en resumen siguiendo el hilo anterior
 
 -   Aplicar alguna estadística??
 
-    -   Muchas ya lo hacen (e.g. geom_bar)
+    -   Muchas ya lo hacen (e.g. geom_bar con stat_count o geom_histogram con stat_bin). De hecho, hay prácticamente una función de stat para cada geom, aunque también hay muchas otras.
 
     -   Si no, yo recomiendo hacerlo fuera con las técnicas de manipulación que hemos aprendido en el capítulo anterior
 
@@ -172,12 +174,21 @@ Luego, ir una a una explicando un poco en resumen siguiendo el hilo anterior
 
 ## ggplot en profundidad
 
+Aquí la idea es seguir un poco el formato del capítulo de data manipulation.
+
 ### Geometrías
 
 -   **Puntos/dispersión:** `geom_point`, `geom_jitter`
 -   **Líneas:** `geom_line`, `geom_path`, `geom_step`, `geom_abline`, `geom_hline`, `geom_vline`
 -   **Barras:** `geom_bar`, `geom_col`
 -   **Distribuciones:** `geom_histogram`, `geom_boxplot`, `geom_violin`, `geom_density`, `geom_density_2d`
+-   **Tendencia**: `geom_smooth()`
+    -   method
+        -   span
+    -   fullrange
+    -   se
+    -   group = 1 dentro de aes para indicar que queremos una línea para todos.
+    -   o inventandonos una variable nueva tipo "Todos"
 -   **Áreas:** `geom_area`, `geom_ribbon`
 -   **Texto:** `geom_text`, `geom_label`
 -   **Incertidumbre:** `geom_errorbar`, `geom_pointrange`, `geom_linerange`
@@ -186,6 +197,19 @@ Luego, ir una a una explicando un poco en resumen siguiendo el hilo anterior
 
 \*\*Otras geometrías de otras librerías
 
+### Atributos
+
+...
+
 ### Temas
 
 ...
+
+## Apuntes intermediate ggplot2:
+
+2 tuipos de estadísticas:
+
+-   las que llamamos dentro de geom
+-   las que llamamos de forma independiente
+
+Todas empiezan por stats\_\*()
