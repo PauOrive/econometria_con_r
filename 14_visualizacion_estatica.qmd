@@ -2,13 +2,190 @@
 title: "Visualizaciones estáticas"
 ---
 
+```{r}
+library(tidyverse)
+library(causaldata)
+```
+
 # Visualizaciones estáticas {#cap-visualizaciones-estaticas}
 
 En este capítulo cubriré los básicos de ggplot (el cheatsheet está genial)
 
-## Intro a ggplot
+R dispone de funciones nativas muy directas para generar gráficos.
 
-ggplot(data) + 
-  geom_layer(aes(...)) +
-  ...
-  labs 
+*Ejemplo de un histograma y un boxplot*
+
+Sin embargo, la librería principal para crear, editar y exportar gráficos estáticos en R es **ggplot2**, que se carga automáticamente cuando hacemos `library(tidyverse)`.
+
+Este capítulo se divide en dos partes:
+
+-   **Introducción a ggplot**: cubre el conocimiento básico sobre los elementos esenciales y adicionales para crear gráficos en R con ggplot.
+-   **ggplot en profundidad**: profundiza en cada uno de los elementos de los gráficos, especialmente en las geometrías y estilos.
+
+## Introducción a ggplot
+
+Cualquier objeto de **ggplot** siempre empieza con la función `ggplot()`, que vamos encadenando con otras funciones para definir los componentes del gráfico.
+
+!! Las diversas funciones que conforman un gráfico de **ggplot** se encadenan mediante `+` en vez de mediante el operador `|>`, como es común en la manipulación de datos. Sin embargo, puesto que el primer argumento de la función `ggplot()` es `data`, es común encontrar pipelines que encadenan el procesamiento de unos datos con la creación de un gráfico.
+
+```{r}
+#| label: ejemplo 
+#| include: false
+# datos_iniciales |>    
+#   procesamiento(...) |>   
+#   ggplot(...) +   
+#   capas_ggplot()
+```
+
+En este capítulo trabajaremos con ejemplos con el dataset `gapminder` de la librería **causaldata**. Este dataset contiene datos sobre población, esperanza de vida y PIB per cápita de 142 países para el periodo entre 1952 y 2007, con incrementos de 5 años.
+
+```{r}
+#| label: cargar datos gapminder 
+gapminder <- causaldata::gapminder
+```
+
+### Elementos esenciales
+
+Los elementos esenciales son los siguientes:
+
+-   Los **datos** (un data.frame o equivalente) que vamos a usar.
+
+-   El **mapeo** de datos (los "aesthetics"), como por ejemplo qué variable se representa en el eje X y cuál en el eje Y.
+
+-   La **geometría** (el tipo de gráfico). Por ejemplo, podemos definir un gráfico de puntos ("scatter plot"), un histograma, un gráfico de barras, etcétera.
+
+La forma más básica de definir estos elementos es definir los datos y el mapeo dentro de la función `ggplot()` y luego agregar una geometría mediante las funciones `geom_*()`.
+
+#### El mapeo (los "aesthetics")
+
+El mapeo se define mediante la función `aes()`, donde asignamos el valor de algunas variables a alguno de los siguientes elementos:
+
+-   `x`, los valores del eje x.
+-   `y`, los valores del eje y.
+-   `color`, el color "externo" de la geometría.
+-   `fill`, el color "interno" de la geometría.
+-   `alpha`, el nivel de opacidad, definido entre 0 (transparente) y 1 (opaco, opción por defecto)
+-   `size`, el tamañio de la geometría.
+-   `shape`, la forma de la geometría, por ejemplo de los puntos.
+-   `linetype`, el tipo de línea.
+-   `label`, el texto que aparece.
+
+Por defecto, todas las funciones de geometría tienen el argumento `inherit.aes = TRUE`, de modo que heredan los datos y el mapeo establecido en `ggplot()`. Sin embargo, también podemos definir los datos y/o mapeo directamente dentro de la función de geometría.
+
+Por ejemplo, para crear un gráfico de puntos donde observamos la relación entre PIB per cápita (eje X) y esperanza de vida (eje Y) diferenciando los continentes mediante el color de los puntos, podemos emplear cualquiera de los siguientes códigos.\[\^1\]
+
+\[\^1\]: Si te fijas, en el código donde definimos los datos y el mapeo dentro de la función de geometría hemos tenido que especificar el nombre de los argumentos, puesto que el orden por defecto es al revés que en `ggplot()` (recuerda que el orden con el que definimos los argumentos no es relevante cuando los especificamos con su nombre *\*añadir referencia al capítulo introductorio\**).
+
+::: panel-tabset
+## Todo en ggplot()
+
+```{r}
+#| label: grafico simple gapminder args en ggplot
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, color = continent)) +
+  geom_point()
+```
+
+## Datos en ggplot() y mapeo en geom\_\*()
+
+```{r}
+#| label: grafico simple gapminder args en ggplot y geom
+ggplot(gapminder) +
+  geom_point(aes(x = gdpPercap, y = lifeExp, color = continent))
+```
+
+## Todo en geom\_\*()
+
+```{r}
+#| label: grafico simple gapminder args en geom
+ggplot() +
+  geom_point(data = gapminder, mapping = aes(x = gdpPercap, y = lifeExp, color = continent))
+```
+:::
+
+Mi recomendación es usar la opción más coherente con la situación que queremos representar:
+
+-   Los datos y mapeo son los mismos en cada geometría $\rightarrow$ todo en `ggplot()`.
+-   Los datos son los mismos pero pero el mapeo varía según la geometría $\rightarrow$ los datos en `ggplot()` y el mapeo en `geom_*()`.
+-   Tanto los datos como el mapeo varían en cada geometría $\rightarrow$ todo en `geom_*()`.
+
+#### Las geometrías
+
+Existen muchísimas geometrías distintas, y un gráfico puede tener más de una. Por ejemplo, podemos añadir una línea de tendencia mediante `geom_smooth()` a un gráfico de puntos, o podemos representar una serie temporal incluyendo otros elementos como referencias de texto exactas de cada punto o líneas adicionales de referencia.\[\^2\]
+
+\[\^2\]: Para mejorar la visibilidad, en la serie temporal defino que la línea horizontal que muestra el umbral de los 80 años sea de color rojo, superado en España entre el 2002 y el 2007. Fíjate que lo hago fuera de la función `aes()`: esto es porque no estoy vinculando el color de la línea a una variable de `gapminder` (como hemos hecho antes al mapear el color de los puntos con los continentes), sino que estoy definiendo directamente el color de la línea (por lo que no aparece ninguna leyenda de forma automática). En la jerga de **ggplot**, esta es la diferencia entre definir un "aesthetic" y un "atributo".
+
+::: panel-tabset
+## Nube de puntos + línea de tendencia
+
+```{r}
+#| label: grafico gapminder point + smooth
+ggplot(gapminder |> filter(gdpPercap < 58000),
+       aes(x = gdpPercap, y = lifeExp)) +
+  geom_point() + 
+  geom_smooth()
+```
+
+## Serie temporal con anotaciones
+
+```{r}
+#| label: grafico simple gapminder args en ggplot y geom
+ggplot(gapminder |> filter(country == "Spain"),
+       aes(x = year, y = lifeExp)) +
+  geom_line() +
+  geom_point() + 
+  geom_text(aes(label = lifeExp), nudge_y = 1) +
+  geom_hline(yintercept = 80, color = "red") 
+```
+:::
+
+### Elementos adicionales
+
+**ggplot** incluye una infinidad de elementos que podemos personalizar de forma opcional. Como hemos visto, no son esenciales para producir un gráfico, pero nos ayudan a mejorar notablemente su aspecto.
+
+Podemos agruparlos de la siguiente manera:
+
+-   Las **escalas** controlan cómo se mapean los datos a propiedades visuales.
+
+-   Las **estadísticas** aoplican transformaciones a los datos antes de mostrarlos en el gráfico.
+
+-   Las **coordenadas** definen el plano sobre el que se representan los datos.
+
+-   Las **facetas** dividen el gráfico en subpaneles según una o más variables categóricas.
+
+-   El **tema** sirve para controlar todos los elementos no relacionados con los datos: fuentes, color de fondo, ejes, leyenda, márgenes, etcétera.
+
+Luego, ir una a una explicando un poco en resumen siguiendo el hilo anterior
+
+-   Cambiar gráfico a escala logarítmica.
+
+-   Aplicar alguna estadística??
+
+    -   Muchas ya lo hacen (e.g. geom_bar)
+
+    -   Si no, yo recomiendo hacerlo fuera con las técnicas de manipulación que hemos aprendido en el capítulo anterior
+
+-   Cambio en coordenadas
+
+-   Facetas para comparar
+
+-   Tema: cambiar ejes, añadir título, modificar leyenda, etc.
+
+## ggplot en profundidad
+
+### Geometrías
+
+-   **Puntos/dispersión:** `geom_point`, `geom_jitter`
+-   **Líneas:** `geom_line`, `geom_path`, `geom_step`, `geom_abline`, `geom_hline`, `geom_vline`
+-   **Barras:** `geom_bar`, `geom_col`
+-   **Distribuciones:** `geom_histogram`, `geom_boxplot`, `geom_violin`, `geom_density`, `geom_density_2d`
+-   **Áreas:** `geom_area`, `geom_ribbon`
+-   **Texto:** `geom_text`, `geom_label`
+-   **Incertidumbre:** `geom_errorbar`, `geom_pointrange`, `geom_linerange`
+-   **Mapas/polígonos:** `geom_polygon`, `geom_map`, `geom_sf`
+-   **Raster:** `geom_tile`, `geom_raster`, `geom_contour`
+
+\*\*Otras geometrías de otras librerías
+
+### Temas
+
+...
