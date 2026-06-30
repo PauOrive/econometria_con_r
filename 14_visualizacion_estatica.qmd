@@ -11,11 +11,27 @@ library(causaldata)
 
 En este capítulo cubriré los básicos de ggplot (el cheatsheet está genial)
 
-R dispone de funciones nativas muy directas para generar gráficos.
+R dispone de funciones nativas muy directas para generar gráficos, que pueden ser útiles para análisis exploratorios. Por ejemplo, para tener una primera idea de la distribución de la esperanza de vida, o la relación entre la esperanza de vida y el PB per cápita, podemos crear un histograma y un gráfico de puntos con tan solo dos líneas de código:
 
-*Ejemplo de un histograma y un boxplot*
+::: panel-tabset
+## Histograma
 
-Sin embargo, la librería principal para crear, editar y exportar gráficos estáticos en R es **ggplot2**, que se carga automáticamente cuando hacemos `library(tidyverse)`.
+```{r}
+#| label: ejemplo gráfico base R - histograma
+
+hist(gapminder$lifeExp)
+```
+
+## Gráfico de puntos
+
+```{r}
+#| label: ejemplo gráfico base R - gráfico de puntos
+
+plot(gapminder$gdpPercap, gapminder$lifeExp)
+```
+:::
+
+Sin embargo, la librería de referencia para crear, editar y exportar gráficos estáticos en R es **ggplot2**, que se carga automáticamente cuando corremos `library(tidyverse)`.
 
 Este capítulo se divide en dos partes:
 
@@ -31,6 +47,7 @@ Cualquier objeto de **ggplot** siempre empieza con la función `ggplot()`, que v
 ```{r}
 #| label: ejemplo 
 #| include: false
+
 # datos_iniciales |>    
 #   procesamiento(...) |>   
 #   ggplot(...) +   
@@ -41,6 +58,7 @@ En este capítulo trabajaremos con ejemplos con el dataset `gapminder` de la lib
 
 ```{r}
 #| label: cargar datos gapminder 
+
 gapminder <- causaldata::gapminder
 ```
 
@@ -70,19 +88,24 @@ El mapeo se define mediante la función `aes()` para vincular uno de los siguien
 -   `linetype`, el tipo de línea.
 -   `label`, el texto que aparece.
 
-Los "aesthetics" se diferencian de los "atributos" en tanto que los primeros dependen de los valores que toman las variables y los segundos no. Por ejemplo, si queremos que en un gráfico de puntos los continentes se representen con un color diferente, debemos definir esta relación dentro de `aes()`: `aes(color = continent)`. En cambio, si queremos definir que todos los puntos sean de color azul, entonces definimos el color fuera de la función `aes()` y asignamos directamente el color: `color = "blue"`.
+Algunos aesthetics son propios de alguna geometría. Por ejemplo, en un histograma sólo definimos los valores del eje x (el eje y cuenta cuántas observaciones hay en cada intervalo con el que agrupamos los valores del eje x). Otro ejemplo es el aesthetic `linetype`, que sólo lo vamos a poder definir en caso de que el gráfico tenga una geometría de líneas.
+
+::: callout-note
+## Aesthetics vs atributos
+
+Los "**aesthetics**" se diferencian de los "**atributos**" en tanto que los primeros dependen de los valores que toman las variables y los segundos no. Por ejemplo, si queremos que en un gráfico de puntos los continentes se representen con un color diferente, debemos definir esta relación dentro de `aes()`: `aes(color = continent)`. En cambio, si queremos definir que todos los puntos sean de color azul, entonces definimos el color fuera de la función `aes()` y asignamos directamente el color: `color = "blue"`.
+:::
 
 Por defecto, todas las funciones de geometría tienen el argumento `inherit.aes = TRUE`, de modo que heredan los datos y el mapeo establecido en `ggplot()`. Sin embargo, también podemos definir los datos y/o mapeo directamente dentro de la función de geometría.
 
-Por ejemplo, para crear un gráfico de puntos donde observamos la relación entre PIB per cápita (eje X) y esperanza de vida (eje Y) diferenciando los continentes mediante el color de los puntos, podemos emplear cualquiera de los siguientes códigos.\[\^1\]
+Por ejemplo, para crear un gráfico de puntos donde observamos la relación entre PIB per cápita (eje X) y esperanza de vida (eje Y) diferenciando los continentes mediante el color de los puntos, podemos emplear cualquiera de los siguientes códigos.[^1]
 
-\[\^1\]: Si te fijas, en el código donde definimos los datos y el mapeo dentro de la función de geometría hemos tenido que especificar el nombre de los argumentos, puesto que el orden por defecto es al revés que en `ggplot()` (recuerda que el orden con el que definimos los argumentos no es relevante cuando los especificamos con su nombre *\*añadir referencia al capítulo introductorio\**).
+[^1]: Si te fijas, en el código donde definimos los datos y el mapeo dentro de la función de geometría hemos tenido que especificar el nombre de los argumentos, puesto que el orden por defecto es al revés que en `ggplot()` (recuerda que el orden con el que definimos los argumentos no es relevante cuando los especificamos con su nombre *\*añadir referencia al capítulo introductorio\**).
 
 ::: panel-tabset
-## Todo en ggplot()
-
 ```{r}
 #| label: grafico simple gapminder args en ggplot
+
 ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, color = continent)) +
   geom_point()
 ```
@@ -91,6 +114,7 @@ ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, color = continent)) +
 
 ```{r}
 #| label: grafico simple gapminder args en ggplot y geom
+
 ggplot(gapminder) +
   geom_point(aes(x = gdpPercap, y = lifeExp, color = continent))
 ```
@@ -99,6 +123,7 @@ ggplot(gapminder) +
 
 ```{r}
 #| label: grafico simple gapminder args en geom
+
 ggplot() +
   geom_point(data = gapminder, mapping = aes(x = gdpPercap, y = lifeExp, color = continent))
 ```
@@ -112,31 +137,37 @@ Mi recomendación es usar la opción más coherente con la situación que querem
 
 #### Las geometrías
 
-Existen muchísimas geometrías distintas, y un gráfico puede tener más de una. Por ejemplo, podemos añadir una línea de tendencia mediante `geom_smooth()` a un gráfico de puntos, o podemos representar una serie temporal incluyendo otros elementos como referencias de texto exactas de cada punto o líneas adicionales de referencia.\[\^2\]
+Existen muchísimas geometrías distintas, y un gráfico puede tener más de una. Por ejemplo, podemos añadir una línea de tendencia mediante `geom_smooth()` a un gráfico de puntos, o podemos representar una serie temporal incluyendo otros elementos como etiquetas de texto encima de cada punto o líneas adicionales de referencia.
 
-\[\^2\]: Para mejorar la visibilidad, en la serie temporal defino que la línea horizontal que muestra el umbral de los 80 años sea de color rojo, superado en España entre el 2002 y el 2007. Fíjate que lo hago fuera de la función `aes()`: esto es porque no estoy vinculando el color de la línea a una variable de `gapminder` (como hemos hecho antes al mapear el color de los puntos con los continentes), sino que estoy definiendo directamente el color de la línea (por lo que no aparece ninguna leyenda de forma automática). En la jerga de **ggplot**, esta es la diferencia entre definir un "aesthetic" y un "atributo".
+Dentro de cada geometría podemos definir una serie de atributos que, como comentaba anteriormente, se distinguen de los aesthetics en tanto que no dependen del valor de las variables, sino que se aplican a todos los elementos de esa geometría.
+
+En la @sec-profundidad-geometrias explico con mayor detalle las geometrías y atributos que considero más relevantes.
 
 ::: panel-tabset
 ## Nube de puntos + línea de tendencia
 
 ```{r}
 #| label: grafico gapminder point + smooth
+
 ggplot(gapminder |> filter(gdpPercap < 58000),
        aes(x = gdpPercap, y = lifeExp)) +
   geom_point() + 
-  geom_smooth()
+  geom_smooth(se = FALSE)
 ```
 
 ## Serie temporal con anotaciones
 
 ```{r}
-#| label: grafico simple gapminder args en ggplot y geom
-ggplot(gapminder |> filter(country == "Spain"),
+#| label: grafico serie temporal ESP con otras layers
+
+ev_esp_vida_esp <- ggplot(gapminder |> filter(country == "Spain"),
        aes(x = year, y = lifeExp)) +
-  geom_line() +
-  geom_point() + 
-  geom_text(aes(label = lifeExp), nudge_y = 1) +
-  geom_hline(yintercept = 80, color = "red") 
+  geom_line(linewidth = 0.9, color = "steelblue") +
+  geom_point(size = 2.5, color = "steelblue") +
+  geom_text(aes(label = round(lifeExp, 1)), nudge_y = 1.2, size = 3.5) +
+  geom_hline(yintercept = 80, color = "red", linetype = "dashed")
+
+ev_esp_vida_esp
 ```
 :::
 
@@ -146,9 +177,9 @@ ggplot(gapminder |> filter(country == "Spain"),
 
 Podemos agruparlos de la siguiente manera:
 
--   Las **escalas** controlan cómo se mapean los datos a propiedades visuales.
+-   Las **estadísticas** aplican transformaciones a los datos antes de mostrarlos en el gráfico.
 
--   Las **estadísticas** aoplican transformaciones a los datos antes de mostrarlos en el gráfico.
+-   Las **escalas** controlan cómo se mapean los datos a propiedades visuales.
 
 -   Las **coordenadas** definen el plano sobre el que se representan los datos.
 
@@ -156,9 +187,149 @@ Podemos agruparlos de la siguiente manera:
 
 -   El **tema** sirve para controlar todos los elementos no relacionados con los datos: fuentes, color de fondo, ejes, leyenda, márgenes, etcétera.
 
-Luego, ir una a una explicando un poco en resumen siguiendo el hilo anterior
+#### El tema (títulos y estilo)
 
--   Cambiar gráfico a escala logarítmica.
+De todos ellos, el tema es probablemente el elemento más importante. A menos que estemos haciendo gráficos puramente explortorios, siempre tendremos que añadir un título, modificar los títulos de los ejes o cambiar el fondo del gráfico (la verdad, no sé quien pensó que era buena idea poner el fondo de color gris por defecto...). Y en caso de que sea un gráfico para un trabajo académico, vamos a tratar de darle el mejor aspecto posible.
+
+Las funciones principales para ello son:
+
+-   `labs()` para modificar el título, subtítulo, títulos de los ejes y de la leyenda
+-   `theme()` para cambiar el estilo, color, émfasis y tamaño de la letra (de un elemento en concreto o del gráfico en general), editar las líneas de cuadrícula del gráfico, la posición de la leyenda o los márgenes del gráfico.
+    -   Existen funciones `theme_*()` con configuraciones preestablecidas, que nos pueden servir de atajo para mejorar el aspecto general del gráfico de forma rápida. Mis favortitos son `theme_bw()`, `theme_classic()` y `theme_minimal()`.
+
+Sin embargo, si quieres tener mayor control sobre cada uno de los elementos, puedes editarlos uno a uno dentro de `theme()`. La gramática es un poco engorrosa al principio, pero a la práctica se trata de iterar código con tu IA favorita hasta que consigues el gráfico que quieres. Igualmente, en la @sec-profundidad-temas explico la lógica general para retocar cualquier elemento.
+
+Veamos el mismo gráfico que antes editando los títulos y empleando distintas funciones `theme_*()`, así como un `theme()` más personalizado.
+
+::: panel-tabset
+## theme_bw()
+
+```{r}
+#| label: grafico serie temporal ESP con otras layers theme_bw
+ev_esp_vida_esp +
+  # Defino el título de los ejes (el x no es necesario)
+  labs(
+    title = "Evolución de la esperanza de vida en España (1952–2007)",
+    subtitle = "Los datos se observan cada 5 años",
+    caption = "Fuente: gapminder",
+    x = NULL,
+    y = "Esperanza de vida al nacer (años)"
+  ) +
+  theme_bw()
+```
+
+## theme_classic()
+
+```{r}
+#| label: grafico serie temporal ESP con otras layers theme_classic
+ev_esp_vida_esp +
+  # Defino el título de los ejes (el x no es necesario)
+  labs(
+    title = "Evolución de la esperanza de vida en España (1952–2007)",
+    subtitle = "Los datos se observan cada 5 años",
+    caption = "Fuente: gapminder",
+    x = NULL,
+    y = "Esperanza de vida al nacer (años)"
+  ) +
+  theme_classic()
+```
+
+## theme_minimal()
+
+```{r}
+#| label: grafico serie temporal ESP con otras layers theme_minimal
+ev_esp_vida_esp +
+  # Defino el título de los ejes (el x no es necesario)
+  labs(
+    title = "Evolución de la esperanza de vida en España (1952–2007)",
+    subtitle = "Los datos se observan cada 5 años",
+    caption = "Fuente: gapminder",
+    x = NULL,
+    y = "Esperanza de vida al nacer (años)"
+  ) +
+  theme_minimal()
+```
+
+## theme\_() editado manualmente
+
+```{r}
+#| label: grafico serie temporal ESP con otras layers theme manual
+ev_esp_vida_esp +
+  # Defino el título de los ejes (el x no es necesario)
+  labs(
+    title = "Evolución de la esperanza de vida en España (1952–2007)",
+    subtitle = "Los datos se observan cada 5 años",
+    caption = "Fuente: gapminder",
+    x = NULL,
+    y = "Esperanza de vida al nacer (años)"
+  ) +
+  theme(
+    # Fondo blanco
+    panel.background = element_rect(fill = "white", colour = NA),
+    
+    # Recuadro del gráfico
+    panel.border = element_rect(colour = "grey40", fill = NA, linewidth = 0.8),
+
+    # Líneas de cuadrícula 
+    panel.grid.major = element_line(colour = "grey80", linewidth = 0.4),
+    panel.grid.minor.y = element_line(colour = "grey92", linewidth = 0.2),
+    panel.grid.minor.x = element_blank(),
+
+    # Título, subtítulo y fuente
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(colour = "grey35"),
+    plot.caption = element_text(colour = "grey40"),
+
+    # Ejes
+    axis.text = element_text(colour = "black"),
+    axis.title.y = element_text(face = "bold")
+  )
+```
+:::
+
+Fíjate que el gráfico con `theme_bw()` y el que he editado manualmente son muy parecidos, mientras que el último demanda much más código. Una opción más eficaz hubiera sido partir de un `theme_*()` concreto y editar sobre él algun elemento mediante `theme()`; en caso de conflicto, prevalece el código que está más abajo.
+
+Si vas a realizar varios gráficos y quieres que todos tengan el mismo aspecto (por ejemplo, si trabajas en una organización o empresa y quieres definir una imagen corporativa), puedes cambiar los elementos del tema que se aplican por defecto mediante `set_theme()`. Explico cómo hacerlo en en la @sec-profundidad-temas.
+
+#### Las estadísticas
+
+Las funciones que aplican transformaciones a los datos antes de mostrarlos en el gráfico empiezan todas por `stat_*()`. De hecho, muchas geometrías aplican por defecto un cálculo estadístico para mostrar el gráfico que queremos.
+
+Por ejemplo, un histograma de la esperanza de vida no es nada más que agrupar las distintas observaciones en intervalos de esperanza de vida y luego contar cuántas observaciones hay en cada intervalo. Esto es lo que hace `stat_bin()`, que es la función que llama internamente `geom_histogram()`.[^2]
+
+[^2]: Si corres `args(geom_histogram)` o `?geom_histogram` verás que tiene definido por defecto `stat = "bin"`, lo que hace que la función `geom_histogram()` llame a `stat_bin()` internamente. Del mismo modo, `stat_bin()` tiene definido por defecto `geom = "bar"` y `position = "stack"`, que es justo lo que forma un histograma: "barras apiladas una al lado de otra".
+
+Como podeis comprobar los siguientes códigos producen exactamente el mismo gráfico:
+
+::: panel-tabset
+## Histograma con geom\_\*()
+
+```{r}
+#| label: grafico histograma con geom
+
+ggplot(gapminder |> filter(year == 2007), aes(x = lifeExp)) +
+  geom_histogram() +
+  theme_minimal()
+```
+
+## Histograma con stat\_\*()
+
+```{r}
+#| label: grafico histograma con stat
+
+ggplot(gapminder |> filter(year == 2007), aes(x = lifeExp)) +
+  stat_bin() +
+  theme_minimal()
+```
+:::
+
+De hecho, casi todas las funciones `geom_*()` tienen una función `stat_*()` que hace lo mismo (a veces el nombre concreto varía ligeramente). Pero en mi opinión es más intuitivo llamar a una función de geometría que a una función estadística para crear un gráfico, así que podeis olvidaros de esto.
+
+Por otro lado, sí que hay dos funciones qu creo merece la pena mecionar:
+
+-   `stat_summary()` (seguro??)
+
+-   `stat_function()` ...
 
 -   Aplicar alguna estadística??
 
@@ -166,22 +337,36 @@ Luego, ir una a una explicando un poco en resumen siguiendo el hilo anterior
 
     -   Si no, yo recomiendo hacerlo fuera con las técnicas de manipulación que hemos aprendido en el capítulo anterior
 
+Luego, ir una a una explicando un poco en resumen siguiendo el hilo anterior
+
+-   Cambiar gráfico a escala logarítmica.
+
+-   Otra idea con los colores o algo del estilo?
+
 -   Cambio en coordenadas
 
 -   Facetas para comparar
 
--   Tema: cambiar ejes, añadir título, modificar leyenda, etc.
+### Exportar un gráfico
+
+ggsave
 
 ## ggplot en profundidad
 
 Aquí la idea es seguir un poco el formato del capítulo de data manipulation.
 
-### Geometrías
+### Geometrías {#sec-profundidad-geometrias}
 
--   **Puntos/dispersión:** `geom_point`, `geom_jitter`
+-   **Puntos/dispersión:** `geom_point`, `geom_jitter`, `geom_dotpoint()`, `geom_count()`
+    -   Ojo con el overplotting: 4 causas:
+        -   Variables son números enteros
+        -   buscar las otras causas en ggplot course 1
+        -   jitter: dispersar los puntos; dodge: separarlos a una distancia fija
+        -   uso: position = "dodge" o position = position_dodge() si queremos especificar otra dodge width o height
+    -   soluciones: alpha, círculos vacíos, tamaño del punto, jitter si hay integer data o low-precision data
 -   **Líneas:** `geom_line`, `geom_path`, `geom_step`, `geom_abline`, `geom_hline`, `geom_vline`
 -   **Barras:** `geom_bar`, `geom_col`
--   **Distribuciones:** `geom_histogram`, `geom_boxplot`, `geom_violin`, `geom_density`, `geom_density_2d`
+-   **Distribuciones:** `geom_histogram`, `geom_rug()`, `geom_boxplot`, `geom_violin`, `geom_density`, `geom_density_2d`
 -   **Tendencia**: `geom_smooth()`
     -   method
         -   span
@@ -195,13 +380,15 @@ Aquí la idea es seguir un poco el formato del capítulo de data manipulation.
 -   **Mapas/polígonos:** `geom_polygon`, `geom_map`, `geom_sf`
 -   **Raster:** `geom_tile`, `geom_raster`, `geom_contour`
 
+Quizás mencionar stat_summary o stat_function??
+
 \*\*Otras geometrías de otras librerías
 
 ### Atributos
 
 ...
 
-### Temas
+### Temas {#sec-profundidad-temas}
 
 ...
 
