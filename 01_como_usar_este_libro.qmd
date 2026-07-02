@@ -5,20 +5,39 @@ numbered: false
 
 # Cómo usar este libro {#cap-como-usar-este-libro}
 
-*aquí hay que pensar qué cosas encajan mejor en index y cuales aquí*
-*rule of thumb es que index sea muy breve y aquí haya más detalle*
+*aquí hay que pensar qué cosas encajan mejor en index y cuales aquí* *rule of thumb es que index sea muy breve y aquí haya más detalle*
 
-## Intro-motivación
+## Introducción
+
+\*Pensar si es mejor empezar de otra manera
+
+Del mismo modo que para saber cuánto debe pagar cada uno cuando llega la cuenta en una cena con amigos usamos la calculadora del movil en vez de ponernos a realizar las operaciones en la servilleta, para realizar análisis más complejos, como correr regresiones, vamos a necesitar programas específicos.
+
+El proceso suele ser el mismo:
+
+-   cargamos unos datos
+-   realizamos los análisis
+-   exportamos los resultados (tablas, gráficos)
+
+Muy probablemente en algun momento has usado Microsoft Excel o Google Sheets. Ahí solemos trabajar con una hoja con datos ordenados en filas y columnas, donde empleamos operaciones como obtener la media o el total de una columna numérica, filtrar según alguna condición, etcétera.
+
+Sin embargo, en análisis econométrico y estadístico lo más habitual es trabajar con programas como Stata, R o Python. Yo cuando empecé la carrera no tenía ni idea de su existencia y pensaba que la programación era algo que sólo hacían los ingenieros e informáticos.
+
+## De dónde sale este libro?
 
 De dónde sale este libro? Unión entre una ambición mientras era estudiante + preparación oposiciones (ponerme un poco en lo personal: soy la clase de personas que en vez de centrarme en lo fundamental y más importante me pierdo siguiendo aquello que más me apasiona... no me llevará a ganar la oposición, pero ojalá resulte en un libro útil para alguien. Sólo si a una persona le sirve, ya estoy contento --de hecho, sólo plantearme escribirlo me ha ayudado enormemente a entender los conceptos y tene runa comprensión mucho más profunda de la econometría)
 
+Otras ideas:
+
+-   desde que entramos en la era de la IA le preguntamos cualquier cosa a ChatGPT, olvidándonos que existen recursos fiables con la información más clara. Yo mismo le preguntaba cómo pivotar los datos a formato long 5 veces porque me olvidaba de los argumentos.
+
+-   en mi opinión, en la carrera se pone émfasis en la teoría, pero poco en la práctica. Puedes entender las assumptions del estimador de Arellano-Bond, pero quizás luego no sabrías cómo realizar dicho análisis. Este libro complementa ese "hueco".
 
 ## Dos formas de usar este libro
 
--   Una como un manual de texto al uso. Está pensado para que funcione así de forma secuencial, de modo que 
+-   Una como un manual de texto al uso. Está pensado para que funcione así de forma secuencial, de modo que
 
 -   Otra como busqueda puntual: desde "cómo funciona la función str_extract?" a "¿cuáles son los pasos que debo seguir para realizar un estudio de Diff in Diff?". Directamente desde el buscador de arriba a la izquierda.
-
 
 ## Qué contiene este libro (y qué no)
 
@@ -32,7 +51,6 @@ De dónde sale este libro? Unión entre una ambición mientras era estudiante + 
 
 -   no es un repositorio, sino una guía útil, por lo que no incluyo todas las funciones y argumentos (cosa que sería imposible, en cualquier caso), sino que me focalizo en los que considero principales o más útiles.
 
-
 ## Convenciones usadas en el libro
 
 -   sintaxis que uso: argumentos, variables y datasets en `formato codigo`, comillas para clases... (consistencia!!)
@@ -41,15 +59,11 @@ De dónde sale este libro? Unión entre una ambición mientras era estudiante + 
 
 -   apendice con todas las librerías y datasets usados
 
-
 ## Disclaimer
 
-Escrito por un graduado en economía, por lo que no se puede esperar el rigor técnico o experiencia de catedráticosd e universidad o premios Nobel de economía.
-Aún asi, creo que puede ser muy útil.
-Toda propuesta de mejora es más que bienvenida!
+Escrito por un graduado en economía, por lo que no se puede esperar el rigor técnico o experiencia de catedráticosd e universidad o premios Nobel de economía. Aún asi, creo que puede ser muy útil. Toda propuesta de mejora es más que bienvenida!
 
-
-##  Instrucciones para darme feedback
+## Instrucciones para darme feedback
 
 -   pull requests (?)
 

@@ -12,39 +12,82 @@ title: "Introducción a R"
 
 -   pensada principalmente para estadística, aunque se pueden hacer otras cosas
 
-## Por qué merece la pena aprender R en la era de la IA 
+## Merece la pena aprender R en la era de la IA?
 
-(un poco desordenado, quizás algo irá en el foreword)
+En mi opinión, sí. Pero como sé que os fiais más de la IA que de nadie, a continuación os adjunto las respuestas de las 4 IAs más usadas cuando les he hecho esta misma pregunta:
 
--   de donde sale este libro: preparo apuntes para una oposición, ligado con la necesidad que me he encontrado durante el máster
+::: panel-tabset
+## Claude
 
--   desde que entramos en la era de la IA le preguntamos cualquier cosa a ChatGPT, olvidándonos que existen recursos fiables con la información más clara. Yo mismo le preguntaba cómo pivotar los datos a formato long 5 veces porque me olvidaba de los argumentos.
+![](images/Captura%20de%20pantalla%202026-07-02%20150708.png)
 
--   la IA es genial para debuggear o para peticiones específicas, pero yo creo que merece la pena
+## ChatGPT
 
--   si sólo quieres resultados inmediatos, saber cómo programar una cosa específica, la IA proporciona una gran ayuda
+![](images/Captura%20de%20pantalla%202026-07-02%20150850.png)
 
--   no hace falta memorizar todas las funciones, pero merece la pena aprender el funcionamiento básico para poner contexto. De este modo sabes qué preguntar, entiendes la estructura de lo que te manda (la IA no siempre acierta a la primera, etc.)
+## Gemini
 
--   aprender es un proceso, lleva tiempo. pero reconfortante y apasionante.
+![](images/Captura%20de%20pantalla%202026-07-02%20151027.png)
 
--   en mi opinión se pone émfasis en la teoría, pero poco en la práctica. Puedes entender las assumptions del estimador de Arellano-Bond, pero quizás luego no sabrías cómo realizar dicho análisis. Este libro complementa ese "hueco"
+## Copilot
+
+![](images/Captura%20de%20pantalla%202026-07-02%20151434.png)
+:::
+
+Todas las respuestas apuntan a la misma dirección: la IA permite aumentar muy significativamente la productividad, pero aprender a programar **sigue siendo esencial**. Eso sí, en vez de tener que memorizar la sintáxis exacta de cada función, basta con tener una buena base para guiar y supervisar el trabajo de la IA.
 
 ## Por qué R y no otro lenguaje?
 
+Si os habeis fijado en las respuestas anteriores, R y Python son los lenguajes de programación que más mencionan las Ia para los campos de economía y estadística. Sin embargo, en economía es muy habitual trabajar con Stata. En la siguiente tabla resumo los pros y contras de cada uno:
+
++-------------+--------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
+| Lenguaje    | Descripción                                                                                                  | Pros                                                                                                     | Contras                                                                                                                             |
++=============+==============================================================================================================+==========================================================================================================+=====================================================================================================================================+
+| **Stata**   | Software estadístico con licencia de pago, muy extendido en departamentos de economía y organismos públicos. | \- Sintaxis muy simple, ideal para regresiones y econometría clásica.\                                   | \- Licencia de pago (bastante cara).\                                                                                               |
+|             |                                                                                                              | - Es el estándar en muchos entornos académicos y de política económica.\                                 | - Menos flexible fuera del análisis estadístico "clásico" (por ejemplo, para automatizar tareas o crear visualizaciones avanzadas). |
++-------------+--------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
+| **R**       | Lenguaje de programación open source diseñado específicamente para estadística.                              | \- Gratuito y de código abierto.\                                                                        | \- Menos "universal" que Python fuera del análisis de datos.\                                                                       |
+|             |                                                                                                              | - Pensado desde su origen para el análisis estadístico y la visualización de datos.\                     | - Curva de aprendizaje algo más pronunciada al combinar varios paradigmas (funcional y orientado a objetos).                        |
+|             |                                                                                                              | - El **tidyverse** ofrece una sintaxis coherente y legible, ideal para aprender a programar.             |                                                                                                                                     |
++-------------+--------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
+| **Python**  | Lenguaje de programación de propósito general, ampliamente usado en ciencia de datos y machine learning.     | \- Gratuito y de código abierto.\                                                                        | \- No nació pensado para estadística, por lo que algunas tareas requieren más código o librerías adicionales.\                      |
+|             |                                                                                                              | - Lenguaje muy versátil, útil también fuera del análisis de datos (desarrollo web, automatización, IA).\ | - La sintaxis para manipulación de datos (pandas) puede ser menos intuitiva al principio que la del tidyverse.                      |
+|             |                                                                                                              | - Gran comunidad y ecosistema de librerías.                                                              |                                                                                                                                     |
++-------------+--------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------+
+
+Entonces, por qué escoger R? Realmente, lo más útil es tener una base mínima de cada uno de estos tres lenguajes, y elegir el que más os guste entre R y Python para estudiarlo con mayor profundidad. En mi opinión, R es una buena opción para alguien que empiza a programar por las siguientes razones:
+
+-   Es un lenguaje pensado específicamente para el análisis estadístico.
+-   Existe una cuerpo comprehensivo y coherente de librerías llamadas "tidyverse" que hacen que R sea más legible y fácil de aprender que Python.
+    -   *Poner ejemplos de code snippets en python vs r: en mi opinión R es más legible*
+-   A pesar de que Python sea más "universal", R igualmente se usa mucho en investigación (ya sea en la academia, instituciones públicas o empresas privadas) y tiene un abanico de usos que va mucho más allá del mero análisis de datos, como la creación de aplicaciones o "dashboards" y está mantenido.
+-   Teneis un libro completo, gratuito y en Español para aprender a realizar análisis econométricos con R ;)
+
+En una nota añadir enlaces:
+
 -   R vs otros lenguages de programación (python, Julia, Stata, Excel): <https://pypl.github.io/PYPL.html> o <https://app.datacamp.com/learn/tutorials/r-or-python-for-data-analysis>
-
--   Poner ejemplos de code snippets en python vs r: en mi opinión R es más legible
-
--   Lenguaje pensado específicamente para estadística; calidad de visualizaciones, etc.
 
 ## Cómo instalar R y un IDE
 
--   RStudio, VS Code, Positron; recomendación personal: RStudio
+Para poder trabajar con R, lo primero que necesitas es instalar R.
+
+*quizás explicar cómo hacerlo*
+
+Una vez tienes R instalado, el ordenador "entiende R".
+
+Sin embargo, para poder escribir código en R necesitas instalarte también un editor de código (conocido normalment por las siglas en inglés IDE, Integrated Development Environment).
+
+-   **RStudio**: el IDE más veterano y extendido para trabajar con R. Viene preconfigurado específicamente para R, lo que lo hace muy cómodo para quien empieza.
+-   **VS Code**: editor de código genérico (no exclusivo de R) que, mediante extensiones, también permite trabajar cómodamente con R. Su ventaja es que si en el futuro programas en otros lenguajes (Python, SQL, etc.), puedes usar el mismo editor para todo. La contrapartida es que requiere algo más de configuración inicial.
+-   **Positron**: IDE creado recientemente por parte del mismo equipo de Posit (los creadores de RStudio), pensado como sucesor a largo plazo de RStudio. Combina lo mejor de los dos anteriores: la comodidad de RStudio con la flexibilidad y extensibilidad de VS Code (de hecho, está basado en su misma tecnología), además que está pensado para trabajar tanto con R como con Python.
+
+> Si nunca has programado antes, yo recomiendo **RStudio**. Posit ha asegurado que seguirá siendo gratuito, de código abierto y con mantenimiento activo, aunque centrado en estabilidad más que en nuevas funcionalidades. Vale la pena tener en cuenta que es en **Positron** donde Posit concentra el desarrollo de novedades, así que empezar directamente con él también es una muy buena opción. Prueba, experimenta y quédate con el que te sientas más a gusto, que luego siempre se está a tiempo de migrar. Yo mismo empecé con RStudio y más adelante me cambié a Positron.
 
 ## Conceptos básicos de R
 
 En este capítulo explico en mayor detalle los conceptos básicos sobre R:
+
+\*tratar de ser lo más conciso posible y enfocado a alguien que acaba de empezar (adjuntar capturas de pantalla o cosas del estilo; a malas redirigir a un video)
 
 **básicos de R. sesión, objetos, clases, librerías**
 
@@ -130,12 +173,11 @@ En este capítulo explico en mayor detalle los conceptos básicos sobre R:
 
 -   estructura de carpetas (data, scripts, output), R projects;
 
--   Rutas relativas y working directory (`here::here()`)  
+-   Rutas relativas y working directory (`here::here()`)
 
 -   tipos de archivo: .R, .Rmd, .qmd
 
 -   control de versiones: Git, GitHub
-
 
 ## Buenas prácticas al escribir código
 
@@ -144,4 +186,3 @@ En este capítulo explico en mayor detalle los conceptos básicos sobre R:
 -   dejar espacios y enters, que sea legible el código
 
 -   consistencia en el estilo
-
