@@ -4,15 +4,11 @@ title: "Manipular datos"
 
 # Manipular datos {#cap-maipular-datos}
 
-*Tratar de poner las librerías y los datasets en otros archivos únicos*
-
-*revisar toda esta sección: el contenido está ya abstante trabajado pero hay que adaptar tres cosas*
-1.   el formato, para que quede estilo 12_x_prueba.qmd 
-2.   revisar los datasets que uso en los reprex
-3.   separar data.table para el final: una sección que sea "datasets grandes"
-
+Según el número final total, las librerías iran en un script a parte.
 
 ## Librerías
+
+*esto lo quitaré de aquí* =
 
 ```{r librerías, results='hide'}
 library(arrow)        # para leer y guardar ficheros .parquet (hace falta?)
@@ -22,10 +18,11 @@ library(naniar)       # para entender, visualizar e imputar missings
 library(visdat)       # para visualizaciones de la distribución de los missings
 library(rebus)        # para especificar regular expressions de una forma más legible
 
-# añadir más si es necesario
 ```
 
 ## Cargar datos
+
+*esto lo quitaré de aquí*
 
 tb_dic_pais_continente \<- read_csv("data/Otros/paises.csv")
 
@@ -97,9 +94,9 @@ dt_planets <- as.data.table(tb_planets)
 
 ```
 
+***Resumen de los reprex datasets (esto irá en un anexo):***
 
-
-***Resumen de los reprex datasets (quizás en un anexo):***
+Hay que escoger qué datasets escojo para mostrar todas las operaciones. Cuantos menos, mejor.
 
 -   midwest: es un dataset "normal", que puede servir para hacer ejemplos de tidyselect, así como pivoting
 -   starwars: el problema que tiene es que algunos valores son vectores o listas (e.g. películas a las que ha participado). Puede ser un ejemplo de nested data
@@ -107,156 +104,53 @@ dt_planets <- as.data.table(tb_planets)
 
 Etc.
 
-# 0. Crear un dataset {#1.exploracion-inicial}
+## Introducción
 
-Lo más común es que realicemos un análisis sobre datasets que importamos a R. Sin embargo, es probable que en alguna fase del análisis necesitemos crear un dataset auxiliar, o una tabla para mostrar los resultados, de modo que es útil saber cómo generarlo desde cero con R.
+Una vez conocemos la estructura de nuestro dataset, debemos prepararlo para el análisis. Es probable que hayamos detectado algún problema, por lo que primero que tenemos que hacer es limpiar el dataset y dejarlo en formato *tidy*. Una vez esté listo, podemos realizar cualquier otra modificación al dataset de acuerdo con nuestros objetivos de análisis.
 
-Para ello, podemos definir un *data.frame*, un *tibble* o un *data.table*, con las funciones `data.frame()`, `tibble()` o `data.table()`, respectivamente. La mejor elección depende del tamaño del dataset principal y qué operaciones realizaremos luego.
+Mi recomendación es tener un script para la depuración y otro para el análisis, apoyados de scripts con funciones auxiliares si el proceso de depuración es largo o complejo.[^1]
 
-En todos los casos, la sintaxis es:
+[^1]: En el capitulo introductorio del libro explico más en detalle esta y otras buenas prácticas al organizar un proyecto de investigación.
 
-```{r codigo creación de un tibble desde cero}
-tb <- tibble(
-  var1 = c(1L, 2L, 5L, 9L),
-  var2 = c("a", "b", "e", "i")
-)
+Este suele ser un proceso iterativo. Quizás piensas que ya tienes todo el dataset limpio pero de repente al hacer un gráfico te encuentras con una categoría que no debería estar ahí, o una función falla porque la variable no tiene la clase apropiada. Habrá que volver a revisar el script de depuración, correrlo de nuevo y volver al punto donde nos habíamos quedado del análisis.[^2]
 
-tb <- tribble(
-  ~var1, ~var2,
-  1L, "a",
-  2L, "b",
-  5L, "e",
-  9L, "i"
-)
+[^2]: He ahí una de las ventajas claras de programar, especialmente si se hace de forma organizada. No tendrás que repetir todo de cero, sino que volviendo a correr el mismo código con el dataset depurado corregido, ya obtendrás de nuevo todos los resultados en un momento.
 
-# este tipo de operaciones "on the fly" sólo lo permite data.table()
-# aunque realmente no me deja...
-dt <- data.table(
-  var1 = c(1L, 2L, 5L, 9L),
-  var2 = c("a", "b", "e", "i")
-)
-```
+Este es el capítulo más largo de todo el libro porque contiene todas las herramientas necesarias para manipular un dataset. Usaremos siempre las librerías del [**tidyverse**](https://tidyverse.org) (principalmente **dplyr** y **tidyr**), a menos que estemos trabajando con un dataset muy grande, en cuyo caso mejor usar **data.table** (ver la sección @sec-data-table).
 
-Aspectos a tener en cuenta:
+*\*quizás añadir una tercera nota explicando que para datos geoespaciales y minería de texto o algo así, habrá capítulos separados.*
 
--   Es mejor crear el dataset con las dimensiones que tendrá al final (por ejemplo definiendo `var = NA` y luego rellenarlo con valores), que aumentar las dimensiones del dataset posteriormente, ya que es más intensivo en memoria.
+*\*penasr si merece la pena hacer esta pequeña intro*
 
--   La longitud de todos los vectores que conforman el dataset debe de ser la misma.
+La forma como está organizado el capítulo es la siguiente. Primero vemos las operaciones principales aplicadas a las filas (filtrar, ordenar, tomar una muestra) y a las columnas (seleccionar, renombrar, reordenar, modificar, crear nuevas columnas). Luego vemos cómo realizar estas mismas operaciones pero agrupando las observaciones por alguna variable. (...)
 
-    -   Los vectores de longitud 1 se reciclan (es decir, se aplica el mismo valor *nrow* veces), pero en el resto de casos salta un error si esta condición no se cumple.
-    -   Podemos usar la función `base::rep(x, times, length.out)` para crear un vector que repita un elemento, o un vector de elementos (x) un determinado número de veces (times), o incluso indicar la longitud deseada (length.out).
+## Filas
 
--   Otras diferencias:
+### Filtrar filas {#filtrar-filas}
 
-    -   Si imprimimos directamente un *data.table* en la consola, veremos las primeras 5 y últimas 5 filas del dataset, mientras que un *tibble* muestra sólo las 10 primeras, e incluye un mensaje sobre cuántas no se han impreso. Sin embargo, incorpora la información sobre la clase de la columna.
+Una de las principales modificaciones que podemos aplicar a un dataset es quedarnos con un subconjunto de las observaciones, lo que se conoce como filtrar filas. Para ello, las principales funciones del **tidyverse** son `dplyr::filter()` y `dplyr::slice()`.
 
-    -   Un *data.table* nunca usa los rownames (aunque los definamos, no va a suceder nada).
+*\*Cambiar estructura a una pequña tabla con ejemplos, y a poder ser separar bien el slice del filter (probablemente tengan que ser h4)*
 
-```{r ejemplo funcionalidad de rep}
-# no me acuerdo de qué código creaba cosas del estilo que c(x, 1:5) hacía x1, x2, etc. (?)
-```
-
-# 2 Manipulación del dataset {#2.manipulacion-dataset}
-
-Una vez conocemos la estructura de nuestro dataset, debemos prepararlo para el análisis. Es probable que hayamos detectado algún problema, por lo que el orden es:
-
-1.  Limpiar el dataset y dejarlo en formato *tidy*.
-2.  Hacer cualquier otra modificación al dataset de acuerdo con nuestros objetivos de análisis.
-
-En vez de desarrollar los apuntes en este orden, en esta sección presento el set de herramientas para realizar cualquier modificación al dataset y en la siguiente sección comento los problemas más frecuentes de los *messy* datasets y cómo limpiarlos para dejarlos en formato *tidy*. El motivo es que dichas soluciones suelen involucrar el mismo set de herramientas que el resto de modificaciones, por lo que considero que es mejor ver primero la teoría y luego una aplicación práctica.
-
-Para la manipulación de datasets, mi recomendación es usar las librerías del [**tidyverse**](https://tidyverse.org) (principalmente **dplyr** y **tidyr**), a menos que estemos trabajando con un dataset muy grande, en cuyo caso mejor usar **data.table**. Siempre que sea posible, facilitaré un ejemplo del mismo código con ambas librerías.
-
-El motivo es que las funciones de **data.table** están pensadas para optimizar al máximo el tiempo de ejecución, a pesar de que ello implique cierta pérdida de flexibilidad y el código sea menos legible o "amigable" que en las funciones del **tidyverse**. Concretamente, en **data.table:**
-
--   Algunas operaciones se realizan por referencia o *in place*, es decir, sin generar una copia en memoria. Esto es el caso de la asignación en columnas mediante `:=` y la família de funciones `set*()`.
--   Siempre que sea posible, se paralelizan procesos como el filtrado de filas
--   Las funciones de join son muy eficientes, etc.
-
-Hay que tener cuidado porque cuando realizamos operaciones por referencia, al modificar un objeto, se modifican a su vez todas las copias que tenemos de ese objeto. Para evitarlo, debemos definir una copia mediante la función `data.table::copy()`. Veamoslo con un ejemplo simple. Tras modificar `dt1`, la copia directa `dt2` también se modifica, mientras que la que hemos realizado con `copy()` se mantiene intacta.
-
-```{r ejemplo comportamiento by reference en data.table (I)}
-dt1 <- data.table(
-  id = 1:5,
-  var1 = c(10, NA, 30, NA, 50)
-)
-dt2 <- dt1
-dt3 <- copy(dt1)
-
-dt1[is.na(var1), var1 := 0]
-
-identical(dt1, dt2)
-identical(dt1, dt3)
-```
-
-La notación clásica del **tidyverse** es encadenar las distintas modificaciones (funciones) mediante el pipe `%>%` o `|>` y guardando el objeto resultante en una nueva variable (a menudo la misma que transformamos) mediante la asignación `<-`. La clase de los datasets tiende a ser *tibble*, una versión mejorada de los data.frame. Para denotar que un objeto es de clase *tibble* usaré el prefijo `"tb_"` en el código.
-
-La notación de **data.table** se basa en la sintaxis `dt[i, j, by]`:
-
--   `i`: en qué subset de filas
--   `j`: qué modificaciones aplicar
--   `by`: para definir agrupaciones
-
-No es necesario explicitar los argumentos como `dt[i = ..., j = ..., by = ...]`, ya que siempre van en ese orden. Sin embargo, sí que se suele explicitar el by porque facilita la comprensión: `dt[..., ..., by = ...]`. Para encadenar operaciones, el equivalente del pipe en **data.table** es encadenar corchetes: `dt[...][...]`. La clase de los datasets es *data.table* y a menudo la gente usa DT para referirse a ellos; por consistencia en el código yo usaré el prefijo `"dt_"` para denotar que un objeto es de clase *data.table*.
-
-Algunas operaciones se realizan *in place*, por lo que no siempre es necesario asignar el resultado a una nueva variable.
-
-Sin embargo, la asignación por referencia es compleja de entender al principio y podemos obtener resultados no deseados. Es útil tener en cuenta lo siguiente:
-
--   Cuando usamos `:=` modificamos el *data.table* por referencia, es decir, el original, aunque no lo asignemos a una nueva variable.
--   Sin embargo, cuando no aplicamos `:=` en una operación, por ejemplo, al calcular una tabla resumen con `.()`, el *data.table* original no se modifica, de modo que para guardar ese resultado, debemos asignarlo a una variable nueva.
--   Algo similar sucede cuando encadenamos operaciones con los corchetes `dt[...][...]`. Si algunas de ellas realizan operaciones que no se pasan por referencia, a menos que guardemos el resultado a una nueva variable, el *data.table* original sólo se actualizará en función de los pasos que incorporen `:=`.
-
-Veamoslo con una serie de ejemplos simples que seguro que queda más claro.
-
-```{r ejemplo comportamiento by reference en data.table (II)}
-dt <- data.table(x = 1:3, y = c(2,4,6))
-dt
-
-# creación de una nueva columna usando := actualiza el dt
-dt[, z := x + y]
-dt
-
-# operaciones que no usan := o set*() no actualizan el dt
-dt_summary <- dt[, .(mean_x = mean(x), sum_y = sum(y))]
-dt_summary
-dt
-
-# aplicar una función secuencialmente a un subset de las columnas actualiza el dt
-cols <- c("x","y")
-dt[, (cols) := lapply(.SD, function(x) x/ max(x)), .SDcols = cols]
-dt
-
-# si encadenamos los dos pasos entre corchete y uno no incluye :=, a menos que lo asignemos
-# a una nueva variable, ese paso no queda guardado en dt2
-dt2 <- data.table(x = 1:3, y = c(1, 4, 9))
-dt2
-
-dt2[, z:= x + y][, .(mean_x = mean(x), mean_z = mean(z))]
-dt2 
-
-dt2_summary <- dt2[, z:= x + y][, .(mean_x = mean(x), mean_z = mean(z))]
-dt2_summary
-dt2
-```
-
-Todos los objetos *tibble* y *data.table* contienen también la clase *data.frame*, de modo que todas las funciones que se aplican a *data.frame* también funcionarán en objetos de clase *tibble* o *data.table*. Sin embargo, el reverso no es cierto: para poder utilizar funciones de los paquetes del **tidyverse** o de **data.table** debemos asegurar que tengan las clases correspondientes.
-
-Si leemos unos datos con `data.table::fread()`, el dataset tendrá clase *data.table, data.frame*; si los leemos con `readr::read_csv()`, tendrán la clase *tibble, data.frame*. Si queremos convertirlo a otros formatos, podemos usar:
-
--   `data.table::setDT()` modifica directamente el objeto para convertirlo a *data.table*.
--   `data.table::as.data.table()` crea una copia del objeto que tiene la clase *data.table*.
--   `tibble::as.tibble()` crea una copia del objeto que tiene la clase *tibble*.
-
-... siempre que partamos de un un objeto tipo *data.frame*, *matrix* o *list*, si no es posible que nos devuelva un error.
-
-## 2.1. Filas
-
-### 2.1.1. Filtrar filas {#2.1.1.filtrar-filas}
-
-Una de las principales modificaciones que podemos aplicar a un dataset es quedarnos con un subconjunto de las observaciones, lo que se conoce como filtrar filas. Para ello, las principales funciones del **tidyverse** son `dplyr::filter()` y `dplyr::slice()`, mientras que en **data.table** toda la sintaxis se especifica con el argumento `i`. En este caso, las modificaciones de **data.table** deben asignarse a un nuevo o el mismo *data.table* mediante `<-` (es decir, las modificaciones no se hacen por referencia).
++-----------------+------------------+---------------------------------+----------------------------------------------------------+
+| Función         | Tipo de filtrado | Descripción                     | Ejemplo                                                  |
++=================+==================+=================================+==========================================================+
+| `filter()`      | Lógico           | Filas que cumplen una condición | Me quiero quedar con las observaciones de más de 18 años |
++-----------------+------------------+---------------------------------+----------------------------------------------------------+
+| `slice()`       | Posicional       | Filas por posición              | Me quiero quedar con las 100 primeras filas              |
++-----------------+------------------+---------------------------------+----------------------------------------------------------+
+| `slice_sample()`| Aleatorio        | Filas seleccionadas al azar     | Me quiero quedar con una muestra aleatoria de 100 filas  |
++-----------------+------------------+---------------------------------+----------------------------------------------------------+
 
 El filtrado de filas se puede realizar específicando índices de fila con `dplyr::slice()` (poco recomendado, puesto que pueden cambiar), o mediante condiciones lógicas aplicadas a las variables con `dplyr::filter()`. Internamente, R devuelve un vector lógico para clasificar las filas que cumplen la condición (`TRUE`), que son las que se mantienen en el dataset filtrado, y las que no la cumplen (`FALSE`), que se eliminan.
+
+*\*Explicar correctamente el funcionamiento y que no queda la duda de qué filtro (filtrar != eliminar)*
+
+#### Filtrado lógico
+
+Empezar con la descripción (TRUE/FALSE) y luego ir añadiendo capas de complejidad
+
+*\*Reestructurar contenido a partir de aquí*
 
 #### Filtrado básico
 
@@ -271,12 +165,6 @@ Para escribir las condiciones lógicas empleamos:
 -   `%in%` para filtrar observaciones en las que una variable tome uno de los valores especificados en un vector.
 
 Las condiciones lógicas podemos encadenarlas con `&`, que significa "AND" o con `|` que significa "OR". Para indicar el contrario o complemento de una expresión, usamos `!`. Para escribir negaciones de condiciones compuestas, las debemos encapsular entre paréntesis. En **dplyr** podemos usar `,` en vez de `&` para expresar condiciones adicionales, aunque en mi opinión `&` es más claro.
-
-Además, en **data.table** tenemos unos *helpers* adicionales:
-
--   `%like%` permite buscar un patrón literal (o *regex* simple) en un *chr vector* o un *factor*.
--   `%between%` permite buscar un valores en un intervalo cerrado de un *num vector*.
--   `%chin%` como `%in%` pero mucho más rápido (sólo para *chr vectors*).
 
 En **dplyr** debemos usar `str_detect()` en vez de `%like%`, que lo veremos en la sección de filtrado avanzado. La función `dplyr::between()` es equivalente al `%between%` y en **dplyr** sólo hay `%in%` para vectores de carácteres (otra opción son los *filtering joins*, que los veremos en la [sección 2.5.2](#2.5.2.filtering-joins)). Veamos unos ejemplos de filtrado básico con el dataset `midwest`; en algún caso
 
@@ -299,19 +187,6 @@ tb_midwest %>%
 tb_midwest %>%           
   filter(!(state == "IL" & (poptotal < 1e5 | popdensity < 5e3)),
          !(state != "IL" & poptotal < 2e5))
-
-# data.table 
-dt_midwest[!c((1:5), (10:15))]  # excluir filas 1 a 5 y 10 a 15 (- tb vale)
-dt_midwest[1:(.N-10)]            # filtramos todas excepto las 10 últimas filas
-
-# filtramos los condados con >20% de titulados universitarios y <=95% de población blanca
-dt_midwest[percollege > 0.2 & percwhite > 95]
-
-# filtramos los condados de Michigan (MI) o Ohio (OH) con población entre 100-500 mil
-dt_midwest[state %chin% c("MI", "OH") & poptotal %between% c(1e5, 5e5)]
-
-# filtramos para eliminar los condados de Illinois (IL) con población menor a 100 mil o densidad inferior a 5000, y población menor a 200 mil en el resto
-dt_midwest[!((state == "IL" & (poptotal < 1e5 | popdensity < 5e3)) | (state != "IL" & poptotal < 2e5))]       
 ```
 
 Otra manera básica de filtrar es mediante el verbo `dplyr::distinct` o `data.table::unique()`. Como hemos visto en la [sección 1.3](#1.3.valores-variables), estas funciones sirven para devolver el subconjunto de los datos con observaciones únicas, ya sea en términos generales, o por un subconjunto de columnas.
@@ -329,8 +204,6 @@ Además de la función básica `dplyr::slice()` existe una família de funciones
 -   `slice_sample()` filtra `n` filas de forma aleatoria.
 
 Alternativamente, podemos definir `prop` (la proporción de observaciones a filtrar) en vez que `n`. En caso de que haya "empates", se filtran todas las filas, a pesar que ello implique pasar de la cantidad especificada en `n` o `prop`.
-
-En **data.table** definimos los índices de las filas que queremos filtrar en `i`, tras emplear una transformación en `j`. Por ejemplo, el equivalente a `slice_max(Temp, n = 5)` es `dt[order(Temp, decreasing = TRUE)][1:5]`, puesto que son dos operaciones que involucran al parámetro `i`. No obstante, este método corta estrictamente las 5 primeras filas, sin tener en cuenta los empates.
 
 Para filtrar mediante patrones literales en el texto podemos usar `str_detect()` envolviendo el `pattern` dentro de `fixed()` en **dplyr** o usar el helper `%like%` en **data.table**. Sin embargo, cuando usemos *regex* o condiciones más complejas, mejor usar las funciones de **stringr** en ambos casos.
 
@@ -403,7 +276,7 @@ tb_midwest %>%
   select(county, state, percblack, percbelowpoverty, percchildbelowpovert)
 ```
 
-### 2.1.2. Ordenar filas
+### Ordenar filas
 
 Podemos ordenar las filas del dataset en función de los valores de una selección de columnas. Las funciones para ello son `dplyr::arrange()` y `data.table:::setorder()`, que funciona por referencia.
 
@@ -446,7 +319,7 @@ sub_midwest %>%                    # ordenamos condados alfabéticamente en cada
 setorderv[dt_midwest, vars]        # ordenamos condados alfabéticamente en cada estado
 ```
 
-### 2.1.3. Tomar una muestra
+### Tomar una muestra
 
 #### AÚN POR TERMINAR
 
@@ -464,9 +337,9 @@ sample\_\*
 
 ...
 
-## 2.2. Columnas
+## Columnas
 
-### 2.2.1. Seleccionar columnas
+### Seleccionar columnas
 
 Del mismo modo que podemos filtrar filas (observaciones), podemos seleccionar un subset de columnas (variables) del dataset. Para ello, las dos opciones principales son `dplyr::select()` y el argumento `j` de `dt[i, j, by]`.
 
@@ -614,7 +487,7 @@ tb_starwars %>%
 dt_starwars[, ..vars]
 ```
 
-### 2.2.2. Ordenar y renombrar columnas
+### Ordenar y renombrar columnas
 
 Además de las opciones en `select()`, también hay funciones específicas para renombrar y ordenar columnas. Estas son `dplyr::rename()` y `dplyr::relocate()` en el **tidyverse** y `setnames()` y `setcolorder()` en **data.table**.
 
@@ -660,7 +533,7 @@ setcolorder(
   )
 ```
 
-### 2.2.3. Crear nuevas columnas
+### Crear nuevas columnas
 
 ### AÚN POR TERMINAR
 
@@ -715,14 +588,14 @@ dt_economics[, unemp_rate_pct := 100 * unemploy / pop
 ```
 
 -   **Crear intervalos de una variable numérica**
-    -   `base::cut()` sirve para generar intervalos de una variable numérica. Por defecto, devuelve un ***factor*** con valores como "(a, b]" generados a partir de lo especificado en el argumento `breaks`, al que podemos pasar un número entero $\ge$ 2 para indicar el número de intervalos, o un vector concretando los valores a los que queremos cortar (por ejemplo, con `seq(from, to, by)`).
+    -   `base::cut()` sirve para generar intervalos de una variable numérica. Por defecto, devuelve un ***factor*** con valores como "(a, b\]" generados a partir de lo especificado en el argumento `breaks`, al que podemos pasar un número entero $\ge$ 2 para indicar el número de intervalos, o un vector concretando los valores a los que queremos cortar (por ejemplo, con `seq(from, to, by)`).
         -   Es importante definir el último *break* con un valor igual o superior al valor máximo del vector que queremos cortar. Además, si usamos `seq()` es conveniente que la diferencia entre `to` y `from` sea mayor que el valor máximo y múltiple de `by`, ya que si no el último interval no se genera.
-        -   Para obtener etiquetas distintas a "(a, b]", podemos definir:
+        -   Para obtener etiquetas distintas a "(a, b\]", podemos definir:
             -   `labels = FALSE` de modo que la función devuelve un vector numérico con el número de cada corte (todos los elementos del primer intervalo reciben un 1, todos los del segundo un 2, etc.).
 
             -   `labels = custom_labels` donde nosotros definimos el vector de etiquetas (tiene que ser de la misma longitud que los intervalos creados por `cut()`.
-        -   Por defecto, `right = TRUE`, de modo que los intervalos son cerrados en la derecha (es decir, del estilo "(a, b]"). Definiendo `right = FALSE` obtenemos intervalos del estilo "[a, b)".
-        -   Por defecto, `include.lowest = FALSE`, de modo que el valor que sea igual al break más bajo (o alto, en el caso que `right = TRUE`) no se incluye en el primero (último) intervalo. Esto se debe a que a $a \notin (a, b]$. Para incluirlo, podemos especificar `include.lowest = TRUE`, de modo que el primer (último) intervalo se convierte en [a, b].
+        -   Por defecto, `right = TRUE`, de modo que los intervalos son cerrados en la derecha (es decir, del estilo "(a, b\]"). Definiendo `right = FALSE` obtenemos intervalos del estilo "\[a, b)".
+        -   Por defecto, `include.lowest = FALSE`, de modo que el valor que sea igual al break más bajo (o alto, en el caso que `right = TRUE`) no se incluye en el primero (último) intervalo. Esto se debe a que a $a \notin (a, b]$. Para incluirlo, podemos especificar `include.lowest = TRUE`, de modo que el primer (último) intervalo se convierte en \[a, b\].
         -   Por defecto, `ordered_result = FALSE` de modo que el factor resultante no tiene un "orden" (es decir, no se podría decir "este intervalo contiene valores mayores que este otro"). Para que tenga este comportamiento, podemos definir `ordered_result = FALSE` y los *levels* apareceran encadenados con "\<".
 
 Por ejemplo, para crear un dataset auxiliar o "diccionario" con distintas categorizaciones por edad, podemos usar `cut()`. Puesto que es una funciónd e **base** R, funciona igual en **dplyr** que en **data.table** (llamándola dentro del argumento `j`).
@@ -748,7 +621,7 @@ ii. **Estandarizar** la variable, es decir, restar el valor medio y dividir por 
 
     -   Esto lo podemos hacer directamente con `base::scale()`, aunque esta función convierte el input a matriz y devuelve una matriz. Esto es porque está pensada para aplicarse en datasets donde todas las variables sean numéricas; al aplicarse sobre una variable tenemos que envolverla en `as.numeric()`.
 
-iii. Pasar a **min-max**, es decir, que todos los valores se comprendan entre [0, 1]. Para ello, restamos a cada valor el mínimo y lo dividimos entre la diferencia entre el máximo y el mínimo.
+iii. Pasar a **min-max**, es decir, que todos los valores se comprendan entre \[0, 1\]. Para ello, restamos a cada valor el mínimo y lo dividimos entre la diferencia entre el máximo y el mínimo.
 
 Veamos un ejemplo con el dataset `economics`. De nuevo, en **data.table** usaríamos las mismas funciones. La sintaxis entre esta librería y el **tidyverse** cambía al trabajar con `across()` o `.SD`, como veremos en la sección de mutación avanzada.
 
@@ -844,7 +717,7 @@ Considero mutaciones básicas aquellas que generan más de una columna por fila 
 
 -   `if_else()` sirve para crear variables binarias o *dummies*. La sintaxis es `if_else(condition, true, false)` para crear dummies indicando qué valor asignar a aquellas observaciones que cumplan la condición y cuál a las que no.
 
-    -   Si ya nos va bien que se asigne `TRUE` a aquellos valores que cumplan la condición y `FALSE` a los que no, podemos especificar directamente la condición sin necesidad de recurrir a `if_else()`. Por ejemplo, definir `mutate(aprobado = if_else(nota > 5, "sí", "no"))` es equivalente a `mutate(aprobado = nota > 5)` si no nos importa que los valores sean `TRUE` y `FALSE` en vez de "sí" y "no", respectivamente (una ventaja de dejar `TRUE` y `FALSE` es que en R equivalen a 1 y 0 también) 
+    -   Si ya nos va bien que se asigne `TRUE` a aquellos valores que cumplan la condición y `FALSE` a los que no, podemos especificar directamente la condición sin necesidad de recurrir a `if_else()`. Por ejemplo, definir `mutate(aprobado = if_else(nota > 5, "sí", "no"))` es equivalente a `mutate(aprobado = nota > 5)` si no nos importa que los valores sean `TRUE` y `FALSE` en vez de "sí" y "no", respectivamente (una ventaja de dejar `TRUE` y `FALSE` es que en R equivalen a 1 y 0 también)
 
     -   Podemos especificar qué valor asignar a los *missings* mediante el argumento `missing` (por defecto, `NA`, pero quizás nos interesa otro valor, como `0L`).
 
@@ -983,12 +856,12 @@ tb_grasa_corporal %>%
   mutate(media_pct_grasa = mean(c_across(starts_with("pct_grasa"))))
 
 tb_grasa_corporal %>% 
-  mutate(media_pct_grasa = rowMeans(across(starts_with("pct_grasa")))
+  mutate(media_pct_grasa = rowMeans(across(starts_with("pct_grasa"))))
                              
 dt_grasa_corporal
 ```
 
-## 2.3. Agrupar datos {#2.3.agrupar-datos}
+## Agrupar datos {#agrupar-datos}
 
 **AÚN POR TERMINAR**
 
@@ -996,9 +869,9 @@ básicamente `group_by` y `by`.
 
 ...
 
-## 2.4. Estructura
+## Estructura
 
-### 2.4.1. Wide y long formats
+### Wide y long formats
 
 Se distinguen dos formatos principales en un datset ordenado: el formato *long* y el formato *wide*. Tal y como indican sus respctivos nombres, un mismo dataset tiene más columnas y menos filas en formato wide, y más filas y menos columnas en formato wide.
 
@@ -1206,7 +1079,7 @@ dt_planets_t <- dcast(
 )
 ```
 
-### 2.4.2. Expandir y comprimir datos
+### Expandir y comprimir datos
 
 A veces es útil tener datasets completos, es decir, con por lo menos un "y" para cada combinación de "X". Por ejemplo, podemos detectar qué combinaciones faltan mediante un `anti_join()` (ver la [sección 2.5.2](#2.5.2.filtering-joins)) entre el dataset completo y el original. O podemos querer completar una serie temporal para poder graficarla correctamente.
 
@@ -1262,7 +1135,7 @@ Explicar cuándo es más útil que simplemente `$`.
 
 "For example, `mean(mtcars$mpg)` is the same as `mean(mtcars %>% pull(mpg))` or `mtcars %>% pull(mpg) %>% mean()`"
 
-### 2.4.3. Estructuras anidadas
+### Estructuras anidadas
 
 En algunos casos nos encontraremos que las celdas, en vez de valores, contienen vectores, listas, o incluso tablas. De hecho, esta es la estructura más común de los archivos JSON o XML.
 
@@ -1375,7 +1248,7 @@ tb_starwars %>%
 
 \*El ejemplo de DC es bastante complejo y con funciones de **purrr**.
 
-## 2.5. Joins {#2.5.joins}
+## Joins {#joins}
 
 A menudo la información que estamos analizando vive en diversas tablas, de modo que necesitamos unirlas mediante variables "llave" o *key*. La idea es que ambas tablas contienen una variable común que permite mapear las observaciones de una con la otra.
 
@@ -1385,7 +1258,7 @@ La librería del **tidyverse** para realizar uniones de tablas es **dplyr**. Tod
 
 Repasar curso DataCamp de joins con [data.table](https://app.datacamp.com/learn/courses/joining-data-with-datatable-in-r)
 
-### 2.5.1. Mutating joins
+### Mutating joins
 
 Como se observa en el diagrama, existen 4 tipos de *mutating joins*, cuyo nombre indica que sirven para añadir a una tabla las columnas presentes en otra tabla.
 
@@ -1486,7 +1359,7 @@ Siempre es buena práctica prestar atención a los cambios en el número de fila
 
 ***todos los right_join, etc. también con data.table***
 
-### 2.5.2. Filtering joins {#2.5.2.filtering-joins}
+### Filtering joins {#filtering-joins}
 
 Como indica su nombre, los *filtering joins* no añaden columnas nuevas, sino que sólo filtran las filas de la primera tabla en función de la correspondencia, o no, con las filas de la segunda tabla.
 
@@ -1508,7 +1381,7 @@ Por tanto, en este caso no especificamos nunca sufijos, puesto que no añadimos 
 
 \* añadir explicación con data.table
 
-### 2.5.3. Fuzzy joins
+### Fuzzy joins
 
 #### AÚN POR TERMINAR
 
@@ -1530,7 +1403,7 @@ pair_blocking(), compare_pairs(), score_problink()
 
 ...
 
-### 2.5.4. Binds
+### Binds
 
 Finalmente, podemos unir dos tablas directamente "enganchando" una al lado o encima de la otra:
 
@@ -1562,7 +1435,7 @@ Finalmente, podemos unir dos tablas directamente "enganchando" una al lado o enc
 
 ```
 
-## 2.6. Tratar los missings {#2.6.tratamiento-missings}
+## Tratar los missings {#tratamiento-missings}
 
 Como hemos visto anteriormente, no podemos aplicar operaciones sobre vectores que contengan *missings*. O bien nos devuelve *missing* o bien se descartan las observaciones con *missings* antes de realizar el cálculo (lo que es equivalente a eliminar dichas observaciones). Por tanto, antes de realizar ningún análisis debemos decidir cómo tratar los *missings,* teniendo en mente que el objetivo es reemplazar los `NA` por el valor más probable, de acuerdo con los datos y conocimiento disponible, siempre que ello sea posible.
 
@@ -1576,7 +1449,7 @@ El tercer caso es el más fácil de resolver. Se trata de casos donde, por ejemp
 
 Cuando no podemos explicar la razón por la que algunas observaciones tienen `NA`, primero necesitamos saber qué tipo de *missings* tenemos para tomar la mejor decisión entre eliminarlos o imputarlos (y de qué manera). Ambas corren el riesgo de introducir sesgo en los datos, especialmente si la proporción de *missings* es significativa. Por tanto, debemos proceder con cautela y elegir la estrategia que mejor se adapta a cada caso en particular.
 
-### 2.6.1. Tipos de missings
+### Tipos de missings
 
 #### REVISAR RECOMENDACIONES DE LA TABLA
 
@@ -1594,7 +1467,7 @@ Una manera de clasificar los *missings* es según la dependencia entre los *miss
 | **MNAR** (Missing Not At Random): hay una relación sistemática entre los missings y algún factor externo            | Al clusterizar los missings se observan claros patrones o relaciones entre variables  | -   Imputar o eliminar causa sesgos           |
 +---------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------+-----------------------------------------------+
 
-### 2.6.2. La shadow matrix y nabular data
+### La shadow matrix y nabular data
 
 Dos conceptos que nos ayudan a detectar sesgos en nuestros *missings*.
 
@@ -1630,13 +1503,13 @@ airquality %>%
   facet_wrap(~ Ozone_NA)
 ```
 
-### 2.6.3. Eliminar missings
+### Eliminar missings
 
 Una vez entendemos el tipo de missings podemos eliminarlos o imputarlos. De hecho, no hace falta aplicar la misma estrategia a todo el dataset. Quizás tenemos 25.000 observaciones de las cuales 7 tienen *missings* en el 80% de las variables y 2.000 tienen *missings* en 1 o 2 variables. En este caso, sería razonable eliminar las 7 filas con muchos `NA` y tratar de imputar el resto. Lo importante es entender el contexto de los datos y justificar por qué elegimos una u otra opción.
 
 Para eliminar los *missings* podemos usar las funciones del **tidyverse** o **data.table** para filtrar filas quedándonos sólo para aquellos casos en los que `!is.na(var1)` para una o más variables. También disponemos de la función `tidyr::drop_na()` para eliminar aquellas filas que contienen algún *missing* (podemos specificar un subconjunto de columnas mediante la *tidy selection*). La función equivalente en **data.table** es `na.omit()`, en la que debemos especificar las `cols` mediante un *chr vector*.
 
-### 2.6.4. Técnicas de imputación básica
+### Técnicas de imputación básica
 
 Si decidimos imputar los datos, abrimos un melón puesto que hay casi tantas opciones como modelos estadísticos de predicción. Al fin y al cabo, el objetivo es tratar de imputar el valor más probable para esa observación con los datos que disponemos.
 
@@ -1741,7 +1614,7 @@ ggplot(tb_aq_impute_mean_long,
   theme_minimal()
 ```
 
-### 2.6.5. Técnicas de imputación avanzada
+### Técnicas de imputación avanzada
 
 Para importar valores de forma más informada podemos entrenar modelos con el resto de variables disponibles. Para ello disponemos de diversas librerías con modelos más o menos complejos. En muchos casos, las técnicas para imputar *missings* son equivalentes a técnicas econométricas y de machine learning que cubriremos en profundidad en capítulos posteriores. Por tanto, aquí sólo las enumero con una descripción concisa y remito a los capítulos correspondientes para la teoría.
 
@@ -1831,9 +1704,99 @@ best_model <- "imp_lm_all"
 
 ...
 
-# 3. Formato tidy y limpieza inicial
+## data.table para datasets grandes {#sec-data-table}
+
+Cuando trabajamos con datasets grandes (del orden de 10 millones de observaciones o más), ya se empieza a notar que algunas funciones del tidyverse, si bien funcionan sin problema, se demoran más en correr. Por tanto, para datasets grandes yo recomiendo realizar la manipulación con la librería **data.table**.
+
+*\*Explicar un poco de dónde sale o qué es? Si hay alguna relación con apache o companía*
+
+*\* A partir de aquí solo hago copy+paste*
+
+### La sintaxis en data.table
+
+El motivo es que las funciones de **data.table** están pensadas para optimizar al máximo el tiempo de ejecución, a pesar de que ello implique cierta pérdida de flexibilidad y el código sea menos legible o "amigable" que en las funciones del **tidyverse**. Concretamente, en **data.table:**
+
+-   Algunas operaciones se realizan por referencia o *in place*, es decir, sin generar una copia en memoria. Esto es el caso de la asignación en columnas mediante `:=` y la família de funciones `set*()`.
+-   Siempre que sea posible, se paralelizan procesos como el filtrado de filas
+-   Las funciones de join son muy eficientes, etc.
+
+Hay que tener cuidado porque cuando realizamos operaciones por referencia, al modificar un objeto, se modifican a su vez todas las copias que tenemos de ese objeto. Para evitarlo, debemos definir una copia mediante la función `data.table::copy()`. Veamoslo con un ejemplo simple. Tras modificar `dt1`, la copia directa `dt2` también se modifica, mientras que la que hemos realizado con `copy()` se mantiene intacta.
+
+```{r ejemplo comportamiento by reference en data.table (I)} dt1 <- data.table(   id = 1:5,   var1 = c(10, NA, 30, NA, 50) ) dt2 <- dt1 dt3 <- copy(dt1)  dt1[is.na(var1), var1 := 0]  identical(dt1, dt2) identical(dt1, dt3)}
+```
+
+La notación clásica del **tidyverse** es encadenar las distintas modificaciones (funciones) mediante el pipe `%>%` o `|>` y guardando el objeto resultante en una nueva variable (a menudo la misma que transformamos) mediante la asignación `<-`. La clase de los datasets tiende a ser *tibble*, una versión mejorada de los data.frame. Para denotar que un objeto es de clase *tibble* usaré el prefijo `"tb_"` en el código.
+
+La notación de **data.table** se basa en la sintaxis `dt[i, j, by]`:
+
+-   `i`: en qué subset de filas
+-   `j`: qué modificaciones aplicar
+-   `by`: para definir agrupaciones
+
+No es necesario explicitar los argumentos como `dt[i = ..., j = ..., by = ...]`, ya que siempre van en ese orden. Sin embargo, sí que se suele explicitar el by porque facilita la comprensión: `dt[..., ..., by = ...]`. Para encadenar operaciones, el equivalente del pipe en **data.table** es encadenar corchetes: `dt[...][...]`. La clase de los datasets es *data.table* y a menudo la gente usa DT para referirse a ellos; por consistencia en el código yo usaré el prefijo `"dt_"` para denotar que un objeto es de clase *data.table*.
+
+Algunas operaciones se realizan *in place*, por lo que no siempre es necesario asignar el resultado a una nueva variable.
+
+Sin embargo, la asignación por referencia es compleja de entender al principio y podemos obtener resultados no deseados. Es útil tener en cuenta lo siguiente:
+
+-   Cuando usamos `:=` modificamos el *data.table* por referencia, es decir, el original, aunque no lo asignemos a una nueva variable.
+-   Sin embargo, cuando no aplicamos `:=` en una operación, por ejemplo, al calcular una tabla resumen con `.()`, el *data.table* original no se modifica, de modo que para guardar ese resultado, debemos asignarlo a una variable nueva.
+-   Algo similar sucede cuando encadenamos operaciones con los corchetes `dt[...][...]`. Si algunas de ellas realizan operaciones que no se pasan por referencia, a menos que guardemos el resultado a una nueva variable, el *data.table* original sólo se actualizará en función de los pasos que incorporen `:=`.
+
+Veamoslo con una serie de ejemplos simples que seguro que queda más claro.
+
+```{r ejemplo comportamiento by reference en data.table (II)}
+dt <- data.table(x = 1:3, y = c(2,4,6)) 
+dt  
+# creación de una nueva columna usando := actualiza el dt dt[, z := x + y] dt  # operaciones que no usan := o set*() no actualizan el dt dt_summary <- dt[, .(mean_x = mean(x), sum_y = sum(y))] dt_summary dt  # aplicar una función secuencialmente a un subset de las columnas actualiza el dt cols <- c("x","y") dt[, (cols) := lapply(.SD, function(x) x/ max(x)), .SDcols = cols] dt  # si encadenamos los dos pasos entre corchete y uno no incluye :=, a menos que lo asignemos # a una nueva variable, ese paso no queda guardado en dt2 dt2 <- data.table(x = 1:3, y = c(1, 4, 9)) dt2  dt2[, z:= x + y][, .(mean_x = mean(x), mean_z = mean(z))] dt2   dt2_summary <- dt2[, z:= x + y][, .(mean_x = mean(x), mean_z = mean(z))] dt2_summary dt2
+```
+
+Todos los objetos *tibble* y *data.table* contienen también la clase *data.frame*, de modo que todas las funciones que se aplican a *data.frame* también funcionarán en objetos de clase *tibble* o *data.table*. Sin embargo, el reverso no es cierto: para poder utilizar funciones de los paquetes del **tidyverse** o de **data.table** debemos asegurar que tengan las clases correspondientes.
+
+Si leemos unos datos con `data.table::fread()`, el dataset tendrá clase *data.table, data.frame*; si los leemos con `readr::read_csv()`, tendrán la clase *tibble, data.frame*. Si queremos convertirlo a otros formatos, podemos usar:
+
+-   `data.table::setDT()` modifica directamente el objeto para convertirlo a *data.table*.
+-   `data.table::as.data.table()` crea una copia del objeto que tiene la clase *data.table*.
+-   `tibble::as.tibble()` crea una copia del objeto que tiene la clase *tibble*.
+
+... siempre que partamos de un un objeto tipo *data.frame*, *matrix* o *list*, si no es posible que nos devuelva un error.
+
+### Filas
+
+En este caso, las modificaciones de **data.table** deben asignarse a un nuevo o el mismo *data.table* mediante `<-` (es decir, las modificaciones no se hacen por referencia).
+
+Para referirnos a la última fila, en **dplyr** debemos usar como función intermediaria `dplyr::n()`, mientras que en **data.table** podemos usar directamente `.N`.
+
+Además, en **data.table** tenemos unos *helpers* adicionales:
+
+-   `%like%` permite buscar un patrón literal (o *regex* simple) en un *chr vector* o un *factor*.
+-   `%between%` permite buscar un valores en un intervalo cerrado de un *num vector*.
+-   `%chin%` como `%in%` pero mucho más rápido (sólo para *chr vectors*).
+
+```{r}
+# data.table 
+dt_midwest[!c((1:5), (10:15))]   # excluir filas 1 a 5 y 10 a 15 (- tb vale)
+dt_midwest[1:(.N-10)]            # filtramos todas excepto las 10 últimas filas
+
+# filtramos los condados con >20% de titulados universitarios y <=95% de población blanca
+dt_midwest[percollege > 0.2 & percwhite > 95]
+
+# filtramos los condados de Michigan (MI) o Ohio (OH) con población entre 100-500 mil
+dt_midwest[state %chin% c("MI", "OH") & poptotal %between% c(1e5, 5e5)]
+
+# filtramos para eliminar los condados de Illinois (IL) con población menor a 100 mil o densidad inferior a 5000, y población menor a 200 mil en el resto
+dt_midwest[!((state == "IL" & (poptotal < 1e5 | popdensity < 5e3)) | (state != "IL" & poptotal < 2e5))]   
+```
+
+Para filtros más avanzados, podemos usar el resto de funciones de la família `dplyr::slice_*()`, o combinar `filter()` con la família de funciones `stringr::str_*()`. El equivalente en **data.table** es combinar los argumentos `i` y `j`, o emplear el *helper* `%like%` y definir un *regex*, respectivamente (aunque también es habitual usar funciones de **stringr** en `j`).
+
+En **data.table** definimos los índices de las filas que queremos filtrar en `i`, tras emplear una transformación en `j`. Por ejemplo, el equivalente a `slice_max(Temp, n = 5)` es `dt[order(Temp, decreasing = TRUE)][1:5]`, puesto que son dos operaciones que involucran al parámetro `i`. No obstante, este método corta estrictamente las 5 primeras filas, sin tener en cuenta los empates.
+
+# Formato tidy y limpieza inicial
 
 #### AÚN POR TERMINAR
+
+### Tratar de integrar en el cuerpo del texto
 
 ... Una vez hemos visto todas las herramientas, mostramos cómo suele ser el proceso de limpieza inicial
 
@@ -1897,15 +1860,3 @@ filas_duplicadas <- datos %>%
   count(var1, var2) %>% 
   filter(n > 1)
 ```
-
-## 
-
-# 
-
-# 4. Un ejemplo completo (si hace falta)
-
-From importing data to having it ready to use.
-
-Quizás con los ejemplos que pongo en medio y la nueva sección 3 de típicos problemas de messy data, ya queda cubierto.
-
-## 

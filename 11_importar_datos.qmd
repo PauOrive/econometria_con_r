@@ -1,15 +1,63 @@
 ---
-title: "Importar datos"
+title: "Importar y exportar datos"
 ---
 
 # Importar (y exportar) datos {#cap-importar-exportar-datos}
 
-*revisar toda esta sección: el contenido está ya abstante trabajado pero hay que adaptar tres cosas*
-1.   la numeración y ordenación de headings!
-2.   el formato, para que quede estilo 12_x_prueba.qmd 
-3.   incluyo también exportar datos, o no?
+*revisar toda esta sección: el contenido está ya abstante trabajado pero hay que adaptar tres cosas* 1. la numeración y ordenación de headings! 2. el formato, para que quede estilo 12_x_prueba.qmd 3. incluyo también exportar datos, o no?
 
 # 1. Importar datos
+
+Si no importamos, también podemos crear un dataset:
+
+# 0. Crear un dataset {#1.exploracion-inicial}
+
+Lo más común es que realicemos un análisis sobre datasets que importamos a R. Sin embargo, es probable que en alguna fase del análisis necesitemos crear un dataset auxiliar, o una tabla para mostrar los resultados, de modo que es útil saber cómo generarlo desde cero con R.
+
+Para ello, podemos definir un *data.frame*, un *tibble* o un *data.table*, con las funciones `data.frame()`, `tibble()` o `data.table()`, respectivamente. La mejor elección depende del tamaño del dataset principal y qué operaciones realizaremos luego.
+
+En todos los casos, la sintaxis es:
+
+```{r codigo creación de un tibble desde cero}
+tb <- tibble(
+  var1 = c(1L, 2L, 5L, 9L),
+  var2 = c("a", "b", "e", "i")
+)
+
+tb <- tribble(
+  ~var1, ~var2,
+  1L, "a",
+  2L, "b",
+  5L, "e",
+  9L, "i"
+)
+
+# este tipo de operaciones "on the fly" sólo lo permite data.table()
+# aunque realmente no me deja...
+dt <- data.table(
+  var1 = c(1L, 2L, 5L, 9L),
+  var2 = c("a", "b", "e", "i")
+)
+```
+
+Aspectos a tener en cuenta:
+
+-   Es mejor crear el dataset con las dimensiones que tendrá al final (por ejemplo definiendo `var = NA` y luego rellenarlo con valores), que aumentar las dimensiones del dataset posteriormente, ya que es más intensivo en memoria.
+
+-   La longitud de todos los vectores que conforman el dataset debe de ser la misma.
+
+    -   Los vectores de longitud 1 se reciclan (es decir, se aplica el mismo valor *nrow* veces), pero en el resto de casos salta un error si esta condición no se cumple.
+    -   Podemos usar la función `base::rep(x, times, length.out)` para crear un vector que repita un elemento, o un vector de elementos (x) un determinado número de veces (times), o incluso indicar la longitud deseada (length.out).
+
+-   Otras diferencias:
+
+    -   Si imprimimos directamente un *data.table* en la consola, veremos las primeras 5 y últimas 5 filas del dataset, mientras que un *tibble* muestra sólo las 10 primeras, e incluye un mensaje sobre cuántas no se han impreso. Sin embargo, incorpora la información sobre la clase de la columna.
+
+    -   Un *data.table* nunca usa los rownames (aunque los definamos, no va a suceder nada).
+
+```{r ejemplo funcionalidad de rep}
+# no me acuerdo de qué código creaba cosas del estilo que c(x, 1:5) hacía x1, x2, etc. (?)
+```
 
 Lo más común es que cuando trabajamos en R importemos archivos de los siguientes tipos:
 
@@ -17,7 +65,6 @@ Lo más común es que cuando trabajamos en R importemos archivos de los siguient
 -   Excel (.xls, .xlsx)
 -   Bases de datos (SQL)
 -   Datos de la Web (URL o a través de web API)
--   Datos geoespaciales (crear subsección!!)
 -   Otros softwares estadísticos (SAS, SPSS, Stata)
 -   Otros formatos (.parquet, .RData)
 
