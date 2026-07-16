@@ -337,6 +337,73 @@ Por otro lado, sí que hay dos funciones qu creo merece la pena mecionar:
 
     -   Si no, yo recomiendo hacerlo fuera con las técnicas de manipulación que hemos aprendido en el capítulo anterior
 
+-   2 tipos de estadísticas:
+
+    -   las que llamamos dentro de geom
+    -   las que llamamos de forma independiente
+
+    Todas empiezan por stats\_\*()
+
+    Casos intresantes son stat_summary con mean_sdl, o mean_cl_normal, así como stat_function con stat_qq
+
+#### Las coordenadas
+
+Las coordinadas controlan las dimensiones y orientación del gráfico.:
+
+-   zooming, amb coord_catesian (comprobar si hi ha les versions alternatives, scale_x_continuious, xlim, tot i que aquelles eliminen els punts)
+
+-   aspect ratio: height to width
+
+Todas son coord\_\*, pero sólo podemos usar una en un gráfico (?)
+
+coord_cartesian la más usada
+
+coord_fixed para controlar aspect ratio. Si podemos 1:1 (si son las mismas unidades); si no, debemos ajustarlo del mejor modo posible para que el mensaje que aporta el gráfico sea correcto.
+
+Atributos:
+
+-   expand = TRUE añade un poco de espacio entre los ejes y los puntos, para que no estén superpuestos
+
+**coord vs scales**
+
+scale_x_log10 permite cambiar los datos antes de pasarlos al plot, igual que si hacemos log10 en el aes; en cambio usar coord_transform(x = "log10") modifica los datos una vez ya se ha produzido el gráfico, de modo que mantiene los valores originales en los datos.
+
+-   Sin embargo, a mi esta no me acaba de gustar, ns si tiene que ver con usar scipen o algo así.
+
+guide_axis_logticks para guide_axis_logticksaguide_axis_logticksñadir ticks en los logaritmos
+
+**double axis** -\> "strongly discopuraged" (sec_axis)
+
+-   en el x: por ejemplo, si tenemos la escala logarítmica en log y en los valores originales
+
+-   en el y: por ejemplo grados en Celsius y Fahrenheit
+
+**flipping axis**
+
+-   coord_flip(). There are two reasons to use this function (instead of just changing x and y mapping):
+
+    -   We want a vertical geom to be horizontal (e.g. bars where axis labels are long)
+
+    -   We've completed a long series of plotting functions and want to flip it without having to rewrite all our commands.
+
+polar coordinates not recommended, maybe for yearly data or other "cyclic" variables
+
+**facets**
+
+permite incluir una variable adicional a la visualización (variable categorica). De alguna manera presenta gráficos de datos agrupados
+
+facet_grid(rows = vars(...), cols = vars...); notación antigua con \~ como nota a pie de página
+
+labels: labeller = label_value, label_context, label_both
+
+por defecto, cada faceta tiene los mismos ejes y espacio asignado, pero con los scales and space arguments podemos ajustar un poco los espacios, aunque a veces es mejor jugar con los colores o cosas del estilo (sólo en casos muy puntuales
+
+-   Si queremos ejes independients en cada subgráfico, entonces facet_wrap
+
+-   Si hay muchas categorías distintas, mejor facet_wrap porque va poniendo uno al lado del otro como si estuvieramos sacando cartas de un mazo
+
+recode and reorder labels before plotting if necessary with forcats library
+
 Luego, ir una a una explicando un poco en resumen siguiendo el hilo anterior
 
 -   Cambiar gráfico a escala logarítmica.
@@ -366,8 +433,12 @@ Aquí la idea es seguir un poco el formato del capítulo de data manipulation.
     -   soluciones: alpha, círculos vacíos, tamaño del punto, jitter si hay integer data o low-precision data
 -   **Líneas:** `geom_line`, `geom_path`, `geom_step`, `geom_abline`, `geom_hline`, `geom_vline`
 -   **Barras:** `geom_bar`, `geom_col`
+    -   Absolute count value
+    -   Distributions: usually not a good option, better points + summary stats or the like
 -   **Distribuciones:** `geom_histogram`, `geom_rug()`, `geom_boxplot`, `geom_violin`, `geom_density`, `geom_density_2d`
+    -   heatmap: a colored table
 -   **Tendencia**: `geom_smooth()`
+    -   cuidado con la aspect ratio, porque según como la misma relación puede expresarse como una línea más o menos llana o como una línea muy empinada.
     -   method
         -   span
     -   fullrange
@@ -393,10 +464,3 @@ Quizás mencionar stat_summary o stat_function??
 ...
 
 ## Apuntes intermediate ggplot2:
-
-2 tuipos de estadísticas:
-
--   las que llamamos dentro de geom
--   las que llamamos de forma independiente
-
-Todas empiezan por stats\_\*()
