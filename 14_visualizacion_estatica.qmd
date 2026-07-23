@@ -11,7 +11,7 @@ library(causaldata)
 
 En este capítulo cubriré los básicos de ggplot (el cheatsheet está genial)
 
-R dispone de funciones nativas muy directas para generar gráficos, que pueden ser útiles para análisis exploratorios. Por ejemplo, para tener una primera idea de la distribución de la esperanza de vida, o la relación entre la esperanza de vida y el PB per cápita, podemos crear un histograma y un gráfico de puntos con tan solo dos líneas de código:
+R dispone de funciones nativas muy directas para generar gráficos, que pueden ser útiles para análisis exploratorios. Por ejemplo, para tener una primera idea sobre cómo se distribuye la esperanza de vida en los distintos países, o la relación entre la esperanza de vida y el PIB per cápita, podemos crear un histograma y un gráfico de puntos, respectivamente, empleando tan solo dos líneas de código:
 
 ::: panel-tabset
 ## Histograma
@@ -70,7 +70,7 @@ Los elementos esenciales son los siguientes:
 
 -   El **mapeo** de datos (los "aesthetics"), como por ejemplo qué variable se representa en el eje X y cuál en el eje Y.
 
--   La **geometría** (el tipo de gráfico). Por ejemplo, podemos definir un gráfico de puntos ("scatter plot"), un histograma, un gráfico de barras, etcétera.
+-   La **geometría** (el tipo de gráfico). Por ejemplo, podemos definir un gráfico de puntos ("scatter plot"), un gráfico de barras, un gráfico de líneas, etcétera.
 
 La forma más básica de definir estos elementos es definir los datos y el mapeo dentro de la función `ggplot()` y luego agregar una geometría mediante las funciones `geom_*()`.
 
@@ -78,17 +78,17 @@ La forma más básica de definir estos elementos es definir los datos y el mapeo
 
 El mapeo se define mediante la función `aes()` para vincular uno de los siguientes elementos a una variable del dataset:
 
--   `x`, los valores del eje x.
--   `y`, los valores del eje y.
--   `color`, el color "externo" de la geometría.
--   `fill`, el color "interno" de la geometría.
+-   `x`, los valores del eje X.
+-   `y`, los valores del eje Y.
+-   `color`, el color "externo" o contorno de la geometría.
+-   `fill`, el color "interno" o relleno de la geometría.
 -   `alpha`, el nivel de opacidad, definido entre 0 (transparente) y 1 (opaco, opción por defecto)
--   `size`, el tamañio de la geometría.
+-   `size`, el tamaño de la geometría.
 -   `shape`, la forma de la geometría, por ejemplo de los puntos.
 -   `linetype`, el tipo de línea.
 -   `label`, el texto que aparece.
 
-Algunos aesthetics son propios de alguna geometría. Por ejemplo, en un histograma sólo definimos los valores del eje x (el eje y cuenta cuántas observaciones hay en cada intervalo con el que agrupamos los valores del eje x). Otro ejemplo es el aesthetic `linetype`, que sólo lo vamos a poder definir en caso de que el gráfico tenga una geometría de líneas.
+Algunos *aesthetics* son propios de alguna geometría. Por ejemplo, en un histograma sólo definimos los valores del eje X (el eje Y cuenta cuántas observaciones hay en cada intervalo con el que agrupamos los valores del eje X). Pero no tiene sentido definir ningún tipo de `linetype`; este es un argumento que sólo lo vamos a poder definir en caso de que el gráfico tenga una geometría de líneas.
 
 ::: callout-note
 ## Aesthetics vs atributos
@@ -323,52 +323,47 @@ ggplot(gapminder |> filter(year == 2007), aes(x = lifeExp)) +
 ```
 :::
 
-De hecho, casi todas las funciones `geom_*()` tienen una función `stat_*()` que hace lo mismo (a veces el nombre concreto varía ligeramente). Pero en mi opinión es más intuitivo llamar a una función de geometría que a una función estadística para crear un gráfico, así que podeis olvidaros de esto.
+De hecho, casi todas las funciones `geom_*()` tienen una función `stat_*()` que hace lo mismo (a veces el nombre concreto varía ligeramente). Pero, en mi opinión, es más intuitivo llamar a una función de geometría que a una función estadística para crear un gráfico, así que podeis olvidaros de esto.
 
-Por otro lado, sí que hay dos funciones qu creo merece la pena mecionar:
+Por otro lado, hay un par de funciones `stat_*()` merece la pena mecionar: `stat_summary()` y `stat_function()`, pero las desarrollo en la @sec-profundidad-estadisticas.
 
--   `stat_summary()` (seguro??)
+#### Las escalas
 
--   `stat_function()` ...
-
--   Aplicar alguna estadística??
-
-    -   Muchas ya lo hacen (e.g. geom_bar con stat_count o geom_histogram con stat_bin). De hecho, hay prácticamente una función de stat para cada geom, aunque también hay muchas otras.
-
-    -   Si no, yo recomiendo hacerlo fuera con las técnicas de manipulación que hemos aprendido en el capítulo anterior
-
--   2 tipos de estadísticas:
-
-    -   las que llamamos dentro de geom
-    -   las que llamamos de forma independiente
-
-    Todas empiezan por stats\_\*()
-
-    Casos intresantes son stat_summary con mean_sdl, o mean_cl_normal, así como stat_function con stat_qq
+pensar qué poner aquí; si es muy largo desarrollar en ggplot en profundidad.
 
 #### Las coordenadas
 
-Las coordinadas controlan las dimensiones y orientación del gráfico.:
+Las coordinadas controlan las dimensiones y orientación del gráfico. Todas las funciones empiezan por `coord_*()` y puesto que aplicarán la transformación a todo el gráfico, sólo podemos usar una de ellas.
 
--   zooming, amb coord_catesian (comprobar si hi ha les versions alternatives, scale_x_continuious, xlim, tot i que aquelles eliminen els punts)
+Por defecto, ggplot crea los gráficos usando `coord_cartesian()`, es decir, proyecta los datos sobre un sistema de coordenadas cartesiano, que es el más habitual. Mediante `coord_polar()` podríamos cambiar a un sistema de coordenadas polar, lo que es muy poco frecuente.
 
--   aspect ratio: height to width
+Por lo general, las vamos a llamar cuando queramos realizar una de las siguientes modificaciones:
 
-Todas son coord\_\*, pero sólo podemos usar una en un gráfico (?)
+-   Hacer "zoom" en el gráfico.
+-   Cambiar el orden de los ejes (el eje X pasa al eje Y y viceversa)
+-   Cambiar la ratio de aspecto entre el eje X y el Y.
 
-coord_cartesian la más usada
+Mediante `coord_cartesian()` podemos hacer zoom en el gráfico mediante los argumentos `xlim` y `ylim`; ambos esperan un vector de 2 carácteres con los límites inferiores y superiores de cada eje. A diferencia de otras funciones que también limitan los ejes, esta opción mantiene todos los datos para cálculos estadísticos (de modo que si hay una línea de tendencia, esta no se recalcula sólo con los datos que aparecen en la zona ampliada).
+
+Otro argumento estético de `coord_cartesian()` es `expand = TRUE`, que genera un poco de espacio entre los ejes y los puntos representados en el gráfico para que no queden superpuestos.
+
+Para cambiar el orden de los ejes usamos `coord_flip()`. En la mayoría de casos, simplemente podríamos editar el orden de las variables en los argumentos `x` e `y` dentro de `aes()`, pero es útil si ya tenemos todo el gráfico montado y sólo queremos intercambiar los ejes. Esto es útil, por ejemplo, en gráficos de barras donde las etiquetas del eje X son bastante largas.
+
+Por último, para cambiar la ratio de aspecto entre los valores del eje X y el eje Y usamos `coord_fixed()`. Normalmente, la configuración que ggplot crea por defecto es correcta. Pero...
 
 coord_fixed para controlar aspect ratio. Si podemos 1:1 (si son las mismas unidades); si no, debemos ajustarlo del mejor modo posible para que el mensaje que aporta el gráfico sea correcto.
 
-Atributos:
+-   aspect ratio: height to width
 
--   expand = TRUE añade un poco de espacio entre los ejes y los puntos, para que no estén superpuestos
+\*Incluir ejemplo de tendencia
 
-**coord vs scales**
+**\*incluir cuadro informativo coord vs scales**
 
 scale_x_log10 permite cambiar los datos antes de pasarlos al plot, igual que si hacemos log10 en el aes; en cambio usar coord_transform(x = "log10") modifica los datos una vez ya se ha produzido el gráfico, de modo que mantiene los valores originales en los datos.
 
 -   Sin embargo, a mi esta no me acaba de gustar, ns si tiene que ver con usar scipen o algo así.
+
+*\*a partir de aquí creo que va en scales*
 
 guide_axis_logticks para guide_axis_logticksaguide_axis_logticksñadir ticks en los logaritmos
 
@@ -378,17 +373,7 @@ guide_axis_logticks para guide_axis_logticksaguide_axis_logticksñadir ticks en 
 
 -   en el y: por ejemplo grados en Celsius y Fahrenheit
 
-**flipping axis**
-
--   coord_flip(). There are two reasons to use this function (instead of just changing x and y mapping):
-
-    -   We want a vertical geom to be horizontal (e.g. bars where axis labels are long)
-
-    -   We've completed a long series of plotting functions and want to flip it without having to rewrite all our commands.
-
-polar coordinates not recommended, maybe for yearly data or other "cyclic" variables
-
-**facets**
+#### Las facetas
 
 permite incluir una variable adicional a la visualización (variable categorica). De alguna manera presenta gráficos de datos agrupados
 
@@ -420,7 +405,7 @@ ggsave
 
 ## ggplot en profundidad
 
-Aquí la idea es seguir un poco el formato del capítulo de data manipulation.
+*\*Aquí la idea es seguir un poco el formato del capítulo de data manipulation.*
 
 ### Geometrías {#sec-profundidad-geometrias}
 
@@ -457,7 +442,82 @@ Quizás mencionar stat_summary o stat_function??
 
 ### Atributos
 
-...
+### Estadísticas {#sec-profundidad-estadisticas}
+
+De las funciones de la família `stat_*()` creo que merece la pena conocer `stat_summary()` y `stat_function()`.
+
+-   `stat_summary()` permite llevar a cabo operaciones que normalmente haríamos con la función `summarize()` (o con `group_by()` + `summarize()`) sin tener que modificar el dataset original.
+
+La idea es que a partir de los datos del dataset llevas a cabo una función y representas el resultado de una forma determinada. Por tanto, los argumentos principales son los siguientes:
+
+-   `fun` define la función que vamos a usar para calcular los valores del eje X; la manera más clara es definir una función anónima mediante `function(x) ...`.
+    -   En caso de que queramos representar cuestiones como un intervalo de confianza, tendremos que definir `fun.max` y `fun.min`, que son los valores que el gráfico toma como extremos de los intervalos.
+    -   Una alternativa es usar funciones de otras librerías que ya devuelvan un valor y, un valor ymax y un valor ymin. En este caso, usar el argumento `fun.data`, en vez de `fun`. En dicho caso, podríamos pasar una lista de inputs adicionales mediante `fun.args`.
+-   `geom` define la geometría que usaremos para definir para representar el resultado.
+
+Por ejemplo, podemos obtener el siguiente gráfico creando un dataset auxiliar con los datos resumidos o directamente empleando `stat_summary()`. Para este tipo de casos, yo soy partidario de la primera opción, ya que te permite comprobar el output intermedio antes de pasarlo al gráfico y porque así evitas tener que aprender más funciones. Sin embargo, en otras ocasiones puede que sea más eficiente usar `stat_summary()`.
+
+::: panel-tabset
+## Estadísticas en un df resumen
+
+```{r}
+#| label: ejemplo grafico group_by + summarize 
+
+datos_resumen <- gapminder |>
+  group_by(continent) |>
+  summarise(media = mean(lifeExp),
+            ymin  = media - sd(lifeExp),
+            ymax  = media + sd(lifeExp))
+
+ggplot(datos_resumen, aes(x = continent, y = media, ymin = ymin, ymax = ymax)) +
+  geom_point() +
+  geom_errorbar(width = 0.2) +
+  theme_bw() +
+  labs(x = NULL, y = "Esperanza de vida")
+```
+
+## Estadísticas dentro de ggplot
+
+```{r}
+#| label: ejemplo grafico stat_summary
+
+ggplot(gapminder, aes(x = continent, y = lifeExp)) +
+  stat_summary(fun = mean, geom = "point") +
+  stat_summary(fun.min = function(x) mean(x) - sd(x),
+               fun.max = function(x) mean(x) + sd(x),
+               geom = "errorbar", width = 0.2) +
+  theme_bw() +
+  labs(x = NULL, y = "Esperanza de vida")
+```
+:::
+
+-   `stat_function()` permite representar funciones matemáticas continuas encima de nuestro gráfico. Por ejemplo, para superponer la curva de una distribución normal encima de nuestros datos.
+
+En este caso, los argumentos esenciales son:
+
+-   **`fun`**: la función a dibujar, que es obligatorio definir..
+-   **`args`**: lista de argumentos adicionales para pasarle a `fun`. Necesario cuando la función tiene parámetros más allá de x, como en `dnorm`.
+-   `geom` define la geometría que usaremos para definir para representar el resultado (igual que en `stat_summary`) aunque aquí el defecto es `"line"`, que suele ser lo que queremos.
+
+Por ejemplo, podemos
+
+```{r}
+#| label: ejemplo grafico stat_function
+
+ggplot(gapminder |> filter(year == max(gapminder$year)), 
+       aes(x = lifeExp)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30) +
+  stat_function(fun = dnorm,
+                args = list(mean = mean(gapminder$lifeExp),
+                            sd   = sd(gapminder$lifeExp)),
+                color = "red")
+```
+
+Fíjate que aquí nos ayudamos de la función `after_stat()`. En general, al calcular una geometría, ggplot calcula varias cosas además que el valor que mapea por defecto en el eje Y. `after_stat()` permite usar en el mapeo estético variables que ggplot calcula internamente durante el proceso estadístico, en lugar de variables que vienen directamente del dataframe.
+
+En el caso del histograma, ggplot calcula internamente `count`, `density`, `ncount`, `ndensity`... Por defecto mapea `count` al eje Y, pero con `after_stat(density)` le dices al gráfico que use `density` en su lugar. De este modo, podemos superponer la curva al histograma, ya que ambas comparten el mismo eje Y.
+
+Por último, en contextos específicos de regresión, puede ser útil emplear la función `stat_qq()`, junto con `stat_qq_line()` para construir un gráfico Q-Q (quantile-quantile).
 
 ### Temas {#sec-profundidad-temas}
 
